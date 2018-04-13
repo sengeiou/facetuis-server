@@ -1,0 +1,113 @@
+package com.facetuis.server.app.web;
+
+import com.alipay.api.AlipayClient;
+import com.facetuis.server.app.web.basic.BaseResponse;
+import com.facetuis.server.app.web.basic.FacetuisController;
+import com.facetuis.server.app.web.request.LoginRequest;
+import com.facetuis.server.model.mobile.SmsModelCode;
+import com.facetuis.server.model.user.User;
+import com.facetuis.server.service.basic.BaseResult;
+import com.facetuis.server.service.sms.SmsService;
+import com.facetuis.server.service.user.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/1.0/login")
+public class LoginController extends FacetuisController {
+
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private SmsService smsService;
+
+    @RequestMapping(method = RequestMethod.POST)
+    public BaseResponse login(@RequestBody LoginRequest request) {
+
+        User mobileUser = null;
+        User wechatUser = null;
+        // 根据手机号获取用户
+        if (!StringUtils.isEmpty(request.getMobile_number())) {
+            mobileUser = userService.findByMobile(request.getMobile_number());
+        }
+        // 根据openid获取用户
+        if (!StringUtils.isEmpty(request.getOpenid())) {
+            wechatUser = userService.findByOpenId(request.getOpenid());
+        }
+        // 登录
+        if (mobileUser != null && wechatUser != null) {
+            if (mobileUser.getUuid().equals(wechatUser.getUuid())) {
+                // 验证短信验证码
+                if (StringUtils.isEmpty(request.getVerification_code())) {
+                    return new BaseResponse(400, "手机验证码不能为空");
+                } else {
+                    BaseResult baseResult = smsService.checkCode(request.getMobile_number(), request.getVerification_code(), SmsModelCode.LOGIN, true);
+                    if (!baseResult.hasError()) {
+                        User user = userService.login(mobileUser.getUuid());
+                        return successResult(user);
+                    } else {
+                        return onResult(baseResult);
+                    }
+                }
+            } else {
+                return new BaseResponse(600, "手机用户和微信用户不匹配，登录失败");
+            }
+        }
+
+        // 首先绑定手机号码 第一次请求
+        if ( wechatUser == null &&  mobileUser == null  && StringUtils.isEmpty(request.getOpenid())  && !StringUtils.isEmpty(request.getMobile_number())) {
+            if (!StringUtils.isEmpty(request.getVerification_code())) {
+                BaseResult baseResult = smsService.checkCode(request.getMobile_number(), request.getVerification_code(), SmsModelCode.LOGIN,false);
+                if (baseResult.hasError()) {
+                    return onResult(baseResult);
+                }
+                userService.registerMobile(wechatUser,request.getMobile_number(),null);
+                return successResult();
+            } else {
+                return new BaseResponse(400, "请填写手机验证码");
+            }
+        }
+        // 验证完成后绑定微信 第二次请求
+        if(mobileUser != null  && !StringUtils.isEmpty(request.getOpenid()) && !StringUtils.isEmpty(request.getAccess_token()) ){
+            if(StringUtils.isEmpty(request.getInvite_code())){
+                return new BaseResponse(400,"邀请码不能为空");
+            }
+            BaseResult<User> userBaseResult = userService.registerWechat(mobileUser, request.getOpenid(), request.getAccess_token(), request.getInvite_code());
+            if(userBaseResult.hasError()){
+                return onResult(userBaseResult);
+            }
+            return successResult(userBaseResult.getResult());
+        }
+
+
+        // 首先绑定微信 第一次请求
+        if(mobileUser == null && wechatUser == null  && StringUtils.isEmpty(request.getMobile_number()) && !StringUtils.isEmpty(request.getOpenid()) && !StringUtils.isEmpty(request.getAccess_token()) ){
+            userService.registerWechat(mobileUser,request.getOpenid(),request.getAccess_token(),null);
+            return successResult();
+        }
+        // 绑定手机号码 第二次请求
+        if(wechatUser != null && !StringUtils.isEmpty(request.getMobile_number()) ){
+            if (!StringUtils.isEmpty(request.getVerification_code())) {
+                if(StringUtils.isEmpty(request.getInvite_code())){
+                    return new BaseResponse(400,"邀请码不能为空");
+                }
+                BaseResult baseResult = smsService.checkCode(request.getMobile_number(), request.getVerification_code(),SmsModelCode.LOGIN, false);
+                if (baseResult.hasError()) {
+                    return onResult(baseResult);
+                }
+                BaseResult<User> userBaseResult = userService.registerMobile(wechatUser, request.getMobile_number(), request.getInvite_code());
+                if(userBaseResult.hasError()){
+                    return onResult(userBaseResult);
+                }
+                return successResult(userBaseResult.getResult());
+            } else {
+                return new BaseResponse(400, "请填写手机验证码");
+            }
+        }
+        return new BaseResponse(400,"缺少请求参数");
+    }
+}
