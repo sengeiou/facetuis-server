@@ -22,7 +22,6 @@ public class GoodsService {
     private PRequestUtils pRequestUtils;
 
     private String API_GOODS_DETAIL = "pdd.ddk.goods.detail";
-
     private String API_GOODS_LIST_KWYWORDS = "pdd.ddk.goods.search";
 
 

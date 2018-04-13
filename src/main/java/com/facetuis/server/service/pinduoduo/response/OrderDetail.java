@@ -1,14 +1,6 @@
-package com.facetuis.server.model.order;
+package com.facetuis.server.service.pinduoduo.response;
 
-import com.facetuis.server.model.basic.BaseEntity;
-
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
-@Entity
-@Table(name = "t_order")
-public class Order extends BaseEntity{
-
+public class OrderDetail {
     private String order_sn;
     private int goods_id;
     private String goods_name;

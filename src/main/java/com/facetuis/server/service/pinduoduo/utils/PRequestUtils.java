@@ -35,16 +35,17 @@ public class PRequestUtils {
      * @param api
      * @return
      */
-    public BaseResult send(String api, SortedMap<String,String> map){
-        map.put("type",api);
-        map.put("client_id",clientId);
-        map.put("timestamp",System.currentTimeMillis() + "");
-        map.put("data_type","JSON");
-        String sign = getSignString(map,secret);
-        map.put("sign",sign);
-        String url = apiUrl + "?" +  getUrlParamsByMap(map);
+    public  synchronized BaseResult send(String api, SortedMap<String,String> map) {
+        map.put("type", api);
+        map.put("client_id", clientId);
+        map.put("timestamp", System.currentTimeMillis() + "");
+        map.put("data_type", "JSON");
+        String sign = getSignString(map, secret);
+        map.put("sign", sign);
+        String url = apiUrl + "?" + getUrlParamsByMap(map);
         try {
             String result = Request.Post(url).execute().returnContent().asString();
+            logger.info(result);
             return new BaseResult(result);
         } catch (IOException e) {
             logger.info("调用拼多多接口发生错误::" + api + " | " + e.getMessage());
