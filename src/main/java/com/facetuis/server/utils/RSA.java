@@ -49,13 +49,7 @@ public class RSA {
         treeMap = (TreeMap<String, String>) parameters;
         StringBuffer sb = new StringBuffer();
         //把map中的集合拼接成字符串
-        for(Map.Entry<String, String> entry:treeMap.entrySet()){
-            String key = entry.getKey();
-            Object value = entry.getValue();
-            if(!StringUtils.isEmpty(value)){
-                sb.append(key).append("=").append(value).append("&");
-            }
-        }
+        SignUtils.getSignStr(treeMap, sb);
         // 拼接Key
         sb.append("key").append("=").append(secret);
         //拼接 URI

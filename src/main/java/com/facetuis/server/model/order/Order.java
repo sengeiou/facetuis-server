@@ -2,6 +2,7 @@ package com.facetuis.server.model.order;
 
 import com.facetuis.server.model.basic.BaseEntity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -9,157 +10,157 @@ import javax.persistence.Table;
 @Table(name = "t_order")
 public class Order extends BaseEntity{
 
-    private String order_sn;
-    private int goods_id;
-    private String goods_name;
-    private String goods_thumbnail_url;
-    private int goods_quantity;
-    private int goods_price;
-    private int order_amount;
-    private long order_create_time;
-    private long order_verify_time;
-    private long order_pay_time;
-    private long promotion_rate;
-    private long promotion_amount;
-    private int order_status;
-    private String order_status_desc;
-    private String order_group_success_time;
-    private String order_modify_at;
-    private String p_id;
+    private String orderSn;
+    private Integer goodsId;
+    private String goodsNname;
+    private String goodsThumbnailUrl;
+    private Integer goodsQuantity;
+    private Long goodsPrice;
+    private Integer orderAmount;
+    private Long orderCreateTime;
+    private Long orderVerifyTime;
+    private Long ordePayTime;
+    private Long promotionRate;
+    private Long promotionAmount;
+    private Long orderStatus;
+    private String orderStatusDesc;
+    private String orderGroupSuccessTime;
+    private String orderModifyAt;
+    private String pId;
 
-    public String getOrder_sn() {
-        return order_sn;
+    public String getOrderSn() {
+        return orderSn;
     }
 
-    public void setOrder_sn(String order_sn) {
-        this.order_sn = order_sn;
+    public void setOrderSn(String orderSn) {
+        this.orderSn = orderSn;
     }
 
-    public int getGoods_id() {
-        return goods_id;
+    public Integer getGoodsId() {
+        return goodsId;
     }
 
-    public void setGoods_id(int goods_id) {
-        this.goods_id = goods_id;
+    public void setGoodsId(Integer goodsId) {
+        this.goodsId = goodsId;
     }
 
-    public String getGoods_name() {
-        return goods_name;
+    public String getGoodsNname() {
+        return goodsNname;
     }
 
-    public void setGoods_name(String goods_name) {
-        this.goods_name = goods_name;
+    public void setGoodsNname(String goodsNname) {
+        this.goodsNname = goodsNname;
     }
 
-    public String getGoods_thumbnail_url() {
-        return goods_thumbnail_url;
+    public String getGoodsThumbnailUrl() {
+        return goodsThumbnailUrl;
     }
 
-    public void setGoods_thumbnail_url(String goods_thumbnail_url) {
-        this.goods_thumbnail_url = goods_thumbnail_url;
+    public void setGoodsThumbnailUrl(String goodsThumbnailUrl) {
+        this.goodsThumbnailUrl = goodsThumbnailUrl;
     }
 
-    public int getGoods_quantity() {
-        return goods_quantity;
+    public Integer getGoodsQuantity() {
+        return goodsQuantity;
     }
 
-    public void setGoods_quantity(int goods_quantity) {
-        this.goods_quantity = goods_quantity;
+    public void setGoodsQuantity(Integer goodsQuantity) {
+        this.goodsQuantity = goodsQuantity;
     }
 
-    public int getGoods_price() {
-        return goods_price;
+    public Long getGoodsPrice() {
+        return goodsPrice;
     }
 
-    public void setGoods_price(int goods_price) {
-        this.goods_price = goods_price;
+    public void setGoodsPrice(Long goodsPrice) {
+        this.goodsPrice = goodsPrice;
     }
 
-    public int getOrder_amount() {
-        return order_amount;
+    public Integer getOrderAmount() {
+        return orderAmount;
     }
 
-    public void setOrder_amount(int order_amount) {
-        this.order_amount = order_amount;
+    public void setOrderAmount(Integer orderAmount) {
+        this.orderAmount = orderAmount;
     }
 
-    public long getOrder_create_time() {
-        return order_create_time;
+    public Long getOrderCreateTime() {
+        return orderCreateTime;
     }
 
-    public void setOrder_create_time(long order_create_time) {
-        this.order_create_time = order_create_time;
+    public void setOrderCreateTime(Long orderCreateTime) {
+        this.orderCreateTime = orderCreateTime;
     }
 
-    public long getOrder_verify_time() {
-        return order_verify_time;
+    public Long getOrderVerifyTime() {
+        return orderVerifyTime;
     }
 
-    public void setOrder_verify_time(long order_verify_time) {
-        this.order_verify_time = order_verify_time;
+    public void setOrderVerifyTime(Long orderVerifyTime) {
+        this.orderVerifyTime = orderVerifyTime;
     }
 
-    public long getOrder_pay_time() {
-        return order_pay_time;
+    public Long getOrdePayTime() {
+        return ordePayTime;
     }
 
-    public void setOrder_pay_time(long order_pay_time) {
-        this.order_pay_time = order_pay_time;
+    public void setOrdePayTime(Long ordePayTime) {
+        this.ordePayTime = ordePayTime;
     }
 
-    public long getPromotion_rate() {
-        return promotion_rate;
+    public Long getPromotionRate() {
+        return promotionRate;
     }
 
-    public void setPromotion_rate(long promotion_rate) {
-        this.promotion_rate = promotion_rate;
+    public void setPromotionRate(Long promotionRate) {
+        this.promotionRate = promotionRate;
     }
 
-    public long getPromotion_amount() {
-        return promotion_amount;
+    public Long getPromotionAmount() {
+        return promotionAmount;
     }
 
-    public void setPromotion_amount(long promotion_amount) {
-        this.promotion_amount = promotion_amount;
+    public void setPromotionAmount(Long promotionAmount) {
+        this.promotionAmount = promotionAmount;
     }
 
-    public int getOrder_status() {
-        return order_status;
+    public Long getOrderStatus() {
+        return orderStatus;
     }
 
-    public void setOrder_status(int order_status) {
-        this.order_status = order_status;
+    public void setOrderStatus(Long orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
-    public String getOrder_status_desc() {
-        return order_status_desc;
+    public String getOrderStatusDesc() {
+        return orderStatusDesc;
     }
 
-    public void setOrder_status_desc(String order_status_desc) {
-        this.order_status_desc = order_status_desc;
+    public void setOrderStatusDesc(String orderStatusDesc) {
+        this.orderStatusDesc = orderStatusDesc;
     }
 
-    public String getOrder_group_success_time() {
-        return order_group_success_time;
+    public String getOrderGroupSuccessTime() {
+        return orderGroupSuccessTime;
     }
 
-    public void setOrder_group_success_time(String order_group_success_time) {
-        this.order_group_success_time = order_group_success_time;
+    public void setOrderGroupSuccessTime(String orderGroupSuccessTime) {
+        this.orderGroupSuccessTime = orderGroupSuccessTime;
     }
 
-    public String getOrder_modify_at() {
-        return order_modify_at;
+    public String getOrderModifyAt() {
+        return orderModifyAt;
     }
 
-    public void setOrder_modify_at(String order_modify_at) {
-        this.order_modify_at = order_modify_at;
+    public void setOrderModifyAt(String orderModifyAt) {
+        this.orderModifyAt = orderModifyAt;
     }
 
-    public String getP_id() {
-        return p_id;
+    public String getpId() {
+        return pId;
     }
 
-    public void setP_id(String p_id) {
-        this.p_id = p_id;
+    public void setpId(String pId) {
+        this.pId = pId;
     }
 }

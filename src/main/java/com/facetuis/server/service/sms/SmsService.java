@@ -89,7 +89,7 @@ public class SmsService {
 
         String vCode = smsMessage.getCode();
         if(changeRead){
-            if(smsMessage.isRead()){
+            if(smsMessage.getRead()){
                 return new BaseResult(600,"验证码不能重复验证");
             }
             int expiresIn = smsMessage.getExpiresIn();

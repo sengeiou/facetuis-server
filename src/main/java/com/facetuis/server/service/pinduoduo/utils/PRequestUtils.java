@@ -2,6 +2,7 @@ package com.facetuis.server.service.pinduoduo.utils;
 
 import com.facetuis.server.service.basic.BaseResult;
 import com.facetuis.server.utils.MD5Utils;
+import com.facetuis.server.utils.URLUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.fluent.Request;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,10 +43,10 @@ public class PRequestUtils {
         map.put("data_type", "JSON");
         String sign = getSignString(map, secret);
         map.put("sign", sign);
-        String url = apiUrl + "?" + getUrlParamsByMap(map);
+        String url = apiUrl + "?" + URLUtils.getUrlParamsByMap(map);
         try {
             String result = Request.Post(url).execute().returnContent().asString();
-            logger.info(result);
+            logger.info("API :: " + api + " | " +  result);
             return new BaseResult(result);
         } catch (IOException e) {
             logger.info("调用拼多多接口发生错误::" + api + " | " + e.getMessage());
@@ -94,28 +95,7 @@ public class PRequestUtils {
         return sign;
     }
 
-    /**
-     * 将map转换成url
-     * @param map
-     * @return
-     */
-    public static String getUrlParamsByMap(Map<String, String> map) {
-        if (map == null) {
-            return "";
-        }
-        StringBuffer sb = new StringBuffer();
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            if(!StringUtils.isEmpty(entry.getValue())){
-                sb.append(entry.getKey() + "=" + entry.getValue());
-                sb.append("&");
-            }
-        }
-        String s = sb.toString();
-        if (s.endsWith("&")) {
-            s = org.apache.commons.lang3.StringUtils.substringBeforeLast(s, "&");
-        }
-        return s;
-    }
+
 
 
 }

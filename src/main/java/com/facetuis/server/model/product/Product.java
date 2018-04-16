@@ -13,7 +13,7 @@ public class Product extends BaseEntity {
     private String description;
     private String amount;
     private String timeLimit; // 时长 单位 天 月 季 年
-    private int timeLimitValue; // 时长 值 365
+    private Integer timeLimitValue; // 时长 值 365
     private String timeLimitTxt;// 时长 文字描述
 
 

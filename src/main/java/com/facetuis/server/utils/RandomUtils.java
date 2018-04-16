@@ -1,5 +1,7 @@
 package com.facetuis.server.utils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -17,6 +19,8 @@ public class RandomUtils {
 
 	private static final String tempWORD = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	private static final String[] tempsWORD = tempWORD.split("");
+
+	private static final List<String> retain = new ArrayList<>();
 
 	/**
 	 * 生成自定义长度字符串
@@ -45,7 +49,22 @@ public class RandomUtils {
 			int num = Math.abs(random.nextInt()%tempNumber.length()) ;
 			sb.append(tempsNumber[num]);
 		}
+		if(isRetain(sb.toString())){
+			return randomNumber(size);
+		}
 		return sb.toString();
+	}
+
+	private static boolean isRetain(String s) {
+		if(retain.size() == 0){
+			retain.add("66666");
+			retain.add("88888");
+			retain.add("99999");
+			retain.add("666666");
+			retain.add("888888");
+			retain.add("999999");
+		}
+		return retain.contains(s);
 	}
 
 	/**

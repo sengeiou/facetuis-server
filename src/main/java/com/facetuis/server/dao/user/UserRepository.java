@@ -12,5 +12,9 @@ public interface UserRepository extends JpaRepository<User,String> {
 
     User findByRecommandCode(String recommandCode);
 
-    User findByInviteCode(String inviteCode);
+    User findByInviteCodeLike(String inviteCode);
+
+    User findByRecommandCodeLike(String recommandCode);
+
+    User findByToken(String token);
 }

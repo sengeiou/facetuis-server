@@ -7,7 +7,24 @@ public class LoginRequest {
     private String openid;
     private String access_token;
     private String invite_code;
+    private String nick_name;
+    private String head_image;
 
+    public String getNick_name() {
+        return nick_name;
+    }
+
+    public void setNick_name(String nick_name) {
+        this.nick_name = nick_name;
+    }
+
+    public String getHead_image() {
+        return head_image;
+    }
+
+    public void setHead_image(String head_image) {
+        this.head_image = head_image;
+    }
 
     public String getMobile_number() {
         return mobile_number;

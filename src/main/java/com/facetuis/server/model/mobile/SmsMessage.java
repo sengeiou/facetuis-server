@@ -18,32 +18,16 @@ public class SmsMessage extends BaseEntity {
     @Enumerated(EnumType.ORDINAL)
     private SmsModelCode modelCode;
     // 过期时间 （秒）
-    private int expiresIn = 60;
+    private Integer expiresIn = 60;
     // 验证码
     private String code;
     // 是否已经验证
-    private boolean isRead = false;
+    private Boolean isRead = false;
     // 短信内容
     private String  message;
     // 短信平台响应code
-    private int smsCode;
+    private Integer smsCode;
     private String smsid;
-
-    public int getSmsCode() {
-        return smsCode;
-    }
-
-    public void setSmsCode(int smsCode) {
-        this.smsCode = smsCode;
-    }
-
-    public String getSmsid() {
-        return smsid;
-    }
-
-    public void setSmsid(String smsid) {
-        this.smsid = smsid;
-    }
 
     public String getMobileNumber() {
         return mobileNumber;
@@ -61,11 +45,11 @@ public class SmsMessage extends BaseEntity {
         this.modelCode = modelCode;
     }
 
-    public int getExpiresIn() {
+    public Integer getExpiresIn() {
         return expiresIn;
     }
 
-    public void setExpiresIn(int expiresIn) {
+    public void setExpiresIn(Integer expiresIn) {
         this.expiresIn = expiresIn;
     }
 
@@ -77,11 +61,11 @@ public class SmsMessage extends BaseEntity {
         this.code = code;
     }
 
-    public boolean isRead() {
+    public Boolean getRead() {
         return isRead;
     }
 
-    public void setRead(boolean read) {
+    public void setRead(Boolean read) {
         isRead = read;
     }
 
@@ -91,5 +75,21 @@ public class SmsMessage extends BaseEntity {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public Integer getSmsCode() {
+        return smsCode;
+    }
+
+    public void setSmsCode(Integer smsCode) {
+        this.smsCode = smsCode;
+    }
+
+    public String getSmsid() {
+        return smsid;
+    }
+
+    public void setSmsid(String smsid) {
+        this.smsid = smsid;
     }
 }

@@ -16,23 +16,42 @@ import java.util.Date;
 public class User extends BaseEntity {
 
 
+    private String headImg;//头像
     private String nickName;
     private String openid;
     @JsonProperty("mobile_number")
     private String mobileNumber;
     @JsonProperty("invite_code")
     private String inviteCode; // 邀请码
-    private String token;
+    private String token; //  本系统token
     private Date loginTime;
     @JsonProperty("access_token")
     private String accessToken;//微信票据
-    private boolean enable = false;
-    private int level = 0;
+    private Boolean enable = false;
+    private Integer level = 0;
     @JsonProperty("level_txt")
     private String levelTxt;
     private Long loginExpiresIn = 1000 * 60 * 60 * 24 * 30l ;
     private String recommandCode;// 推荐码 属于自己的邀请码 拉下线使用
-    private String levelUserId;// 上级ID
+    private String levelUserId;// 上级用户ID
+
+    private String pid;
+
+    public String getPid() {
+        return pid;
+    }
+
+    public void setPid(String pid) {
+        this.pid = pid;
+    }
+
+    public String getHeadImg() {
+        return headImg;
+    }
+
+    public void setHeadImg(String headImg) {
+        this.headImg = headImg;
+    }
 
     public String getLevelUserId() {
         return levelUserId;
