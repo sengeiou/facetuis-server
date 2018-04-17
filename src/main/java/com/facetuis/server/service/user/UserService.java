@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -170,4 +172,28 @@ public class UserService {
     public User getUserByToken(String token) {
         return userRepository.findByToken(token);
     }
+
+    public List<User> findByIds(List<String> userIds){
+        return userRepository.findAllById(userIds);
+    }
+
+    public List<User> findByNickNameOrMobile(String nickName,String mobile){
+        List<User> users = new ArrayList<>();
+        if(!StringUtils.isEmpty(nickName)){
+            List<User> byNickName = userRepository.findByNickName(nickName);
+            users.addAll(byNickName);
+        }else if(!StringUtils.isEmpty(mobile)){
+            User byMobileNumber = userRepository.findByMobileNumber(mobile);
+            users.add(byMobileNumber);
+        }
+        return users;
+    }
+
+    public List<User> findByInviteCode(String inviteCode){
+       return userRepository.findByInviteCode(inviteCode);
+    }
+
+
+
+
 }

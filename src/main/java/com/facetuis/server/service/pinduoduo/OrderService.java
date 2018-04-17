@@ -10,6 +10,7 @@ import com.facetuis.server.model.user.UserRelation;
 import com.facetuis.server.service.basic.BaseResult;
 import com.facetuis.server.service.pinduoduo.response.OrderDetail;
 import com.facetuis.server.service.pinduoduo.response.OrderListResponse;
+import com.facetuis.server.service.pinduoduo.response.OrderVO;
 import com.facetuis.server.service.pinduoduo.utils.PRequestUtils;
 import com.facetuis.server.utils.TimeUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -20,8 +21,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import sun.plugin.util.UIUtil;
-import sun.rmi.runtime.Log;
 
 import javax.transaction.Transactional;
 import java.util.*;
@@ -115,10 +114,110 @@ public class OrderService {
     public Page<Order> findByDate(String startTime, String endTime, String userId, Pageable pageable){
          long star =  TimeUtils.stringToDateTime(startTime).getTime()/1000;
          long end = TimeUtils.stringToDateTime(endTime).getTime()/1000;
+        List<String> pids = getTeamPids(userId);
+        if(pids.size() == 0){
+            logger.info("未找到推广位");
+            return new PageImpl<>(Collections.EMPTY_LIST);
+        }
+        Page<Order> orders = orderRepository.findOrder(pids, star, end,pageable);
+        return orders;
+    }
+
+
+    /**
+     * 根据指定日期获取团队订单
+     * @param startTime
+     * @param endTime
+     * @param userId
+     * @return
+     */
+    public Page<Order> findByDateAndStatus(String startTime, String endTime, String userId,int status ,Pageable pageable){
+        long star =  TimeUtils.stringToDateTime(startTime).getTime()/1000;
+        long end = TimeUtils.stringToDateTime(endTime).getTime()/1000;
+        List<String> pids = getTeamPids(userId);
+        if(pids.size() == 0){
+            logger.info("未找到推广位");
+            return new PageImpl<>(Collections.EMPTY_LIST);
+        }
+        Page<Order> orders = orderRepository.findOrderByStatus(pids, star, end,status,pageable);
+        return orders;
+    }
+
+
+
+    /**
+     * 根据订单状态查询
+     * @param userId
+     * @param status
+     * @param pageable
+     * @return
+     */
+    public Page<OrderVO> findByStatus(String userId, int status, Pageable pageable){
+        Page<Order> orders = null;
+        if(status == 0){
+            orders = findTeamOrders(userId, pageable);
+        }else{
+            String startTime = TimeUtils.date2String(TimeUtils.getDateBefore(new Date(), 60)) + " 00:00:00";
+            String endTime = TimeUtils.date2String(new Date()) + " 23:59:59";
+            orders = findByDateAndStatus(startTime,endTime,userId,status,pageable);
+        }
+        if(orders == null){
+            return new PageImpl<OrderVO>(Collections.EMPTY_LIST);
+        }
+        return getOrderVo(orders.getContent());
+    }
+
+
+    /**
+     * 查询团队订单
+     * @param userId
+     * @param mobile
+     * @param nickName
+     * @param status
+     * @param pageable
+     * @return
+     */
+    public Page<OrderVO> findByMobileOrNickName(String userId, String mobile,String nickName,int status,Pageable pageable){
+        UserRelation userRelation = userRelationRepository.findByUserId(userId);// 当前用户的所有团队成员
+        String user3Ids = userRelation.getUser3Ids();
+        String user2Ids = userRelation.getUser2Ids();
+        String user1Ids = userRelation.getUser1Ids();
+        String pid = "";
+        if(!StringUtils.isEmpty(mobile)){
+            User user = userRepository.findByMobileNumber(mobile);
+            pid = user.getPid();
+        }else if(!StringUtils.isEmpty(nickName)){
+            List<User> byNickNameLike = userRepository.findByNickName("%" + nickName + "%");
+            if(byNickNameLike.size() >= 1){
+                pid = byNickNameLike.get(0).getPid();
+            }
+        }
+        if(StringUtils.isEmpty(pid)){
+            return new PageImpl<OrderVO>(Collections.EMPTY_LIST) ;
+        }
+        if( user1Ids.contains(pid) || user2Ids.contains(pid) || user3Ids.contains(pid) ){
+            String startTime = TimeUtils.date2String(TimeUtils.getDateBefore(new Date(), 60)) + " 00:00:00";
+            String endTime = TimeUtils.date2String(new Date()) + " 23:59:59";
+            List<String> pids = new ArrayList<>();
+            pids.add(pid);
+            long star =  TimeUtils.stringToDateTime(startTime).getTime()/1000;
+            long end = TimeUtils.stringToDateTime(endTime).getTime()/1000;
+            Page<Order> orders = orderRepository.findOrderByStatus(pids, star, end, status, pageable);
+            return getOrderVo(orders.getContent());
+        }
+        return  new PageImpl<OrderVO>(Collections.EMPTY_LIST) ;
+    }
+
+    /**
+     * 获取团队所有推广位
+     * @param userId
+     * @return
+     */
+    private List<String> getTeamPids(String userId){
         UserRelation userRelation = userRelationRepository.findByUserId(userId);// 当前用户的所有团队成员
         if(userRelation == null){
             logger.info("未找到团队");
-            return new PageImpl<>(Collections.EMPTY_LIST);
+            return Collections.EMPTY_LIST;
         }
         String user1Ids = userRelation.getUser1Ids();// 所属一级用户
         List<String> user1s = new ArrayList<>();
@@ -145,12 +244,25 @@ public class OrderService {
         for(User user : allUsers){
             pids.add(user.getPid());
         }
-        if(pids.size() == 0){
-            logger.info("未找到推广位");
-            return new PageImpl<>(Collections.EMPTY_LIST);
+        return pids;
+    }
+
+    private Page<OrderVO> getOrderVo(List<Order> content){
+        if(content.size() > 0){
+            List<OrderVO> list = new ArrayList<>();
+            for(Order order : content){
+                OrderVO vo = new OrderVO();
+                User user = userRepository.findByPid(order.getpId());
+                if(user != null){
+                    BeanUtils.copyProperties(user,vo);
+                    vo.setUserId(user.getUuid());
+                }
+                BeanUtils.copyProperties(order,vo);
+                list.add(vo);
+            }
+            return new PageImpl<OrderVO>(list);
         }
-        Page<Order> orders = orderRepository.findOrder(pids, star, end,pageable);
-        return orders;
+        return new PageImpl<OrderVO>(Collections.EMPTY_LIST);
     }
 
 

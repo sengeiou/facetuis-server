@@ -1,5 +1,6 @@
 package com.facetuis.server.app.web;
 
+import com.alipay.api.internal.util.AlipaySignature;
 import com.facetuis.server.app.web.basic.BaseResponse;
 import com.facetuis.server.app.web.basic.FacetuisController;
 import com.facetuis.server.model.product.Product;
@@ -40,6 +41,19 @@ public class AliPayController extends FacetuisController {
         user.setMobileNumber("15021439249");
         BaseResult stringBaseResult = aliPayService.generateOrder(product.getAmount(), product.getTitle(), "用户：" + user.getMobileNumber() + "购买了" + product.getTitle());
         return onResult(stringBaseResult);
+    }
+
+    @RequestMapping(value = "/notify",method = RequestMethod.POST)
+    public String aliNotify(){
+
+//        boolean signVerified = AlipaySignature.rsaCheckV1(paramsMap, ALIPAY_PUBLIC_KEY, CHARSET) //调用SDK验证签名
+//        if(signVerfied){
+//            // TODO 验签成功后
+//            //按照支付结果异步通知中的描述，对支付结果中的业务内容进行1\2\3\4二次校验，校验成功后在response中返回success，校验失败返回failure
+//        }else{
+//            // TODO 验签失败则记录异常日志，并在response中返回failure.
+//        }
+        return "SUCCESS";
     }
 
 

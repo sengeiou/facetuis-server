@@ -9,12 +9,8 @@ import com.facetuis.server.utils.TimeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sun.rmi.runtime.Log;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Logger;
 
 @Service
@@ -115,6 +111,36 @@ public class UserRelationService {
 
     public UserRelation getRelation(String userId){
         return userRelationRepository.findByUserId(userId);
+    }
+
+    public List<String> getTeam(String userId){
+        UserRelation userRelation = userRelationRepository.findByUserId(userId);
+        if(userRelation != null){
+            return Collections.EMPTY_LIST;
+        }
+        List<String> list = new ArrayList<>();
+        String user1Ids = userRelation.getUser1Ids();
+        if(!StringUtils.isEmpty(user1Ids)){
+            String[] split = user1Ids.split(",");
+            if(split.length > 0){
+                list.addAll(Arrays.asList(split));
+            }
+        }
+        String user2Ids = userRelation.getUser2Ids();
+        if(!StringUtils.isEmpty(user2Ids)){
+            String[] split = user2Ids.split(",");
+            if(split.length > 0){
+                list.addAll(Arrays.asList(split));
+            }
+        }
+        String user3Ids = userRelation.getUser3Ids();
+        if(!StringUtils.isEmpty(user3Ids)){
+            String[] split = user3Ids.split(",");
+            if(split.length > 0){
+                list.addAll(Arrays.asList(split));
+            }
+        }
+        return list;
     }
 
     /**
