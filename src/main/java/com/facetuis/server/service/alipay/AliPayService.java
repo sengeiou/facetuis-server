@@ -8,7 +8,9 @@ import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.facetuis.server.service.basic.BaseResult;
+import com.facetuis.server.service.payment.PaymentService;
 import com.facetuis.server.utils.PayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,9 @@ import static com.alipay.api.AlipayConstants.CHARSET_UTF8;
 
 @Service
 public class AliPayService {
+
+    @Autowired
+    private PaymentService paymentService;
 
     @Value("${alipay.app.id}")
     private String APP_ID;
@@ -40,6 +45,11 @@ public class AliPayService {
      * @return
      */
     public BaseResult<String> generateOrder(String total_amount,String subject,String body) {
+        // 保存支付信息到数据库
+
+        paymentService.save();
+
+
         //实例化客户端
         AlipayClient alipayClient = new DefaultAlipayClient(serverUrl, APP_ID, APP_PRIVATE_KEY, format, CHARSET_UTF8, ALIPAY_PUBLIC_KEY, "RSA");
         //实例化具体API对应的request类,类名称和接口名称对应,当前调用接口名称：alipay.trade.app.pay

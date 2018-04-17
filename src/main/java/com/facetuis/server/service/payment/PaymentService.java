@@ -12,9 +12,11 @@ public class PaymentService {
     @Autowired
     private PaymentRepository paymentRepository;
 
-    public void save(){
+    public void save( ){
         Payment pay = new Payment();
         pay.setAmount("123123");
+
+
         paymentRepository.save(pay);
     }
 
