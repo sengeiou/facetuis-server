@@ -7,6 +7,8 @@ import com.alipay.api.domain.AlipayTradeAppPayModel;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
+import com.facetuis.server.model.pay.PayStatus;
+import com.facetuis.server.model.pay.PayType;
 import com.facetuis.server.service.basic.BaseResult;
 import com.facetuis.server.service.payment.PaymentService;
 import com.facetuis.server.utils.PayUtils;
@@ -46,8 +48,11 @@ public class AliPayService {
      */
     public BaseResult<String> generateOrder(String total_amount,String subject,String body) {
         // 保存支付信息到数据库
-
-        paymentService.save();
+        //1.订单号 商品标题 商品价格 支付相关
+        //生成订单号
+       String tradeNo= PayUtils.getTradeNo();
+        //
+        paymentService.save(tradeNo,total_amount, PayStatus.WAIT_PAY, PayType.ALIPAY);
 
 
         //实例化客户端
@@ -58,7 +63,7 @@ public class AliPayService {
         AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
         model.setBody(body);
         model.setSubject(subject);
-        model.setOutTradeNo(PayUtils.getTradeNo());
+        model.setOutTradeNo(tradeNo);//订单号
         model.setTimeoutExpress("30m");
         model.setTotalAmount(total_amount);
         model.setProductCode("QUICK_MSECURITY_PAY");

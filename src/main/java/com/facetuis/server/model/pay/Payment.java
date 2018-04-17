@@ -13,9 +13,9 @@ public class Payment extends BaseEntity {
 
     private String tradeNo;// 订单号 微信、支付宝中商户自己订单号
     @Enumerated(EnumType.ORDINAL)
-    private PayStatus payStatus;
+    private PayStatus payStatus;//支付状态
     @Enumerated(EnumType.ORDINAL)
-    private PayType payType;
+    private PayType payType;//支付类型
     private String amount;// 价格
 
     public String getTradeNo() {
