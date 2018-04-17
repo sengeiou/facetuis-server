@@ -10,6 +10,7 @@ import org.apache.http.entity.ContentType;
 import org.jdom.JDOMException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -72,6 +73,22 @@ public class WechatPayService {
         }
         return new BaseResult();
     }
+
+    public BaseResult<String> checkNotify(String xml) {
+        try {
+            Map map = XmlUtils.doXMLParse(xml);
+            if (map.get("result_code").toString().equalsIgnoreCase("SUCCESS")) {
+                //PayCommonUtil.isTenpaySign(map,key); 验证签名
+                String resWX = PayCommonUtil.setXML("SUCCESS", "OK");
+                return new BaseResult<String>(resWX);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new BaseResult(600,"处理失败");
+    }
+
+
 
 
 }

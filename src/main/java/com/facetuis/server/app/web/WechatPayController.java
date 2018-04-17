@@ -7,13 +7,16 @@ import com.facetuis.server.service.basic.BaseResult;
 import com.facetuis.server.service.wechat.WechatPayService;
 import com.facetuis.server.utils.IpUtils;
 import com.facetuis.server.utils.ProductUtils;
+import javafx.scene.chart.ValueAxis;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/1.0/wechat/pay")
@@ -39,5 +42,28 @@ public class WechatPayController extends FacetuisController {
         BaseResult baseResult = wechatPayService.unifiedorder(product.getTitle(), product.getTitle(), product.getAmount(), IpUtils.getIpAddr(request));
         return onResult(baseResult);
     }
+
+    @RequestMapping(value = "/notify",method = RequestMethod.POST)
+    public String weixinNotify(HttpServletRequest request, HttpServletResponse response){
+        String notityXml = "";
+        String inputLine;
+        //微信给返回的东西
+        try {
+            while ((inputLine = request.getReader().readLine()) != null) {
+                notityXml += inputLine;
+            }
+            request.getReader().close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        BaseResult<String> baseResult = wechatPayService.checkNotify(notityXml);
+        if(baseResult.hasError()){
+            return "ERROR";
+        }
+        return baseResult.getResult();
+    }
+
+
+
 
 }

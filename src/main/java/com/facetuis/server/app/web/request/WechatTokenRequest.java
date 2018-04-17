@@ -6,9 +6,7 @@ public class WechatTokenRequest {
 
     @NotEmpty
     private String code;
-    @NotEmpty
     private String openid;
-    @NotEmpty
     private String userid;
 
     public String getCode() {
