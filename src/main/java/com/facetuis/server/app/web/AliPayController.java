@@ -49,30 +49,39 @@ public class AliPayController extends FacetuisController {
     @RequestMapping(value = "/notify",method = RequestMethod.POST)
     public String aliNotify(AlipayNotifyRequest request){
         Map<String,String> map = new HashMap<>();
-        map.put("","");
-        map.put("","");
-        map.put("","");
-        map.put("","");
-        map.put("","");
-        map.put("","");
-        map.put("","");
-        map.put("","");
-        map.put("","");
-        map.put("","");
-        map.put("","");
-        map.put("","");
-        map.put("","");
-        map.put("","");
-        map.put("","");
-        map.put("","");
-        map.put("","");
-        map.put("","");
-        map.put("","");
-        map.put("","");
-        map.put("","");
-        map.put("","");
-        map.put("","");
-        map.put("","");
+        map.put("notify_time",request.getNotify_time());
+        map.put("notify_type",request.getNotify_type());
+        map.put("notify_id",request.getNotify_id());
+        map.put("app_id",request.getApp_id());
+        map.put("charset",request.getCharset());
+        map.put("version",request.getVersion());
+        map.put("sign_type",request.getSign_type());
+        map.put("sign",request.getSign());
+        map.put("trade_no",request.getTrade_no());
+        map.put("out_trade_no",request.getOut_trade_no());
+        map.put("out_biz_no",request.getOut_biz_no());
+        map.put("buyer_id",request.getBuyer_id());
+        map.put("buyer_logon_id",request.getBuyer_logon_id());
+        map.put("seller_id",request.getSeller_id());
+        map.put("seller_email",request.getSeller_email());
+        map.put("trade_status",request.getTrade_status());
+        map.put("total_amount",request.getTotal_amount());
+        map.put("receipt_amount",request.getReceipt_amount());
+        map.put("invoice_amount",request.getInvoice_amount());
+        map.put("buyer_pay_amount",request.getBuyer_pay_amount());
+        map.put("point_amount",request.getPoint_amount());
+        map.put("refund_fee",request.getRefund_fee());
+        map.put("subject",request.getSubject());
+        map.put("body",request.getBody());
+        map.put("gmt_create",request.getGmt_create());
+        map.put("gmt_payment",request.getGmt_payment());
+        map.put("gmt_refund",request.getGmt_refund());
+        map.put("gmt_close",request.getGmt_close());
+        map.put("fund_bill_list",request.getFund_bill_list());
+        map.put("passback_params",request.getPassback_params());
+        map.put("voucher_detail_list",request.getVoucher_detail_list());
+
+
         BaseResult baseResult = aliPayService.checkNotify(map);
         if(baseResult.hasError()){
             return "ERROR";

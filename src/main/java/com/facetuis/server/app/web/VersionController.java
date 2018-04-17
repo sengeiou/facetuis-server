@@ -19,14 +19,16 @@ public class VersionController extends FacetuisController {
         private String  name;
         private String  updateLog;
         private String  vid;//版本号
+        private  boolean isUpdate;
 
         public void setName(String name){this.name=name;}
         public void setUpLog(String log){this.updateLog=log;}
         public void setVid(String vid){this.vid=vid;}
-
+        public void setIsUpdate(boolean isU){this.isUpdate=isU;}
         public String getName(){return name;}
         public String getUpdateLog(){return updateLog;}
         public String getVid(){return vid;}
+        public boolean getIsUpdate() {return isUpdate;}
     }
     @RequestMapping(method = RequestMethod.GET)
     public BaseResponse get()
@@ -34,10 +36,10 @@ public class VersionController extends FacetuisController {
         Version v = new Version();
         v.setName("脸推App");
         //读取指定路径下的更新log
-       String logTxt= readFileForOneLine("123");
+       String logTxt= readFileForOneLine("F:\\休特\\appServer\\facetuis-server\\updatelog.txt");
         v.setUpLog(logTxt);
         v.setVid("0.0.1");
-
+        v.setIsUpdate(false);
         return successResult(v);
 
     }
@@ -58,7 +60,8 @@ public class VersionController extends FacetuisController {
             try{
                 RandomAccessFile randomAccessFile = new RandomAccessFile(targetFile, "r");//赋予文件读取权限
                 String eachLine;
-                while (null != (eachLine = randomAccessFile.readLine())) {
+                //new String(randomAccessFile.readline().getBytes("ISO-8859-1"), "utf-8")
+                while (null != (eachLine = new String (randomAccessFile.readLine().getBytes("ISO-8859-1"),"utf-8"))) {
                     fileContent.append(eachLine + "\n");
                 }
             }catch(Exception e)
