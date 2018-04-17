@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.NotEmpty;
@@ -27,10 +28,18 @@ public class OrderController extends FacetuisController {
     @Autowired
     private OrderService orderService;
 
-    @RequestMapping("/team/{orderStatus}")
+    /**
+     * 获取我的订单
+     * @param orderStatus
+     * @param n
+     * @param m
+     * @return
+     */
+    @RequestMapping(value = "/my",method = RequestMethod.GET)
     @NeedLogin(needLogin = true)
-    public BaseResponse getTeamOrder(@PathVariable int orderStatus , String n, String m){
-        User user = getUser();
+    public BaseResponse getMyOrder(@PathVariable int orderStatus , String n, String m){
+        User user = getUser(); // 获取当前登录用户
+
 
         return successResult();
     }

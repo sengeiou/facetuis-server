@@ -28,5 +28,7 @@ public interface OrderRepository extends JpaRepository<Order,String> {
     @Query(value = "select * from t_order where p_id in ?1 and  order_create_time > ?2  and  order_create_time < ?3 and order_status = ?4 ",nativeQuery = true)
     Page<Order> findOrderByStatus(List<String> pids, long startTime, long endTime,int status, Pageable pageable);
 
+    Page<Order> findByPId(String pid);
+
 
 }
