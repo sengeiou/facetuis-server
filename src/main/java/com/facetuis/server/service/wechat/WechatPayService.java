@@ -1,6 +1,9 @@
 package com.facetuis.server.service.wechat;
 
+import com.facetuis.server.model.pay.PayStatus;
+import com.facetuis.server.model.pay.PayType;
 import com.facetuis.server.service.basic.BaseResult;
+import com.facetuis.server.service.payment.PaymentService;
 import com.facetuis.server.utils.PayCommonUtil;
 import com.facetuis.server.utils.PayUtils;
 import com.facetuis.server.utils.RandomUtils;
@@ -8,6 +11,7 @@ import com.facetuis.server.utils.XmlUtils;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
 import org.jdom.JDOMException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -23,6 +27,8 @@ import static org.apache.http.client.fluent.Request.*;
 @Service
 public class WechatPayService {
 
+    @Autowired
+    private PaymentService paymentService;
     @Value("${wechat.app.id}")
     private String appid;
     @Value("${wechat.pay.mch.id}")
@@ -36,6 +42,11 @@ public class WechatPayService {
 
 
     public BaseResult unifiedorder(String body,String detail,String total_price,String ip){
+        //生成订单号码
+        String tradeNo=PayUtils.getTradeNo();
+       // paymentService.save(tradeNo,total_amount, PayStatus.WAIT_PAY, PayType.ALIPAY);
+        paymentService.save(tradeNo,total_price,PayStatus.WAIT_PAY,PayType.WECHAT_PAY);
+
         BaseResult baseResult  = new BaseResult();
         SortedMap<Object,Object> map = new TreeMap<>();
         map.put("appid",appid);
