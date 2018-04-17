@@ -12,6 +12,8 @@ import com.facetuis.server.utils.PayUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 import static com.alipay.api.AlipayConstants.CHARSET;
 import static com.alipay.api.AlipayConstants.CHARSET_UTF8;
 
@@ -60,6 +62,23 @@ public class AliPayService {
             e.printStackTrace();
         }
         return new BaseResult();
+    }
+
+
+    public BaseResult checkNotify(Map<String,String> map){
+        boolean signVerified = false; //调用SDK验证签名
+        try {
+            signVerified = AlipaySignature.rsaCheckV1(map, ALIPAY_PUBLIC_KEY, CHARSET);
+        } catch (AlipayApiException e) {
+            e.printStackTrace();
+        }
+        if(signVerified){
+            // TODO 验签成功后
+            //按照支付结果异步通知中的描述，对支付结果中的业务内容进行1\2\3\4二次校验，校验成功后在response中返回success，校验失败返回failure
+        }else{
+            // TODO 验签失败则记录异常日志，并在response中返回failure.
+        }
+        return new BaseResult(600,"签名校验失败");
     }
 
 

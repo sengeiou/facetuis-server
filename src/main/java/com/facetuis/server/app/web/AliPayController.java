@@ -3,6 +3,7 @@ package com.facetuis.server.app.web;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.facetuis.server.app.web.basic.BaseResponse;
 import com.facetuis.server.app.web.basic.FacetuisController;
+import com.facetuis.server.app.web.request.AlipayNotifyRequest;
 import com.facetuis.server.model.product.Product;
 import com.facetuis.server.model.user.User;
 import com.facetuis.server.service.alipay.AliPayService;
@@ -16,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/1.0/alipay")
@@ -44,17 +47,36 @@ public class AliPayController extends FacetuisController {
     }
 
     @RequestMapping(value = "/notify",method = RequestMethod.POST)
-    public String aliNotify(){
-
-//        boolean signVerified = AlipaySignature.rsaCheckV1(paramsMap, ALIPAY_PUBLIC_KEY, CHARSET) //调用SDK验证签名
-//        if(signVerfied){
-//            // TODO 验签成功后
-//            //按照支付结果异步通知中的描述，对支付结果中的业务内容进行1\2\3\4二次校验，校验成功后在response中返回success，校验失败返回failure
-//        }else{
-//            // TODO 验签失败则记录异常日志，并在response中返回failure.
-//        }
+    public String aliNotify(AlipayNotifyRequest request){
+        Map<String,String> map = new HashMap<>();
+        map.put("","");
+        map.put("","");
+        map.put("","");
+        map.put("","");
+        map.put("","");
+        map.put("","");
+        map.put("","");
+        map.put("","");
+        map.put("","");
+        map.put("","");
+        map.put("","");
+        map.put("","");
+        map.put("","");
+        map.put("","");
+        map.put("","");
+        map.put("","");
+        map.put("","");
+        map.put("","");
+        map.put("","");
+        map.put("","");
+        map.put("","");
+        map.put("","");
+        map.put("","");
+        map.put("","");
+        BaseResult baseResult = aliPayService.checkNotify(map);
+        if(baseResult.hasError()){
+            return "ERROR";
+        }
         return "SUCCESS";
     }
-
-
 }
