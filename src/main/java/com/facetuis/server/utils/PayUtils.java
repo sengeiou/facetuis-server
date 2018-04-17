@@ -1,7 +1,5 @@
 package com.facetuis.server.utils;
 
-import com.facetuis.server.model.order.PayType;
-
 public class PayUtils {
 
 

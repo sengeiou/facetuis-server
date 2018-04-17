@@ -74,9 +74,11 @@ public class AliPayService {
         }
         if(signVerified){
             // TODO 验签成功后
-            //按照支付结果异步通知中的描述，对支付结果中的业务内容进行1\2\3\4二次校验，校验成功后在response中返回success，校验失败返回failure
+            // 按照支付结果异步通知中的描述，对支付结果中的业务内容进行1\2\3\4二次校验，校验成功后在response中返回success，校验失败返回failure
+
         }else{
             // TODO 验签失败则记录异常日志，并在response中返回failure.
+
         }
         return new BaseResult(600,"签名校验失败");
     }

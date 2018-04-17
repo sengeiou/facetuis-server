@@ -1,4 +1,4 @@
-package com.facetuis.server.model.order;
+package com.facetuis.server.model.pay;
 
 public enum PayType {
 
