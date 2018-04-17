@@ -34,22 +34,4 @@ public class OrderController extends FacetuisController {
 
         return successResult();
     }
-
-    @RequestMapping("/team/orders/count")
-    public BaseResponse getTeamOrdersCount(){
-        PageRequest pageable = PageRequest.of(0,10);
-        User user = getUser();
-        String todayTime = TimeUtils.date2String(new Date());
-        String yesterdayTime = TimeUtils.date2String(TimeUtils.getDateBefore(new Date(),1));
-        // 当天订单
-        Page<Order> todayOrders = orderService.findByDate(todayTime + " 00:00:00", todayTime + " 23:59:59", user.getUuid(), pageable);
-        // 所有订单
-        Page<Order> teamOrders = orderService.findTeamOrders(user.getUuid(), pageable);
-        // 昨天订单
-        Page<Order> yesterdayOrders = orderService.findByDate(yesterdayTime + " 00:00:00", yesterdayTime + " 23:59:59", user.getUuid(), pageable);
-        //本月订单
-        //String monthFirst = TimeUtils.
-        //上月订单
-        return successResult();
-    }
 }
