@@ -5,6 +5,7 @@ import com.facetuis.server.dao.user.UserRepository;
 import com.facetuis.server.model.user.User;
 import com.facetuis.server.model.user.UserLevel;
 import com.facetuis.server.model.user.UserRelation;
+import com.facetuis.server.service.basic.BaseResult;
 import com.facetuis.server.utils.SysFinalValue;
 import com.facetuis.server.utils.TimeUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -151,6 +152,11 @@ public class UserRelationService {
         }
     }
 
+    /**
+     * 获取团队所有成员
+     * @param userId
+     * @return
+     */
     public List<String> getTeam(String userId){
         UserRelation userRelation = userRelationRepository.findByUserId(userId);
         if(userRelation == null){
@@ -213,6 +219,32 @@ public class UserRelationService {
         userLevel1.addAll(userLevel2);
         userLevel1.addAll(userLevel3);
         return userLevel1;
+    }
+
+
+    /**
+     * 新增高级用户
+     * @param userId 升级用户
+     * @param higherId 升级用户的上级用户
+     * @return
+     */
+    public void addHigher(String userId,String higherId){
+        UserRelation userRelation = userRelationRepository.findByUserId(higherId);
+        // 新增一级用户
+        String user1Ids = userRelation.getUser1Ids();
+        user1Ids = user1Ids + "," + userId;
+        userRelation.setUser1Ids(user1Ids);
+        // 统计数量 +1
+        Integer user1Total = userRelation.getUser1Total();
+        user1Total = user1Total + 1;
+        userRelation.setUser1Total(user1Total);
+        String user1HighIds = userRelation.getUser1HighIds();
+        user1HighIds = user1HighIds + "," + userId;
+        userRelation.setUser1HighIds(user1HighIds);
+        Integer user1HighTotal = userRelation.getUser1HighTotal();
+        user1HighTotal = user1HighTotal + 1;
+        userRelation.setUser1HighTotal(user1HighTotal);
+        userRelationRepository.save(userRelation);
     }
 
 
