@@ -47,12 +47,12 @@ public class AliPayService {
      * @return
      */
     public BaseResult<String> generateOrder(String total_amount,String subject,String body) {
-        // 保存支付信息到数据库
+        // 保存支付信息到数据库  subject==== 商品title
         //1.订单号 商品标题 商品价格 支付相关
         //生成订单号
        String tradeNo= PayUtils.getTradeNo();
         //
-        paymentService.save(tradeNo,total_amount, PayStatus.WAIT_PAY, PayType.ALIPAY);
+        paymentService.save(tradeNo,subject,total_amount, PayStatus.WAIT_PAY, PayType.ALIPAY);
 
 
         //实例化客户端

@@ -2,6 +2,7 @@ package com.facetuis.server.app.web;
 
 import com.facetuis.server.app.web.basic.BaseResponse;
 import com.facetuis.server.app.web.basic.FacetuisController;
+import com.facetuis.server.dao.order.OrderRepository;
 import com.facetuis.server.model.order.Order;
 import com.facetuis.server.model.user.User;
 import com.facetuis.server.service.pinduoduo.OrderService;
@@ -39,8 +40,12 @@ public class OrderController extends FacetuisController {
     @NeedLogin(needLogin = true)
     public BaseResponse getMyOrder(@PathVariable int orderStatus , String n, String m){
         User user = getUser(); // 获取当前登录用户
+        //获取用户的pid
+        String uPid = user.getPid();
+        //查询   根据用户pid查询出所有订单数据
+        Page<Order> page= orderService.getOrdersByPid(uPid);
 
 
-        return successResult();
+        return successResult(page);
     }
 }

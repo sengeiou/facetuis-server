@@ -16,9 +16,10 @@ public class PaymentService {
     @Autowired
     private PaymentRepository paymentRepository;
 
-    public void save(String tradeNo, String amount, PayStatus payStatus, PayType payType){
+    public void save(String tradeNo,String productTitle,String amount, PayStatus payStatus, PayType payType){
         Payment pay = new Payment();
         pay.setAmount(amount);//价格
+        pay.setProductTitle(productTitle);//商品标题
         pay.setTradeNo(tradeNo);//订单号
         pay.setPayStatus(payStatus);//支付状态
         pay.setPayType(payType); //

@@ -264,6 +264,13 @@ public class OrderService {
         }
         return new PageImpl<OrderVO>(Collections.EMPTY_LIST);
     }
+    /* 根据pid获取所有订单
 
+     */
+
+    public Page<Order> getOrdersByPid(String pid)
+    {
+        return orderRepository.findByPId(pid);
+    }
 
 }

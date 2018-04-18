@@ -42,10 +42,10 @@ public class WechatPayService {
 
 
     public BaseResult unifiedorder(String body,String detail,String total_price,String ip){
-        //生成订单号码
+        //生成订单号码   //body 就是title 商品标题 detail 描述
         String tradeNo=PayUtils.getTradeNo();
        // paymentService.save(tradeNo,total_amount, PayStatus.WAIT_PAY, PayType.ALIPAY);
-        paymentService.save(tradeNo,total_price,PayStatus.WAIT_PAY,PayType.WECHAT_PAY);
+        paymentService.save(tradeNo,body,total_price,PayStatus.WAIT_PAY,PayType.WECHAT_PAY);
 
         BaseResult baseResult  = new BaseResult();
         SortedMap<Object,Object> map = new TreeMap<>();
