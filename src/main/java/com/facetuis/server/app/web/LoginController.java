@@ -109,4 +109,33 @@ public class LoginController extends FacetuisController {
         }
         return new BaseResponse(400,"缺少请求参数");
     }
+
+
+    @RequestMapping(value = "/mobile",method = RequestMethod.GET)
+    public BaseResponse getMobile(String mobile,String code){
+        if(StringUtils.isEmpty(mobile)){
+           return setErrorResult(400,"缺少手机号码");
+        }
+        if(StringUtils.isEmpty(code)){
+            return setErrorResult(400,"缺少手机验证码");
+        }
+        BaseResult baseResult = smsService.checkCode(mobile, code, SmsModelCode.LOGIN, true);
+        if(baseResult.hasError()){
+            return onResult(baseResult);
+        }
+        User mobileUser = userService.findByMobile(mobile);
+        mobileUser.setToken("");
+        return successResult(mobileUser);
+    }
+
+
+    @RequestMapping(value = "/wechat",method = RequestMethod.GET)
+    public BaseResponse getWechat(String openid){
+        if(StringUtils.isEmpty(openid)){
+            return setErrorResult(400,"缺少微信openid");
+        }
+        User user = userService.findByOpenId(openid);
+        user.setToken("");
+        return successResult(user);
+    }
 }

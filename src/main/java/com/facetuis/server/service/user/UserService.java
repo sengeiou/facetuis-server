@@ -3,6 +3,7 @@ package com.facetuis.server.service.user;
 import com.facetuis.server.dao.user.UserRepository;
 import com.facetuis.server.model.user.User;
 import com.facetuis.server.model.user.UserLevel;
+import com.facetuis.server.model.user.UserRelation;
 import com.facetuis.server.service.basic.BaseResult;
 import com.facetuis.server.service.pinduoduo.PinDuoDuoService;
 import com.facetuis.server.service.user.utils.UserUtils;
@@ -84,6 +85,7 @@ public class UserService {
      * @return
      */
     public BaseResult<User> registerWechat(User user, String openid, String accessToken, String inviteCode,String nickName,String headImg){
+        userRepository.findByOpenid(openid);
         BaseResult<User> userReslt = getUser(user,inviteCode);
         if(userReslt.hasError()){
             return userReslt;
@@ -200,11 +202,22 @@ public class UserService {
     public BaseResult upload(String userId){
         User user = userRepository.findById(userId).get();
         if(user != null){
+            UserRelation relation = userRelationService.getRelation(user.getUuid());
+            Integer user1Total = relation.getUser1Total();
+            if(user1Total < 20){
+                return new BaseResult(600,"升级要求未达到：直属会员 ≥ 20人");
+            }
+            if(relation.getUser2Total() + relation.getUser3Total() < 60){
+                return new BaseResult(600,"升级要求未达到：直属会员下级 ≤ 60人");
+            }
+
             if(user.getLevel().equals(UserLevel.LEVEL1)){
                 user.setLevel(UserLevel.LEVEL2);
                 user.setLevelTxt(getLevelTxt(user.getLevel()));
                 userRepository.save(user);
-                // 添加
+                // TODO 更新上级用户关系信息
+                // 将用户添加到上级用户的高级用户列表
+                // userRelationService.
             }else{
                 logger.info("用户" + userId + "已是最高级别，不能在升级" );
             }
