@@ -153,7 +153,7 @@ public class UserRelationService {
 
     public List<String> getTeam(String userId){
         UserRelation userRelation = userRelationRepository.findByUserId(userId);
-        if(userRelation != null){
+        if(userRelation == null){
             return Collections.EMPTY_LIST;
         }
         List<String> list = new ArrayList<>();
