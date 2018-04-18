@@ -154,7 +154,7 @@ public class OrderService {
      */
     public Page<OrderVO> findByStatus(String userId, int status, Pageable pageable){
         Page<Order> orders = null;
-        if(status == 0){
+        if(status == -9){
             orders = findTeamOrders(userId, pageable);
         }else{
             String startTime = TimeUtils.date2String(TimeUtils.getDateBefore(new Date(), 60)) + " 00:00:00";

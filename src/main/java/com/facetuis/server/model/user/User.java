@@ -28,7 +28,7 @@ public class User extends BaseEntity {
     @JsonProperty("access_token")
     private String accessToken;//微信票据
     private Boolean enable = false;
-    private Integer level = 0;
+    private UserLevel level = UserLevel.LEVEL1;
     @JsonProperty("level_txt")
     private String levelTxt;
     private Long loginExpiresIn = 1000 * 60 * 60 * 24 * 30l ;
@@ -36,6 +36,22 @@ public class User extends BaseEntity {
     private String levelUserId;// 上级用户ID
 
     private String pid;
+
+    public Boolean getEnable() {
+        return enable;
+    }
+
+    public void setEnable(Boolean enable) {
+        this.enable = enable;
+    }
+
+    public UserLevel getLevel() {
+        return level;
+    }
+
+    public void setLevel(UserLevel level) {
+        this.level = level;
+    }
 
     public String getPid() {
         return pid;
@@ -85,21 +101,6 @@ public class User extends BaseEntity {
         this.accessToken = accessToken;
     }
 
-    public boolean isEnable() {
-        return enable;
-    }
-
-    public void setEnable(boolean enable) {
-        this.enable = enable;
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
-    }
 
 
     public String getLevelTxt() {

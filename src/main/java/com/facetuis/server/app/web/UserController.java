@@ -22,8 +22,11 @@ public class UserController extends FacetuisController{
     @NeedLogin(needLogin = true)
     public BaseResponse getCommander() {
         User user = getUser();
-        User recommander = userService.findRecommander(user.getUuid());
         UserRecommanderResponse response = new UserRecommanderResponse();
+        User recommander = userService.findRecommander(user.getUuid());
+        if(recommander == null){
+            return successResult(response);
+        }
         BeanUtils.copyProperties(recommander, response);
         return successResult(new UserRecommanderResponse());
     }

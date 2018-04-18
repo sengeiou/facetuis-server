@@ -32,7 +32,6 @@ public class OrderScheduled {
     public void syncToday() {
         String startTime = TimeUtils.date2String(new Date());
         String endTime = TimeUtils.date2String(new Date());
-        logger.info("（5s）同步订单：" + startTime + " | " + endTime);
         syncOrders(startTime, endTime);
     }
 

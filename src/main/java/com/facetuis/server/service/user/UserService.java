@@ -2,6 +2,7 @@ package com.facetuis.server.service.user;
 
 import com.facetuis.server.dao.user.UserRepository;
 import com.facetuis.server.model.user.User;
+import com.facetuis.server.model.user.UserLevel;
 import com.facetuis.server.service.basic.BaseResult;
 import com.facetuis.server.service.pinduoduo.PinDuoDuoService;
 import com.facetuis.server.service.user.utils.UserUtils;
@@ -12,14 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.logging.Logger;
 
 @Service
 public class UserService {
 
+    private static Logger logger = Logger.getLogger(UserService.class.getName());
 
     @Autowired
     private UserRepository userRepository;
@@ -99,7 +99,7 @@ public class UserService {
 
     public void createUser(User user){
         userRepository.save(user);
-        if(user.isEnable()){
+        if(user.getEnable()){
             // 保存用户关系
             userRelationService.initUserRelation(user);
         }
@@ -158,11 +158,11 @@ public class UserService {
     @Value("${user.level.no2.txt}")
     private String userLevelNo2Txt;
 
-    private String getLevelTxt(int level) {
+    private String getLevelTxt(UserLevel level) {
         switch (level) {
-            case 0:
+            case LEVEL1:
                 return userLevelNo1Txt;
-            case 1:
+            case LEVEL2:
                 return userLevelNo2Txt;
         }
         return "";
@@ -197,7 +197,18 @@ public class UserService {
      * 用户升级
      * @return
      */
-    public BaseResult upload(){
+    public BaseResult upload(String userId){
+        User user = userRepository.findById(userId).get();
+        if(user != null){
+            if(user.getLevel().equals(UserLevel.LEVEL1)){
+                user.setLevel(UserLevel.LEVEL2);
+                user.setLevelTxt(getLevelTxt(user.getLevel()));
+                userRepository.save(user);
+                // 添加
+            }else{
+                logger.info("用户" + userId + "已是最高级别，不能在升级" );
+            }
+        }
         return new BaseResult();
     }
 
