@@ -193,6 +193,14 @@ public class UserService {
        return userRepository.findByInviteCode(inviteCode);
     }
 
+    /**
+     * 用户升级
+     * @return
+     */
+    public BaseResult upload(){
+        return new BaseResult();
+    }
+
 
 
 

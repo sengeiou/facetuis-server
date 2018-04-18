@@ -38,12 +38,12 @@ public class OrderController extends FacetuisController {
      */
     @RequestMapping(value = "/my",method = RequestMethod.GET)
     @NeedLogin(needLogin = true)
-    public BaseResponse getMyOrder(@PathVariable int orderStatus , String n, String m){
+    public BaseResponse getMyOrder(@PathVariable int orderStatus , String n, String m,PageRequest pageRequest){
         User user = getUser(); // 获取当前登录用户
         //获取用户的pid
         String uPid = user.getPid();
         //查询   根据用户pid查询出所有订单数据
-        Page<Order> page= orderService.getOrdersByPid(uPid);
+        Page<Order> page= orderService.getOrdersByPid(uPid,pageRequest);
 
 
         return successResult(page);

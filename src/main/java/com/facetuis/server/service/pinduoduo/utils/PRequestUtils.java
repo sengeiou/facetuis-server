@@ -46,7 +46,6 @@ public class PRequestUtils {
         String url = apiUrl + "?" + URLUtils.getUrlParamsByMap(map);
         try {
             String result = Request.Post(url).execute().returnContent().asString();
-            logger.info("API :: " + api + " | " +  result);
             return new BaseResult(result);
         } catch (IOException e) {
             logger.info("调用拼多多接口发生错误::" + api + " | " + e.getMessage());

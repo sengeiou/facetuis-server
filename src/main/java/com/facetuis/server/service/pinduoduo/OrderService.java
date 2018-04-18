@@ -268,9 +268,9 @@ public class OrderService {
 
      */
 
-    public Page<Order> getOrdersByPid(String pid)
+    public Page<Order> getOrdersByPid(String pid,Pageable pageable)
     {
-        return orderRepository.findByPId(pid);
+        return orderRepository.findByPId(pid,pageable);
     }
 
 }
