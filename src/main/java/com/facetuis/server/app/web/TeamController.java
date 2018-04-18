@@ -48,7 +48,7 @@ public class TeamController extends FacetuisController {
         User user = getUser();
         UserRelation relation = userRelationService.getRelation(user.getUuid());
         // 总人数
-        int total = relation.getUser1Total() + relation.getUser2Total() + relation.getUser3Total();
+        int total = userRelationService.getTotal(user,relation);
         // 直属高级
         Integer totalHigh = relation.getUser1HighTotal();
         totalHigh = totalHigh == null ? 0 : totalHigh;

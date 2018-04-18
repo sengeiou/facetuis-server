@@ -215,9 +215,10 @@ public class UserService {
                 user.setLevel(UserLevel.LEVEL2);
                 user.setLevelTxt(getLevelTxt(user.getLevel()));
                 userRepository.save(user);
-                // TODO 更新上级用户关系信息
                 // 将用户添加到上级用户的高级用户列表
-                // userRelationService.
+                if(!SysFinalValue.SYS_USER_ID.equals(user.getLevelUserId())){
+                    userRelationService.addHigher(user.getUuid(),user.getLevelUserId());
+                }
             }else{
                 logger.info("用户" + userId + "已是最高级别，不能在升级" );
             }

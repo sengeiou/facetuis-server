@@ -16,15 +16,15 @@ public class WechatService {
 
     @Value("${wechat.access.token.url}")
     private String GET_TOKEN_URL ;
-    @Value("${wechat.access.token.url}")
+    @Value("${wechat.app.id}")
     private String WECHAT_APPID;
-    @Value("${wechat.access.token.url}")
+    @Value("${wechat.app.secret}")
     private String WECHAT_SECRET;
 
     // 根据CODE获取AccessToken
     public  BaseResult<AccessTokenResponse> getToken(String code){
         BaseResult result = new BaseResult();
-        String  url = String.format(GET_TOKEN_URL + "?appid=%s&secret=%s&code=%s&grant_type=grant_type",WECHAT_APPID,WECHAT_SECRET,code);
+        String  url = String.format(GET_TOKEN_URL + "?appid=%s&secret=%s&code=%s&grant_type=authorization_code",WECHAT_APPID,WECHAT_SECRET,code);
         String response = null;
         try{
             response =  Request.Get(url).execute().returnContent().asString();
