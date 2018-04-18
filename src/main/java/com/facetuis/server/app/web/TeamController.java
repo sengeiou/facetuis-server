@@ -120,6 +120,8 @@ public class TeamController extends FacetuisController {
     }
 
     @RequestMapping(value = "/people",method = RequestMethod.GET)
+
+    @NeedLogin(needLogin = true)
     public BaseResponse teamPeople(String keywords){
         String nickName = "";
         String mobile = "";
