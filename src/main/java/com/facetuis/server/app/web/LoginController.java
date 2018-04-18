@@ -72,7 +72,7 @@ public class LoginController extends FacetuisController {
             }
         }
         // 验证完成后绑定微信 第二次请求
-        if(mobileUser != null  && !StringUtils.isEmpty(request.getOpenid()) && !StringUtils.isEmpty(request.getAccess_token()) ){
+        if(mobileUser != null  && wechatUser == null &&  !StringUtils.isEmpty(request.getOpenid()) && !StringUtils.isEmpty(request.getAccess_token()) ){
             if(StringUtils.isEmpty(request.getInvite_code())){
                 return new BaseResponse(400,"邀请码不能为空");
             }
@@ -99,7 +99,7 @@ public class LoginController extends FacetuisController {
                     return onResult(baseResult);
                 }
                 BaseResult<User> userBaseResult = userService.registerMobile(wechatUser, request.getMobile_number(), request.getInvite_code());
-                if(userBaseResult.hasError()){
+                    if(userBaseResult.hasError()){
                     return onResult(userBaseResult);
                 }
                 return successResult(userBaseResult.getResult());

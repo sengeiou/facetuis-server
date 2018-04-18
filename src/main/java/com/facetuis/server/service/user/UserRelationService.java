@@ -3,6 +3,7 @@ package com.facetuis.server.service.user;
 import com.facetuis.server.dao.user.UserRelationRepository;
 import com.facetuis.server.dao.user.UserRepository;
 import com.facetuis.server.model.user.User;
+import com.facetuis.server.model.user.UserLevel;
 import com.facetuis.server.model.user.UserRelation;
 import com.facetuis.server.utils.SysFinalValue;
 import com.facetuis.server.utils.TimeUtils;
@@ -76,6 +77,9 @@ public class UserRelationService {
         // 更新上级 一级用户数据
         UserRelation userRelation = userRelationRepository.findByUserId(user1);
         String user1Ids = userRelation.getUser1Ids();
+        if(user1Ids == null){
+            user1Ids = "";
+        }
         user1Ids = user1Ids + "," + user;
         userRelation.setUser1Ids(user1Ids);
         int user1Total = userRelation.getUser1Total();
@@ -87,6 +91,9 @@ public class UserRelationService {
             UserRelation userRelation2 = userRelationRepository.findByUserId(user2);
             if(userRelation2 != null){
                 String user2Ids = userRelation2.getUser2Ids();
+                if(user2Ids == null){
+                    user2Ids = "";
+                }
                 user2Ids = user2Ids + "," + user;
                 userRelation2.setUser2Ids(user2Ids);
                 int user2Total = userRelation2.getUser2Total();
@@ -99,6 +106,9 @@ public class UserRelationService {
             UserRelation userRelation3 = userRelationRepository.findByUserId(user3);
             if(userRelation3 != null){
                 String user3Ids = userRelation3.getUser3Ids();
+                if(user3Ids == null){
+                    user3Ids = "";
+                }
                 user3Ids = user3Ids + "," + user;
                 userRelation3.setUser3Ids(user3Ids);
                 int user3Total = userRelation3.getUser3Total();
@@ -111,6 +121,34 @@ public class UserRelationService {
 
     public UserRelation getRelation(String userId){
         return userRelationRepository.findByUserId(userId);
+    }
+    /**
+     * 获取总人数
+     * @return
+     */
+    public int getTotal(User user,UserRelation relation){
+        if(user.getLevel().equals(UserLevel.LEVEL1)){
+            int total = 0;
+            int user1Total = relation.getUser1Total();
+            total = total + user1Total;
+            String user1Ids = relation.getUser1Ids();
+            String[] split = user1Ids.split(",");
+            for(String u : split){
+                Optional<User> user1 = userRepository.findById(u);
+                 if(user1.isPresent()){
+                     User value = user1.get();
+                     if(value.getLevel().equals(UserLevel.LEVEL2)){
+                         UserRelation userRelation = userRelationRepository.findByUserId(value.getUuid());
+                         total = total + userRelation.getUser1Total();
+                         total = total + userRelation.getUser2Total();
+                     }
+                 };
+            }
+            return total;
+
+        }else {
+            return relation.getUser1Total() + relation.getUser2Total() + relation.getUser3Total();
+        }
     }
 
     public List<String> getTeam(String userId){

@@ -32,7 +32,6 @@ public class OrderScheduled {
     public void syncToday() {
         String startTime = TimeUtils.date2String(new Date());
         String endTime = TimeUtils.date2String(new Date());
-        logger.info("（5s）同步订单：" + startTime + " | " + endTime);
         syncOrders(startTime, endTime);
     }
 
@@ -44,7 +43,6 @@ public class OrderScheduled {
     public void sync5Day(){
         String startTime = TimeUtils.date2String(TimeUtils.getDateBefore(new Date(),5));
         String endTime = TimeUtils.date2String(TimeUtils.getDateBefore(new Date(),1));
-        logger.info("（1h）同步订单开启：" + startTime + " | " + endTime);
         syncOrders(startTime, endTime);
     }
     /**
@@ -55,7 +53,6 @@ public class OrderScheduled {
     public void sync10Day(){
         String startTime = TimeUtils.date2String(TimeUtils.getDateBefore(new Date(),15));
         String endTime = TimeUtils.date2String(TimeUtils.getDateBefore(new Date(),6));
-        logger.info("（2h）同步订单开启：" + startTime + " | " + endTime);
         syncOrders(startTime, endTime);
     }
     /**
@@ -66,7 +63,6 @@ public class OrderScheduled {
     public void sync20Day(){
         String startTime = TimeUtils.date2String(TimeUtils.getDateBefore(new Date(),35));
         String endTime = TimeUtils.date2String(TimeUtils.getDateBefore(new Date(),14));
-        logger.info("（3h）同步订单开启：" + startTime + " | " + endTime);
         syncOrders(startTime, endTime);
     }
     /**
@@ -76,7 +72,7 @@ public class OrderScheduled {
     public void sync25Day(){
         String startTime = TimeUtils.date2String(TimeUtils.getDateBefore(new Date(),60));
         String endTime = TimeUtils.date2String(TimeUtils.getDateBefore(new Date(),34));
-        logger.info("（4h）同步订单开启：" + startTime + " | " + endTime);
+
         syncOrders(startTime, endTime);
     }
 
@@ -92,6 +88,7 @@ public class OrderScheduled {
                 return;
             }
             List<OrderDetail> order_list = response.getOrder_list_get_response().getOrder_list();
+            System.out.println("同步订单：" + startTime + " | " + endTime + " | 本次同步：" + order_list.size());
             if( order_list != null && order_list.size() != 0){
                 page = page + 1;
                 orderService.updateOrder(response);
