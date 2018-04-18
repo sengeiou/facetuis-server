@@ -105,7 +105,7 @@ public class AuthInterceptor implements HandlerInterceptor {
      */
     private boolean tokenTimeOut(HttpServletResponse response, BaseResponse result) throws IOException {
         logger.info("Token过期");
-        result.setCode(100);
+        result.setCode(101);
         result.setMessage("Token已过期，请重新登录");
         response.setContentType("application/json;charset=UTF-8");
         response.getWriter().flush();
