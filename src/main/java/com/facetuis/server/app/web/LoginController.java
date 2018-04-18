@@ -124,7 +124,9 @@ public class LoginController extends FacetuisController {
             return onResult(baseResult);
         }
         User mobileUser = userService.findByMobile(mobile);
-        mobileUser.setToken("");
+        if(mobileUser != null) {
+            mobileUser.setToken("");
+        }
         return successResult(mobileUser);
     }
 
@@ -135,7 +137,9 @@ public class LoginController extends FacetuisController {
             return setErrorResult(400,"缺少微信openid");
         }
         User user = userService.findByOpenId(openid);
-        user.setToken("");
+        if(user != null){
+            user.setToken("");
+        }
         return successResult(user);
     }
 }
