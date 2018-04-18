@@ -20,6 +20,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -101,7 +102,7 @@ public class TeamController extends FacetuisController {
 
     @RequestMapping(value = "/orders/{status}",method = RequestMethod.GET)
     @NeedLogin(needLogin = true)
-    public BaseResponse teamOrders(@PathVariable int status,String keywords,PageRequest request){
+    public BaseResponse teamOrders(@PathVariable int status,String keywords,Pageable request){
         String nickName = "";
         String mobile = "";
         User user = getUser();
