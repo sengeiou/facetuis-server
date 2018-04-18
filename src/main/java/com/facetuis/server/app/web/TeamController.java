@@ -144,7 +144,7 @@ public class TeamController extends FacetuisController {
         List<TeamUsersResponse> responses = new ArrayList<>();
         if(user != null){
             for(User u : users){
-                List<User> byInviteCode = userService.findByInviteCode(u.getInviteCode());
+                List<User> byInviteCode = userService.findByInviteCode(u.getRecommandCode());
                 TeamUsersResponse response = new TeamUsersResponse();
                 BeanUtils.copyProperties(u,response);
                 response.setRecommandNumber(byInviteCode.size());
