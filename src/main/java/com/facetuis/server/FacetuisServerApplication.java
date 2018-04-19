@@ -5,6 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.logging.Logger;
@@ -12,6 +13,7 @@ import java.util.logging.Logger;
 @SpringBootApplication
 @PropertySource(value={"facetuis.properties"},encoding = "utf-8",ignoreResourceNotFound = true)
 @EnableScheduling
+@EnableAsync
 public class FacetuisServerApplication {
 
 	private static final Logger logger = Logger.getGlobal();

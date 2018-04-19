@@ -36,11 +36,12 @@ public class GoodsService {
         return null;
     }
 
-    public Page<GoodsDetails> findByWrods(String words,String categoryId,String softType){
+    public Page<GoodsDetails> findByWrods(String words,String categoryId,String softType,int page){
         SortedMap<String,String> map = new TreeMap<>();
         map.put("keyword",words);
         map.put("category_id",categoryId);
         map.put("sort_type",softType);
+        map.put("page",page + "");
         BaseResult<String> send = pRequestUtils.send(API_GOODS_LIST_KWYWORDS, map);
         GoodsSearchResponse details = JSONObject.parseObject(send.getResult(),GoodsSearchResponse.class);
         return new PageImpl<>(details.getGoods_search_response().getGoods_list());

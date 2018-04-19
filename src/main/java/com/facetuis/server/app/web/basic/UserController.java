@@ -1,6 +1,5 @@
 package com.facetuis.server.app.web.basic;
 
-import com.facetuis.server.app.config.FinalValue;
 import com.facetuis.server.model.user.User;
 import com.facetuis.server.utils.SysFinalValue;
 import org.springframework.web.context.request.RequestContextHolder;

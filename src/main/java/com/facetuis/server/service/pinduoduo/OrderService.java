@@ -35,6 +35,9 @@ public class OrderService {
     private PRequestUtils pRequestUtils;
 
     private String API_ORDER_RANGE = "pdd.ddk.order.list.range.get";
+
+    private String API_ORDER_RANGE_UPDATE = "pdd.ddk.order.list.increment.get";
+
     @Autowired
     private OrderRepository orderRepository;
 
@@ -44,14 +47,14 @@ public class OrderService {
     private UserRepository userRepository;
 
     /**
-     * 查询订单
+     * 查询订单-订单创建时间
      * @param startTime
      * @param endTime
      * @param pid
      * @param page
      * @return
      */
-    public OrderListResponse getOrder(String startTime,String endTime,String pid,int page) {
+    public OrderListResponse getOrderByAdd(String startTime, String endTime, String pid, int page) {
         SortedMap<String, String> map = new TreeMap<>();
         map.put("start_time", startTime);
         map.put("end_time", endTime);
@@ -64,33 +67,56 @@ public class OrderService {
     }
 
     /**
+     * 查询订单-订单更新时间
+     * @param startTime
+     * @param endTime
+     * @param pid
+     * @param page
+     * @return
+     */
+    public OrderListResponse getOrderByUpdate(String startTime, String endTime, String pid, int page) {
+        SortedMap<String, String> map = new TreeMap<>();
+        map.put("start_update_time", startTime);
+        map.put("end_update_time", endTime);
+        map.put("p_id", pid);
+        map.put("page", page + "");
+        map.put("page_size", "50");
+        BaseResult<String> send = pRequestUtils.send(API_ORDER_RANGE_UPDATE, map);
+        OrderListResponse response = JSONObject.parseObject(send.getResult(), OrderListResponse.class);
+        return response;
+    }
+
+    /**
      * 批量更新订单
+     * 删除： 更新逻辑：先删除根据订单号查询到的订单 ---> 新增所有订单
+     * 现在：根据订单号查询订单是否已存在，如果存在则更新，如果不存在则新增
      * @param orderList
      */
     @Transactional
     public void updateOrder(OrderListResponse orderList){
-        if(orderList.getOrder_list_get_response() == null){
+        if(orderList == null || orderList.getOrder_list_get_response() == null){
             return;
         }
         List<OrderDetail> order_list = orderList.getOrder_list_get_response().getOrder_list();
         if(order_list != null && order_list.size() > 0){
-            List<String> orderSnList = new ArrayList<>();
             for(OrderDetail order : order_list){
-                orderSnList.add(order.getOrderSn());
+                //  根据orderSn 查询是否订单已存在
+                Order o = orderRepository.findByOrderSn(order.getOrderSn());
+                if(o == null){
+                    o = new Order();
+                    o.setUuid(UUID.randomUUID().toString());
+                    o.setCreateTime(new Date());
+                    BeanUtils.copyProperties(order,o);
+                    orderRepository.save(o);
+                }else{
+                    o.setUpdateTime(new Date());
+                    BeanUtils.copyProperties(order,o);
+                    orderRepository.save(o);
+                }
             }
-            orderRepository.deleteByOrderSnIn(orderSnList);
-            orderRepository.flush();
-            List<Order> orders = new ArrayList<>();
-            for(OrderDetail detail : order_list){
-                Order order = new Order();
-                order.setUuid(UUID.randomUUID().toString());
-                order.setCreateTime(new Date());
-                BeanUtils.copyProperties(detail,order);
-                orders.add(order);
-            }
-            orderRepository.saveAll(orders);
         }
     }
+
 
     /**
      * 获取团队所有订单

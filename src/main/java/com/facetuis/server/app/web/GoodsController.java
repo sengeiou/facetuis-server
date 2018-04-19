@@ -29,15 +29,15 @@ public class GoodsController extends FacetuisController {
     }
 
     @RequestMapping(value = "/keywords/{keywords}/{sortType}")
-    public BaseResponse findByWords(@PathVariable String keywords,@PathVariable String sortType){
-        Page<GoodsDetails> byWrods = goodsService.findByWrods(keywords, null, sortType);
+    public BaseResponse findByWords(@PathVariable String keywords,@PathVariable String sortType,int page){
+        Page<GoodsDetails> byWrods = goodsService.findByWrods(keywords, null, sortType,page);
         return successResult(byWrods);
     }
 
 
     @RequestMapping(value = "/category/{category}/{sortType}")
-    public BaseResponse findByCategory(@PathVariable String category,@PathVariable String sortType){
-        Page<GoodsDetails> byWrods = goodsService.findByWrods("", category, sortType);
+    public BaseResponse findByCategory(@PathVariable String category,@PathVariable String sortType,int page){
+        Page<GoodsDetails> byWrods = goodsService.findByWrods("", category, sortType,page);
         return successResult(byWrods);
     }
 

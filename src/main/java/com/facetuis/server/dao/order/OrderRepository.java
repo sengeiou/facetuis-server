@@ -13,6 +13,8 @@ public interface OrderRepository extends JpaRepository<Order,String> {
 
     List<Order> findByOrderSnIn(List<String> orderSn);
 
+    Order findByOrderSn(String orderSn);
+
     /**
      * 物理删除
      * @param orderSn

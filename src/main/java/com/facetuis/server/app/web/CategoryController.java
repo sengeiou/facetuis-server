@@ -67,8 +67,8 @@ public class CategoryController extends FacetuisController {
         category8.setId("818");
         category8.setName("家纺");
         Category category9 = new Category();
-        category9.setId("鞋包");
-        category9.setName("1281");
+        category9.setId("1281");
+        category9.setName("鞋包");
         Category category10 = new Category();
         category10.setId("1451");
         category10.setName("运动");
