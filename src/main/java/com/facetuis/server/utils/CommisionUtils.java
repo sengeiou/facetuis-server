@@ -2,15 +2,16 @@ package com.facetuis.server.utils;
 
 import com.facetuis.server.model.commision.CommisionSettings;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CommisionTable {
+public class CommisionUtils {
     private static Map<String,CommisionUser> map = new HashMap<>();
-
+    private static CommisionSettings cs = new CommisionSettings();
     private static Map<String,CommisionUser> init(){
         if(map != null){
-            CommisionSettings cs = new CommisionSettings();
+
             double zongFenChu = cs.getTotalRatio();
             double teamNoSvip = cs.getTeamNoSvip();
             double teamHaveSvip = cs.getTeamHaveSvip();
@@ -129,8 +130,26 @@ public class CommisionTable {
     }
 
 
-    public CommisionUser getRate(String relation){
+    public static CommisionUser getRate(String relation){
         Map<String, CommisionUser> map = init();
         return map.get(relation);
+    }
+
+    /**
+     * 根据用户级别和价格计算佣金金额
+     * @param level
+     * @param price
+     * @return
+     */
+    public static long getEarn(int level,long price){
+        if(level == 0){
+            return multiply(price,cs.getTotalRatio(),0);
+        }else{
+            return multiply(price,cs.getTotalRatio() * (cs.getDirectorSelf() + 1) ,0);
+        }
+    }
+
+    public static Long multiply(Long val1,Double val2,int scale){
+        return new BigDecimal(Long.toString(val1)).multiply(new BigDecimal(Double.toString(val2))).setScale(scale, BigDecimal.ROUND_HALF_UP).longValue();
     }
 }

@@ -22,14 +22,14 @@ public class XmlUtils {
      * @throws JDOMException
      * @throws IOException
      */
-    public static Map doXMLParse(String strxml) throws JDOMException, IOException {
+    public static Map<String,String> doXMLParse(String strxml) throws JDOMException, IOException {
         strxml = strxml.replaceFirst("encoding=\".*\"", "encoding=\"UTF-8\"");
 
         if(null == strxml || "".equals(strxml)) {
             return null;
         }
 
-        Map m = new HashMap();
+        Map<String,String> m = new HashMap();
 
         InputStream in = new ByteArrayInputStream(strxml.getBytes("UTF-8"));
         SAXBuilder builder = new SAXBuilder();

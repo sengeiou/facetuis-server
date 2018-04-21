@@ -121,7 +121,6 @@ public class TeamController extends FacetuisController {
     }
 
     @RequestMapping(value = "/people",method = RequestMethod.GET)
-
     @NeedLogin(needLogin = true)
     public BaseResponse teamPeople(String keywords){
         String nickName = "";
@@ -152,5 +151,14 @@ public class TeamController extends FacetuisController {
             }
         }
         return successResult(responses);
+    }
+
+    @RequestMapping(value = "/income/count")
+    @NeedLogin(needLogin = true)
+    public BaseResponse income(){
+        User user = getUser();
+
+
+        return successResult();
     }
 }

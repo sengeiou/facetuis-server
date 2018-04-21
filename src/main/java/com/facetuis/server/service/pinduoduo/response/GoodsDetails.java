@@ -22,6 +22,16 @@ public class GoodsDetails {
     private int min_group_price;
     private int min_normal_price;
 
+    private long aboutEarn;// 预计赚
+
+    public long getAboutEarn() {
+        return aboutEarn;
+    }
+
+    public void setAboutEarn(long aboutEarn) {
+        this.aboutEarn = aboutEarn;
+    }
+
     public String getGoods_eval_count() {
         return goods_eval_count;
     }

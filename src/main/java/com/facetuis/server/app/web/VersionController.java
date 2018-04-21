@@ -14,13 +14,31 @@ import java.io.RandomAccessFile;
 @RestController
 @RequestMapping("/1.0/version")
 public class VersionController extends FacetuisController {
+
+
     public class Version
     {
         private String  name;
         private String  updateLog;
         private String  vid;//版本号
         private  boolean isUpdate;
+        private String downloadUrl;
 
+        public void setUpdateLog(String updateLog) {
+            this.updateLog = updateLog;
+        }
+        public boolean isUpdate() {
+            return isUpdate;
+        }
+        public void setUpdate(boolean update) {
+            isUpdate = update;
+        }
+        public String getDownloadUrl() {
+            return downloadUrl;
+        }
+        public void setDownloadUrl(String downloadUrl) {
+            this.downloadUrl = downloadUrl;
+        }
         public void setName(String name){this.name=name;}
         public void setUpLog(String log){this.updateLog=log;}
         public void setVid(String vid){this.vid=vid;}

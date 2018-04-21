@@ -40,7 +40,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         boolean isNeedLogin = LoginUtils.isNeedLogin((HandlerMethod) handler);
         // 判断是否访问的接口是否需要登录
         if(isNeedLogin){
-            logger.info("当前请求需要登录" );
+            logger.info("校验请求AccessToken" );
             boolean loginResult = false;
             if(!StringUtils.isEmpty(accessToken)){
                 loginResult = doLogin(accessToken, request, response);
@@ -53,8 +53,17 @@ public class AuthInterceptor implements HandlerInterceptor {
             }
             return loginResult;
         }else{
-            logger.info("当前请求不需要登录" );
+            if(!StringUtils.isEmpty(accessToken)){
+                getUser(accessToken, request);
+            }
             return true;
+        }
+    }
+
+    private void getUser(String token,HttpServletRequest request){
+        User user = userService.getUserByToken(token);
+        if(user != null) {
+            request.setAttribute(SysFinalValue.USER_PARAMTER_KEY, user);
         }
     }
 

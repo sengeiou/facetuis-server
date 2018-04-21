@@ -7,8 +7,10 @@ import com.alipay.api.domain.AlipayTradeAppPayModel;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
+import com.facetuis.server.app.web.request.AlipayNotifyRequest;
 import com.facetuis.server.model.pay.PayStatus;
 import com.facetuis.server.model.pay.PayType;
+import com.facetuis.server.model.pay.Payment;
 import com.facetuis.server.service.basic.BaseResult;
 import com.facetuis.server.service.payment.PaymentService;
 import com.facetuis.server.utils.PayUtils;
@@ -46,15 +48,12 @@ public class AliPayService {
      * @param body
      * @return
      */
-    public BaseResult<String> generateOrder(String total_amount,String subject,String body) {
+    public BaseResult<String> generateOrder(String total_amount,String subject,String body,String userId,String productId) {
         // 保存支付信息到数据库  subject==== 商品title
         //1.订单号 商品标题 商品价格 支付相关
         //生成订单号
-       String tradeNo= PayUtils.getTradeNo();
-        //
-        paymentService.save(tradeNo,subject,total_amount, PayStatus.WAIT_PAY, PayType.ALIPAY);
-
-
+       String tradeNo = PayUtils.getTradeNo();
+        paymentService.save(tradeNo,subject,total_amount, PayStatus.WAIT_PAY, PayType.ALIPAY,userId,productId);
         //实例化客户端
         AlipayClient alipayClient = new DefaultAlipayClient(serverUrl, APP_ID, APP_PRIVATE_KEY, format, CHARSET_UTF8, ALIPAY_PUBLIC_KEY, "RSA");
         //实例化具体API对应的request类,类名称和接口名称对应,当前调用接口名称：alipay.trade.app.pay
@@ -80,7 +79,7 @@ public class AliPayService {
     }
 
 
-    public BaseResult checkNotify(Map<String,String> map){
+    public BaseResult checkNotify(Map<String,String> map, AlipayNotifyRequest alipayNotifyRequest){
         boolean signVerified = false; //调用SDK验证签名
         try {
             signVerified = AlipaySignature.rsaCheckV1(map, ALIPAY_PUBLIC_KEY, CHARSET);
@@ -88,12 +87,20 @@ public class AliPayService {
             e.printStackTrace();
         }
         if(signVerified){
-            // TODO 验签成功后
-            // 按照支付结果异步通知中的描述，对支付结果中的业务内容进行1\2\3\4二次校验，校验成功后在response中返回success，校验失败返回failure
-
-        }else{
-            // TODO 验签失败则记录异常日志，并在response中返回failure.
-
+            if(alipayNotifyRequest.getTrade_status().equals("TRADE_SUCCESS")){
+                // 支付单号
+                String out_trade_no = alipayNotifyRequest.getOut_trade_no();
+                Payment payment = paymentService.findByTradeNo(out_trade_no);
+                if(payment != null){
+                    if(payment.getAmount().equals(alipayNotifyRequest.getTotal_amount())){
+                        if(alipayNotifyRequest.getApp_id().equals(APP_ID)){
+                            payment.setPayStatus(PayStatus.PAY_SUCCESS);
+                            payment.setTradeNo(alipayNotifyRequest.getTrade_no());
+                            paymentService.updatePayment(payment);
+                        }
+                    }
+                }
+            }
         }
         return new BaseResult(600,"签名校验失败");
     }

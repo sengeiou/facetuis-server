@@ -2,6 +2,7 @@ package com.facetuis.server.service.wechat;
 
 import com.facetuis.server.model.pay.PayStatus;
 import com.facetuis.server.model.pay.PayType;
+import com.facetuis.server.model.pay.Payment;
 import com.facetuis.server.service.basic.BaseResult;
 import com.facetuis.server.service.payment.PaymentService;
 import com.facetuis.server.utils.PayCommonUtil;
@@ -41,11 +42,11 @@ public class WechatPayService {
     private String unifiedorderUrl;
 
 
-    public BaseResult unifiedorder(String body,String detail,String total_price,String ip){
+    public BaseResult unifiedorder(String body,String detail,String total_price,String ip,String userId,String productId){
         //生成订单号码   //body 就是title 商品标题 detail 描述
         String tradeNo=PayUtils.getTradeNo();
        // paymentService.save(tradeNo,total_amount, PayStatus.WAIT_PAY, PayType.ALIPAY);
-        paymentService.save(tradeNo,body,total_price,PayStatus.WAIT_PAY,PayType.WECHAT_PAY);
+        paymentService.save(tradeNo,body,total_price,PayStatus.WAIT_PAY,PayType.WECHAT_PAY,userId,productId);
 
         BaseResult baseResult  = new BaseResult();
         SortedMap<Object,Object> map = new TreeMap<>();
@@ -87,11 +88,21 @@ public class WechatPayService {
 
     public BaseResult<String> checkNotify(String xml) {
         try {
-            Map map = XmlUtils.doXMLParse(xml);
+            Map<String,String> map = XmlUtils.doXMLParse(xml);
             if (map.get("result_code").toString().equalsIgnoreCase("SUCCESS")) {
                 //PayCommonUtil.isTenpaySign(map,key); 验证签名
-                String resWX = PayCommonUtil.setXML("SUCCESS", "OK");
-                return new BaseResult<String>(resWX);
+                String appid = map.get("appid");
+                if(appid.equals(this.appid)){
+                    String out_trade_no = map.get("out_trade_no");
+                    Payment payment = paymentService.findByTradeNo(out_trade_no);
+                    if(payment != null){
+                        payment.setPayStatus(PayStatus.PAY_SUCCESS);
+                        payment.setTradeNo(map.get("transaction_id"));
+                        paymentService.updatePayment(payment);
+                    }
+                    String resWX = PayCommonUtil.setXML("SUCCESS", "OK");
+                    return new BaseResult<String>(resWX);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

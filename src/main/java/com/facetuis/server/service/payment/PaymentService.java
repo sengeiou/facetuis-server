@@ -16,20 +16,33 @@ public class PaymentService {
     @Autowired
     private PaymentRepository paymentRepository;
 
-    public void save(String tradeNo,String productTitle,String amount, PayStatus payStatus, PayType payType){
+    /**
+     * 创建支付信息
+     * @param tradeNo
+     * @param productTitle
+     * @param amount
+     * @param payStatus
+     * @param payType
+     */
+    public void save(String tradeNo,String productTitle,String amount, PayStatus payStatus, PayType payType,String userId,String productId){
         Payment pay = new Payment();
         pay.setAmount(amount);//价格
         pay.setProductTitle(productTitle);//商品标题
-        pay.setTradeNo(tradeNo);//订单号
+        pay.setOutTradeNo(tradeNo);//订单号
         pay.setPayStatus(payStatus);//支付状态
         pay.setPayType(payType); //
-
-
-
-
-        //设置主键
         pay.setUuid(UUID.randomUUID().toString());
+        pay.setUserId(userId);
+        pay.setProductId(productId);
         paymentRepository.save(pay);
+    }
+
+    public Payment findByTradeNo(String tradeNo){
+        return paymentRepository.findByOutTradeNo(tradeNo);
+    }
+
+    public void updatePayment(Payment payment){
+        paymentRepository.save(payment);
     }
 
 }

@@ -2,8 +2,10 @@ package com.facetuis.server.model.order;
 
 import com.facetuis.server.model.basic.BaseEntity;
 
+import javax.persistence.Entity;
 import javax.persistence.Table;
 
+@Entity
 @Table(name = "t_order_commision")
 public class OrderCommision extends BaseEntity{
 

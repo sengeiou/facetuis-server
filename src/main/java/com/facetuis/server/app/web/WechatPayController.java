@@ -3,6 +3,7 @@ package com.facetuis.server.app.web;
 import com.facetuis.server.app.web.basic.BaseResponse;
 import com.facetuis.server.app.web.basic.FacetuisController;
 import com.facetuis.server.model.product.Product;
+import com.facetuis.server.model.user.User;
 import com.facetuis.server.service.basic.BaseResult;
 import com.facetuis.server.service.wechat.WechatPayService;
 import com.facetuis.server.utils.IpUtils;
@@ -39,10 +40,17 @@ public class WechatPayController extends FacetuisController {
         if(product == null){
             return setErrorResult(600,"没有找到需要支付的产品");
         }
-        BaseResult baseResult = wechatPayService.unifiedorder(product.getTitle(), product.getTitle(), product.getAmount(), IpUtils.getIpAddr(request));
+        User user = getUser();
+        BaseResult baseResult = wechatPayService.unifiedorder(product.getTitle(), product.getTitle(), product.getAmount(), IpUtils.getIpAddr(request),user.getUuid(),productid);
         return onResult(baseResult);
     }
 
+    /**
+     * 微信异步通知
+     * @param request
+     * @param response
+     * @return
+     */
     @RequestMapping(value = "/notify",method = RequestMethod.POST)
     public String weixinNotify(HttpServletRequest request, HttpServletResponse response){
         String notityXml = "";

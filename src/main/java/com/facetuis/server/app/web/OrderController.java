@@ -45,8 +45,6 @@ public class OrderController extends FacetuisController {
         String uPid = user.getPid();
         //查询   根据用户pid查询出所有订单数据
         Page<Order> page= orderService.getOrdersByPid(uPid,pageRequest);
-
-
         return successResult(page);
     }
 }

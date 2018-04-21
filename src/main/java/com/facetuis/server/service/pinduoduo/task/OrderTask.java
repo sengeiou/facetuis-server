@@ -18,6 +18,8 @@ public class OrderTask {
     private OrderService orderService;
 
 
+
+
     @Async("threadCommisionExecutor")
     public void doUpdateOrderTask(OrderListResponse response){
         orderService.updateOrder(response);

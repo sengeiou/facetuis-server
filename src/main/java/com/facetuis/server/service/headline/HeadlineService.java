@@ -28,10 +28,10 @@ public class HeadlineService {
         headline.setId("1");
         headline.setTitle("title");
         headline.setType("TXT");
-
+        headline.setSubTitle("SubTitle");
 
         HeadlineVO headline1 = new HeadlineVO();
-        HeadlineVO.HeadlineContent hc1 = headline.new HeadlineContent();
+        HeadlineVO.HeadlineContent hc1 = headline1.new HeadlineContent();
         hc1.setImg("http://xxxx/img");
         hc1.setTxt("描述");
         List< HeadlineVO.HeadlineContent> hcs1 = new ArrayList<>();
@@ -40,9 +40,10 @@ public class HeadlineService {
         headline1.setId("1");
         headline1.setTitle("title");
         headline1.setType("TXT");
+        headline1.setSubTitle("SubTitle");
 
         HeadlineVO headline2 = new HeadlineVO();
-        HeadlineVO.HeadlineContent hc2 = headline.new HeadlineContent();
+        HeadlineVO.HeadlineContent hc2 = headline2.new HeadlineContent();
         hc2.setImg("http://xxxx/img");
         hc2.setTxt("描述");
         List< HeadlineVO.HeadlineContent> hcs2 = new ArrayList<>();
@@ -51,6 +52,9 @@ public class HeadlineService {
         headline2.setId("1");
         headline2.setTitle("title");
         headline2.setType("TXT");
+        headline2.setSubTitle("SubTitle");
+
+
         List<HeadlineVO> list = new ArrayList<>();
         list.add(headline);
         list.add(headline1);

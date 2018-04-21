@@ -24,7 +24,7 @@ public class BannerService {
 
         Banner b2 = new Banner();
         b2.setUuid("3");
-        b1.setImgUrl("http://" + serverIp + "/banner/2.jpg");
+        b2.setImgUrl("http://" + serverIp + "/banner/2.jpg");
         b2.setDescription("ddd");
         b2.setName("111");
 

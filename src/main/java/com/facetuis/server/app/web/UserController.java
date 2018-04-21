@@ -18,6 +18,10 @@ public class UserController extends FacetuisController{
     @Autowired
     private UserService userService;
 
+    /**
+     * 获取推荐自己的用户
+     * @return
+     */
     @RequestMapping("/recommender")
     @NeedLogin(needLogin = true)
     public BaseResponse getCommander() {

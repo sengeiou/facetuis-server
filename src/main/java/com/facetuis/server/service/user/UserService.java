@@ -207,8 +207,8 @@ public class UserService {
             if(user1Total < 20){
                 return new BaseResult(600,"升级要求未达到：直属会员 ≥ 20人");
             }
-            if(relation.getUser2Total() + relation.getUser3Total() < 60){
-                return new BaseResult(600,"升级要求未达到：直属会员下级 ≤ 60人");
+            if(relation.getUser2Total() + relation.getUser3Total() < 40){
+                return new BaseResult(600,"升级要求未达到：直属会员下级 ≤ 40人");
             }
 
             if(user.getLevel().equals(UserLevel.LEVEL1)){

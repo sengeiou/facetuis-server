@@ -28,8 +28,17 @@ public class HeadlineVO implements Serializable{
 
     private String id;
     private String title;
+    private String subTitle;
     private List<HeadlineContent> content;
     private String type;
+
+    public String getSubTitle() {
+        return subTitle;
+    }
+
+    public void setSubTitle(String subTitle) {
+        this.subTitle = subTitle;
+    }
 
     public String getId() {
         return id;

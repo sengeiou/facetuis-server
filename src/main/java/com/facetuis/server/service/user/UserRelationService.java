@@ -133,6 +133,9 @@ public class UserRelationService {
             int user1Total = relation.getUser1Total();
             total = total + user1Total;
             String user1Ids = relation.getUser1Ids();
+            if(StringUtils.isEmpty(user1Ids)){
+               return  total;
+            }
             String[] split = user1Ids.split(",");
             for(String u : split){
                 Optional<User> user1 = userRepository.findById(u);

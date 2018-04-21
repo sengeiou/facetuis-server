@@ -41,18 +41,9 @@ public class LoginController extends FacetuisController {
         // 登录
         if (mobileUser != null && wechatUser != null) {
             if (mobileUser.getUuid().equals(wechatUser.getUuid())) {
-                // 验证短信验证码
-                if (StringUtils.isEmpty(request.getVerification_code())) {
-                    return new BaseResponse(400, "手机验证码不能为空");
-                } else {
-                    BaseResult baseResult = smsService.checkCode(request.getMobile_number(), request.getVerification_code(), SmsModelCode.LOGIN, true);
-                    if (!baseResult.hasError()) {
-                        User user = userService.login(mobileUser.getUuid());
-                        return successResult(user);
-                    } else {
-                        return onResult(baseResult);
-                    }
-                }
+                User user = userService.login(mobileUser.getUuid());
+                return successResult(user);
+
             } else {
                 return new BaseResponse(600, "手机用户和微信用户不匹配，登录失败");
             }
