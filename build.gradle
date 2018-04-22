@@ -21,26 +21,27 @@ group = 'com.facetuis'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 
+allprojects{
 repositories {
 	maven {
 		url 'http://maven.aliyun.com/nexus/content/groups/public/'
 	}
-	jcenter()
+	//jcenter()
 	//mavenCentral()
 }
-
+}
 //d=空d
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
 	compile('org.springframework.boot:spring-boot-starter-web')
-    compile("mysql:mysql-connector-java:5.1.38")
+        compile("mysql:mysql-connector-java:5.1.38")
 	compile('org.apache.httpcomponents:httpclient')
 	compile('org.apache.httpcomponents:httpcore')
 	compile('org.apache.httpcomponents:httpmime')
 	compile('org.apache.httpcomponents:fluent-hc:4.5.2')
 	compile('com.alibaba:fastjson:1.2.47')
-    compile group: 'jdom', name: 'jdom', version: '1.1'
+        compile group: 'jdom', name: 'jdom', version: '1.1'
 	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
-    dependencies { compile fileTree(dir:'libs',include:['*.jar'])}
+        dependencies { compile fileTree(dir:'libs',include:['*.jar'])}
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
