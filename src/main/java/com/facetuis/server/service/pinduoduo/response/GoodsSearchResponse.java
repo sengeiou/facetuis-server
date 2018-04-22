@@ -7,6 +7,14 @@ public class GoodsSearchResponse implements Serializable {
 
     public class GoodsDetailsList{
         private List<GoodsDetails>  goods_list;
+        private int total_count;
+
+        public int getTotal_count() {
+            return total_count;
+        }
+        public void setTotal_count(int total_count) {
+            this.total_count = total_count;
+        }
         public List<GoodsDetails> getGoods_list() {
             return goods_list;
         }
@@ -17,15 +25,8 @@ public class GoodsSearchResponse implements Serializable {
 
     private GoodsDetailsList goods_search_response;
 
-    private int total_count;
 
-    public int getTotal_count() {
-        return total_count;
-    }
 
-    public void setTotal_count(int total_count) {
-        this.total_count = total_count;
-    }
 
     public GoodsDetailsList getGoods_search_response() {
         return goods_search_response;

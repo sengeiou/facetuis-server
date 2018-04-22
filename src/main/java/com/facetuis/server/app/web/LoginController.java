@@ -115,9 +115,6 @@ public class LoginController extends FacetuisController {
             return onResult(baseResult);
         }
         User mobileUser = userService.findByMobile(mobile);
-        if(mobileUser != null) {
-            mobileUser.setToken("");
-        }
         return successResult(mobileUser);
     }
 

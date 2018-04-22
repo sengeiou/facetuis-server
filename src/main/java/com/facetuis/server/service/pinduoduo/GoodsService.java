@@ -2,6 +2,8 @@ package com.facetuis.server.service.pinduoduo;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.domain.GoodsDetail;
+import com.facetuis.server.app.web.response.PromontionResponse;
+import com.facetuis.server.app.web.response.PromotionUrl;
 import com.facetuis.server.service.basic.BaseResult;
 import com.facetuis.server.service.pinduoduo.response.GoodsDetailResponse;
 import com.facetuis.server.service.pinduoduo.response.GoodsDetails;
@@ -29,6 +31,8 @@ public class GoodsService {
     private String API_GOODS_DETAIL = "pdd.ddk.goods.detail";
     private String API_GOODS_LIST_KWYWORDS = "pdd.ddk.goods.search";
 
+    private String API_GOODS_PROMOTION_URL = "pdd.ddk.goods.promotion.url.generate";
+
 
     public GoodsDetails getGoodsById(String id,int level){
         SortedMap<String,String> map = new TreeMap<>();
@@ -54,7 +58,7 @@ public class GoodsService {
         map.put("page",page + "");
         BaseResult<String> send = pRequestUtils.send(API_GOODS_LIST_KWYWORDS, map);
         GoodsSearchResponse details = JSONObject.parseObject(send.getResult(),GoodsSearchResponse.class);
-        if(details != null && details.getTotal_count() > 0){
+        if(details != null){
             List<GoodsDetails> goods_list = details.getGoods_search_response().getGoods_list();
             for(GoodsDetails goodsDetail : goods_list){
                 goodsDetail.setAboutEarn(CommisionUtils.getEarn(level,goodsDetail.getMin_group_price()));
@@ -63,6 +67,26 @@ public class GoodsService {
         }else{
             return new PageImpl<>(Collections.EMPTY_LIST);
         }
+    }
+
+    /**
+     * 商品推广链接
+     * @param pid
+     * @param goodsId
+     * @param isShortUrl
+     * @return
+     */
+    public PromotionUrl promontion(String pid, String goodsId, boolean isShortUrl){
+        SortedMap<String,String> map = new TreeMap<>();
+        map.put("goods_id_list","[" + goodsId + "]");
+        map.put("p_id",pid);
+        map.put("generate_short_url",isShortUrl + "");
+        BaseResult<String> send = pRequestUtils.send(API_GOODS_PROMOTION_URL, map);
+        PromontionResponse details = JSONObject.parseObject(send.getResult(),PromontionResponse.class);
+        if(details.getGoods_promotion_url_generate_response() != null){
+            return details.getGoods_promotion_url_generate_response().getGoods_promotion_url_list().get(0);
+        }
+        return null;
     }
 
 }
