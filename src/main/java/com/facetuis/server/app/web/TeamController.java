@@ -8,8 +8,10 @@ import com.facetuis.server.app.web.response.TeamUsersResponse;
 import com.facetuis.server.model.order.Order;
 import com.facetuis.server.model.user.User;
 import com.facetuis.server.model.user.UserRelation;
+import com.facetuis.server.service.pinduoduo.OrderCommisionService;
 import com.facetuis.server.service.pinduoduo.OrderService;
 import com.facetuis.server.service.pinduoduo.response.OrderVO;
+import com.facetuis.server.service.pinduoduo.response.TeamIncomVO;
 import com.facetuis.server.service.user.UserRelationService;
 import com.facetuis.server.service.user.UserService;
 import com.facetuis.server.utils.NeedLogin;
@@ -41,6 +43,8 @@ public class TeamController extends FacetuisController {
     private OrderService orderService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private OrderCommisionService orderCommisionService;
 
     @RequestMapping(value = "/people/count",method = RequestMethod.GET)
     @NeedLogin(needLogin = true)
@@ -153,12 +157,15 @@ public class TeamController extends FacetuisController {
         return successResult(responses);
     }
 
+    /**
+     * 查询团队收入
+     * @return
+     */
     @RequestMapping(value = "/income/count")
     @NeedLogin(needLogin = true)
     public BaseResponse income(){
         User user = getUser();
-
-
-        return successResult();
+        TeamIncomVO income = orderCommisionService.getIncome(user.getUuid());
+        return successResult(income);
     }
 }

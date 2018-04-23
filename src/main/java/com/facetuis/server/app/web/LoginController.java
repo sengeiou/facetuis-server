@@ -67,7 +67,14 @@ public class LoginController extends FacetuisController {
             if(StringUtils.isEmpty(request.getInvite_code())){
                 return new BaseResponse(400,"邀请码不能为空");
             }
-            BaseResult<User> userBaseResult = userService.registerWechat(mobileUser, request.getOpenid(), request.getAccess_token(), request.getInvite_code(),request.getNick_name(),request.getHead_image());
+            BaseResult<User> userBaseResult = userService.registerWechat(
+                    mobileUser,
+                    request.getOpenid(),
+                    request.getAccess_token(),
+                    request.getInvite_code(),
+                    request.getNick_name(),
+                    request.getHead_image(),
+                    request.getUnionid());
             if(userBaseResult.hasError()){
                 return onResult(userBaseResult);
             }
@@ -76,7 +83,15 @@ public class LoginController extends FacetuisController {
 
         // 首先绑定微信 第一次请求
         if(mobileUser == null && wechatUser == null  && StringUtils.isEmpty(request.getMobile_number()) && !StringUtils.isEmpty(request.getOpenid()) && !StringUtils.isEmpty(request.getAccess_token()) ){
-            userService.registerWechat(mobileUser,request.getOpenid(),request.getAccess_token(),null,request.getNick_name(),request.getHead_image());
+            userService.registerWechat(
+                    mobileUser,
+                    request.getOpenid(),
+                    request.getAccess_token(),
+                    null,
+                    request.getNick_name(),
+                    request.getHead_image(),
+                    request.getUnionid()
+            );
             return successResult();
         }
         // 绑定手机号码 第二次请求

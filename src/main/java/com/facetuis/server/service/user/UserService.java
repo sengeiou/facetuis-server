@@ -1,12 +1,16 @@
 package com.facetuis.server.service.user;
 
 import com.facetuis.server.dao.user.UserRepository;
+import com.facetuis.server.model.pay.Payment;
 import com.facetuis.server.model.user.User;
 import com.facetuis.server.model.user.UserLevel;
 import com.facetuis.server.model.user.UserRelation;
 import com.facetuis.server.service.basic.BaseResult;
+import com.facetuis.server.service.payment.PaymentService;
 import com.facetuis.server.service.pinduoduo.PinDuoDuoService;
 import com.facetuis.server.service.user.utils.UserUtils;
+import com.facetuis.server.service.wechat.WechatService;
+import com.facetuis.server.service.wechat.response.MpGetUserInfoResponse;
 import com.facetuis.server.utils.RandomUtils;
 import com.facetuis.server.utils.SysFinalValue;
 import org.apache.commons.lang3.StringUtils;
@@ -28,8 +32,16 @@ public class UserService {
     private PinDuoDuoService pinDuoDuoService;
     @Autowired
     private UserRelationService userRelationService;
+    @Autowired
+    private PaymentService paymentService;
+    @Autowired
+    private WechatService wechatService;
+
+
     @Value("${sys.invite.code}")
     private String sysInviteCode;
+    @Value("${sys.recommend.url}")
+    private String recommendUrl;
 
 
     public User findRecommander(String userId){
@@ -42,18 +54,27 @@ public class UserService {
     }
 
 
+    public User findByUnionid(String unionid){
+        return userRepository.findByUnionId(unionid);
+    }
+
     public User findByMobile(String mobile){
-        return userRepository.findByMobileNumber(mobile);
+        User user = userRepository.findByMobileNumber(mobile);
+        user.setRecommendUrl(String.format(recommendUrl,user.getRecommandCode()));
+        return user;
     }
 
     public User findByOpenId(String openid){
-        return userRepository.findByOpenid(openid);
+        User user = userRepository.findByOpenid(openid);
+        user.setRecommendUrl(String.format(recommendUrl,user.getRecommandCode()));
+        return user;
     }
 
     public User login(String userId){
         User user = userRepository.findById(userId).get();
         user.setLoginTime(new Date());
         user.setToken(RandomUtils.random(64));
+        user.setRecommendUrl(String.format(recommendUrl,user.getRecommandCode()));
         return userRepository.save(user);
     }
 
@@ -77,6 +98,32 @@ public class UserService {
     }
 
     /**
+     * 通过网页注册微信用户
+     * @param user
+     * @param openid
+     * @param accessToken
+     * @return
+     */
+    public BaseResult registerWechatByWeb(User user,String openid,String accessToken){
+        // 根据公众号信息获取用户信息
+        BaseResult<MpGetUserInfoResponse> userInfo = wechatService.getUserInfo(openid, accessToken);
+        if(userInfo.hasError()){
+           return userInfo;
+        }
+        MpGetUserInfoResponse userInfoResponse = userInfo.getResult();
+        // 注册微信用户
+        registerWechat(user,
+                userInfoResponse.getOpenid(),
+                accessToken,
+                user.getInviteCode(),
+                userInfoResponse.getNickname(),
+                userInfoResponse.getHeadimgurl(),
+                userInfoResponse.getUnionid());
+
+        return new BaseResult();
+    }
+
+    /**
      * 注册微信用户
      * @param user
      * @param openid
@@ -84,7 +131,7 @@ public class UserService {
      * @param inviteCode
      * @return
      */
-    public BaseResult<User> registerWechat(User user, String openid, String accessToken, String inviteCode,String nickName,String headImg){
+    public BaseResult<User> registerWechat(User user, String openid, String accessToken, String inviteCode,String nickName,String headImg,String unionid){
         userRepository.findByOpenid(openid);
         BaseResult<User> userReslt = getUser(user,inviteCode);
         if(userReslt.hasError()){
@@ -95,6 +142,7 @@ public class UserService {
         user.setAccessToken(accessToken);
         user.setNickName(nickName);
         user.setHeadImg(headImg);
+        user.setUnionId(unionid);
         createUser(user);
         return new BaseResult<>(user);
     }
@@ -199,7 +247,18 @@ public class UserService {
      * 用户升级
      * @return
      */
-    public BaseResult upload(String userId){
+    public BaseResult upload(String userId,String tradeNo,String productId){
+        // 查询用户交易状态
+        Payment payment = paymentService.findByTradeNo(tradeNo);
+        if(payment == null){
+            return new BaseResult(600,"支付信息不存在");
+        }
+        if(!payment.getProductId().equals(productId)){
+            return new BaseResult(600,"支付产品不存在");
+        }
+        if(!userId.equals(payment.getUserId())){
+            return new BaseResult(600,"支付用户不匹配");
+        }
         User user = userRepository.findById(userId).get();
         if(user != null){
             UserRelation relation = userRelationService.getRelation(user.getUuid());
@@ -225,7 +284,6 @@ public class UserService {
         }
         return new BaseResult();
     }
-
 
 
 

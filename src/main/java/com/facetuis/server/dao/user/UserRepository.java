@@ -26,4 +26,6 @@ public interface UserRepository extends JpaRepository<User,String> {
     User findByPid(String pid);
 
     List<User> findByInviteCode(String inviteCode);
+
+    User findByUnionId(String unionid);
 }

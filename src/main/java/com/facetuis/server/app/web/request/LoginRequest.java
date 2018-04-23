@@ -9,6 +9,15 @@ public class LoginRequest {
     private String invite_code;
     private String nick_name;
     private String head_image;
+    private String unionid;
+
+    public String getUnionid() {
+        return unionid;
+    }
+
+    public void setUnionid(String unionid) {
+        this.unionid = unionid;
+    }
 
     public String getNick_name() {
         return nick_name;

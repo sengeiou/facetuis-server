@@ -34,8 +34,25 @@ public class User extends BaseEntity {
     private Long loginExpiresIn = 1000 * 60 * 60 * 24 * 30l ;
     private String recommandCode;// 推荐码 属于自己的邀请码 拉下线使用
     private String levelUserId;// 上级用户ID
-
+    private String unionId;// 微信统一开发者下的所有应用的用户唯一性ID
     private String pid;
+    private String recommendUrl;
+
+    public String getRecommendUrl() {
+        return recommendUrl;
+    }
+
+    public void setRecommendUrl(String recommendUrl) {
+        this.recommendUrl = recommendUrl;
+    }
+
+    public String getUnionId() {
+        return unionId;
+    }
+
+    public void setUnionId(String unionId) {
+        this.unionId = unionId;
+    }
 
     public Boolean getEnable() {
         return enable;
