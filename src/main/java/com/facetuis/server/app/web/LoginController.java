@@ -43,7 +43,6 @@ public class LoginController extends FacetuisController {
             if (mobileUser.getUuid().equals(wechatUser.getUuid())) {
                 User user = userService.login(mobileUser.getUuid());
                 return successResult(user);
-
             } else {
                 return new BaseResponse(600, "手机用户和微信用户不匹配，登录失败");
             }

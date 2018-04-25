@@ -40,7 +40,6 @@ public class AuthInterceptor implements HandlerInterceptor {
         boolean isNeedLogin = LoginUtils.isNeedLogin((HandlerMethod) handler);
         // 判断是否访问的接口是否需要登录
         if(isNeedLogin){
-            logger.info("校验请求AccessToken" );
             boolean loginResult = false;
             if(!StringUtils.isEmpty(accessToken)){
                 loginResult = doLogin(accessToken, request, response);
@@ -48,6 +47,7 @@ public class AuthInterceptor implements HandlerInterceptor {
                     return false;
                 }
             }else{
+                logger.info("访问校验失败：未登录" );
                 authFail(response,new BaseResponse());
                 return false;
             }
@@ -71,6 +71,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         BaseResponse result = new BaseResponse();
         User user = userService.getUserByToken(token);
         if (user == null) {
+            logger.info("访问校验失败：AccessToken失效" );
             return authFail(response, result);
         }
         if(!StringUtils.isEmpty(tokenTimeOut)){

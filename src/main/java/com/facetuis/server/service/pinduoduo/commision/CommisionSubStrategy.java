@@ -7,6 +7,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 public class CommisionSubStrategy implements CommisionStrategy {
 
@@ -18,6 +20,7 @@ public class CommisionSubStrategy implements CommisionStrategy {
         OrderCommision orderCommision = orderCommisionRepository.findByOrderSn(orderDetail.getOrderSn());
         if(orderCommision == null){
             orderCommision = new OrderCommision();
+            orderCommision.setUuid(UUID.randomUUID().toString());
             BeanUtils.copyProperties(orderDetail,orderCommision);
         }
         orderCommision.setUserCommision(0L);

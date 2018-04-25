@@ -28,6 +28,16 @@ public class OrderCommision extends BaseEntity{
 
     private Boolean isCompute = false;// 是否分拥计算完成
 
+    private Boolean isFinish = false;//是否已完结
+
+    public Boolean getFinish() {
+        return isFinish;
+    }
+
+    public void setFinish(Boolean finish) {
+        isFinish = finish;
+    }
+
     public String getOrderSn() {
         return orderSn;
     }

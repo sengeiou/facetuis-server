@@ -3,10 +3,7 @@ package com.facetuis.server.utils;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedMap;
+import java.util.*;
 
 public class PayCommonUtil {
 
@@ -14,38 +11,37 @@ public class PayCommonUtil {
      * 是否签名正确,规则是:按参数名称a-z排序,遇到空值的参数不参加签名。
      * @return boolean
      */
-    public static boolean isTenpaySign( SortedMap<Object, Object> packageParams,String key) {
+    public static boolean isTenpaySign(Map<String, String> map,String key) {
         //算出摘要
-        String mysign = getSignString(packageParams, key);
-        String tenpaySign = ((String)packageParams.get("sign")).toLowerCase();
+        String mysign = getSignString(map, key);
+        String tenpaySign = ((String)map.get("sign")).toLowerCase();
         return tenpaySign.equals(mysign);
     }
 
 
     /**
      * @Description：sign签名
-     * @param parameters 请求参数
      * @return
      */
-    public static String createSign(SortedMap<Object,Object> parameters,String key){
-        return getSignString(parameters, key);
+    public static String createSign(Map<String, String> map,String key){
+        return getSignString(map, key);
     }
 
-    static String getSignString(SortedMap<Object, Object> parameters, String key) {
-        StringBuffer sb = new StringBuffer();
-        Set es = parameters.entrySet();
-        Iterator it = es.iterator();
-        while(it.hasNext()) {
-            Map.Entry entry = (Map.Entry)it.next();
-            String k = (String)entry.getKey();
-            Object v = entry.getValue();
-            if(null != v && !"".equals(v)
-                    && !"sign".equals(k) && !"key".equals(k)) {
-                sb.append(k + "=" + v + "&");
-            }
+    static String getSignString(Map<String, String> map, String key) {
+        Set<String> keySet = map.keySet();
+        String[] str = new String[map.size()];
+        StringBuilder tmp = new StringBuilder();
+        // 进行字典排序
+        str = keySet.toArray(str);
+        Arrays.sort(str);
+        for (int i = 0; i < str.length; i++) {
+            String t = str[i] + "=" + map.get(str[i]) + "&";
+            tmp.append(t);
         }
-        sb.append("key=" + key);
-        String sign = MD5Utils.MD5(sb.toString()).toUpperCase();
+        if (null != key) {
+            tmp.append("key=" + key);
+        }
+        String sign = MD5Utils.MD5(tmp.toString()).toUpperCase();
         return sign;
     }
 
@@ -54,20 +50,13 @@ public class PayCommonUtil {
      * @param parameters  请求参数
      * @return
      */
-    public static String getRequestXml(SortedMap<Object,Object> parameters){
+    public static String getRequestXml(HashMap<String,String> parameters){
         StringBuffer sb = new StringBuffer();
         sb.append("<xml>");
-        Set es = parameters.entrySet();
-        Iterator it = es.iterator();
-        while(it.hasNext()) {
-            Map.Entry entry = (Map.Entry)it.next();
-            String k = (String)entry.getKey();
-            String v = (String)entry.getValue();
-            if ("attach".equalsIgnoreCase(k)||"body".equalsIgnoreCase(k)) {
-                sb.append("<"+k+">"+"<![CDATA["+v+"]]></"+k+">");
-            }else {
-                sb.append("<"+k+">"+v+"</"+k+">");
-            }
+        for (Map.Entry<String,String> entry : parameters.entrySet()) {
+            sb.append("<"+ entry.getKey() +">");
+            sb.append(entry.getValue());
+            sb.append("</"+ entry.getKey() +">");
         }
         sb.append("</xml>");
         return sb.toString();

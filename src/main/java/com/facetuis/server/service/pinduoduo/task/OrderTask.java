@@ -1,5 +1,6 @@
 package com.facetuis.server.service.pinduoduo.task;
 
+import com.facetuis.server.service.pinduoduo.OrderCommisionService;
 import com.facetuis.server.service.pinduoduo.OrderService;
 import com.facetuis.server.service.pinduoduo.response.OrderListResponse;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,8 @@ public class OrderTask {
 
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private OrderCommisionService orderCommisionService;
 
 
 
@@ -27,7 +30,7 @@ public class OrderTask {
 
     @Async("threadOrderUpdateExecutor")
     public void doComputeOrderTask(OrderListResponse response){
-
+        orderCommisionService.compute(response);
     }
 
 }

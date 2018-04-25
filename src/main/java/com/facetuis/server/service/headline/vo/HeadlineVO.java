@@ -3,11 +3,19 @@ package com.facetuis.server.service.headline.vo;
 import java.io.Serializable;
 import java.util.List;
 
-public class HeadlineVO implements Serializable{
+public class HeadlineVO<T> implements Serializable{
 
     public class HeadlineContent{
         private String img;
         private String txt;
+        private String productId;
+
+        public String getProductId() {
+            return productId;
+        }
+        public void setProductId(String productId) {
+            this.productId = productId;
+        }
 
         public String getImg() {
             return img;
@@ -29,7 +37,7 @@ public class HeadlineVO implements Serializable{
     private String id;
     private String title;
     private String subTitle;
-    private List<HeadlineContent> content;
+    private T content;
     private String type;
 
     public String getSubTitle() {
@@ -56,11 +64,11 @@ public class HeadlineVO implements Serializable{
         this.title = title;
     }
 
-    public List<HeadlineContent> getContent() {
+    public T getContent() {
         return content;
     }
 
-    public void setContent(List<HeadlineContent> content) {
+    public void setContent(T content) {
         this.content = content;
     }
 

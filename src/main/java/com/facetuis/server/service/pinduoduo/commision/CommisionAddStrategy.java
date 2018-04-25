@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * 佣金增加计算
@@ -34,6 +35,7 @@ public class CommisionAddStrategy implements CommisionStrategy {
         OrderCommision orderCommision = orderCommisionRepository.findByOrderSn(orderDetail.getOrderSn());
         if(orderCommision == null){
             orderCommision = new OrderCommision();
+            orderCommision.setUuid(UUID.randomUUID().toString());
             BeanUtils.copyProperties(orderDetail,orderCommision);
         }
         long promotionAmount = orderDetail.getPromotionAmount();

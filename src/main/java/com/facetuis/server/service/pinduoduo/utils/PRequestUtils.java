@@ -84,8 +84,15 @@ public class PRequestUtils {
             Map.Entry entry = (Map.Entry)it.next();
             String k = (String)entry.getKey();
             Object v = entry.getValue();
-            if(null != v && !"".equals(v)
-                    && !"sign".equals(k) && !"key".equals(k)) {
+            if(null != v && !"".equals(v) && !"sign".equals(k) && !"key".equals(k)) {
+                if(k.equals("range_list")){
+                    try {
+                        v = URLDecoder.decode(v.toString(),"UTF-8");
+                    }catch (Exception e){
+                        logger.info(" sign :: " + e.getMessage());
+                    }
+
+                }
                 sb.append(k + v);
             }
         }

@@ -56,7 +56,9 @@ public class OrderScheduled {
 
 
     /**
-     * 同步订单
+     * 同步订单+佣金计算
+     * 1.定时同步指定时间段内更新的订单
+     * 2.将同步的订单进行佣金计算
      * @param response
      * @param startTime
      * @param endTime
@@ -72,7 +74,9 @@ public class OrderScheduled {
         List<OrderDetail> order_list = response.getOrder_list_get_response().getOrder_list();
         System.out.println("同步订单：" + startTime + " | " + endTime + " | 本次同步：" + order_list.size());
         if( order_list != null && order_list.size() != 0){
+            // 同步订单
             orderTask.doUpdateOrderTask(response);
+            // 计算佣金
             orderTask.doComputeOrderTask(response);
             return true;
         }else{

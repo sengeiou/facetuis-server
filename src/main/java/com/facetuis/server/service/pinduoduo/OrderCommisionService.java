@@ -28,6 +28,7 @@ public class OrderCommisionService {
 
     /**
      * 订单佣金计算
+     * 遍历订单
      * @param response
      */
     public void compute(OrderListResponse response){

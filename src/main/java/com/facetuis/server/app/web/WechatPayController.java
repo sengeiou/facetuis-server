@@ -7,6 +7,7 @@ import com.facetuis.server.model.user.User;
 import com.facetuis.server.service.basic.BaseResult;
 import com.facetuis.server.service.wechat.WechatPayService;
 import com.facetuis.server.utils.IpUtils;
+import com.facetuis.server.utils.NeedLogin;
 import com.facetuis.server.utils.ProductUtils;
 import javafx.scene.chart.ValueAxis;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,7 @@ public class WechatPayController extends FacetuisController {
      * @return
      */
     @RequestMapping(value = "/payment/{productid}",method = RequestMethod.GET)
+    @NeedLogin(needLogin = true)
     public BaseResponse payment(@PathVariable String productid, HttpServletRequest request){
         Product product = ProductUtils.getProduct(productid);
         if(product == null){

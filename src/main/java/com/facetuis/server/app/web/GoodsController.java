@@ -12,7 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/1.0/goods")
@@ -41,12 +46,12 @@ public class GoodsController extends FacetuisController {
      * @return
      */
     @RequestMapping(value = "/keywords/{keywords}/{sortType}")
-    public BaseResponse findByWords(@PathVariable String keywords,@PathVariable String sortType,Integer page){
+    public BaseResponse findByWords(@PathVariable String keywords,@PathVariable String sortType,Integer page,String rangeList){
         if(page == null){
             page = 1;
         }
         int level = getLevel();
-        Page<GoodsDetails> byWrods = goodsService.findByWrods(keywords, null, sortType,page, level);
+        Page<GoodsDetails> byWrods = goodsService.findByWrods(keywords, null, sortType,page, level,rangeList);
         return successResult(byWrods);
     }
 
@@ -60,12 +65,12 @@ public class GoodsController extends FacetuisController {
      * @return
      */
     @RequestMapping(value = "/category/{category}/{sortType}")
-    public BaseResponse findByCategory(@PathVariable String category,@PathVariable String sortType,Integer page){
+    public BaseResponse findByCategory(@PathVariable String category,@PathVariable String sortType,Integer page,String rangeList){
         if(page == null){
             page = 1;
         }
         int level = getLevel();
-        Page<GoodsDetails> byWrods = goodsService.findByWrods("", category, sortType,page, level);
+        Page<GoodsDetails> byWrods = goodsService.findByWrods("", category, sortType,page, level,rangeList);
         return successResult(byWrods);
     }
 
@@ -81,6 +86,24 @@ public class GoodsController extends FacetuisController {
         String pid = user.getPid();
         PromotionUrl promontion = goodsService.promontion(pid, goodsId, true);
         return successResult(promontion);
+    }
+
+    /**
+     * 生成产品详情图片
+     * @param goodsId
+     * @param response
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/image/{goodsId}",method = RequestMethod.GET)
+    public void getGoodsImage(@PathVariable String goodsId, HttpServletResponse response) throws IOException {
+        byte[] image = goodsService.createImage(goodsId);
+        response.setContentType("image/jpeg");
+        ServletOutputStream outputStream = response.getOutputStream();
+        outputStream.write(image);
+        outputStream.flush();
+        outputStream.close();
+
     }
 
 

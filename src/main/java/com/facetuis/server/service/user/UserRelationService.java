@@ -128,6 +128,9 @@ public class UserRelationService {
      * @return
      */
     public int getTotal(User user,UserRelation relation){
+        if(relation == null){
+            return 0;
+        }
         if(user.getLevel().equals(UserLevel.LEVEL1)){
             int total = 0;
             int user1Total = relation.getUser1Total();
