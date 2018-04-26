@@ -4,13 +4,14 @@ import com.facetuis.server.dao.payment.PaymentRepository;
 import com.facetuis.server.model.pay.PayStatus;
 import com.facetuis.server.model.pay.PayType;
 import com.facetuis.server.model.pay.Payment;
+import com.facetuis.server.service.basic.BasicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
 @Service
-public class PaymentService {
+public class PaymentService extends BasicService {
 
 
     @Autowired

@@ -5,6 +5,7 @@ import com.facetuis.server.dao.sms.SmsMessageRepository;
 import com.facetuis.server.model.mobile.SmsMessage;
 import com.facetuis.server.model.mobile.SmsModelCode;
 import com.facetuis.server.service.basic.BaseResult;
+import com.facetuis.server.service.basic.BasicService;
 import com.facetuis.server.service.sms.utils.SmsContent;
 import com.facetuis.server.service.sms.vo.SmsSubmitResponse;
 import com.facetuis.server.utils.RandomUtils;
@@ -20,7 +21,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 @Service
-public class SmsService {
+public class SmsService  extends BasicService {
 
     private static final Logger logger = Logger.getLogger(SmsSubmitResponse.class.getName());
 

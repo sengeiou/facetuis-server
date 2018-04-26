@@ -4,6 +4,7 @@ import com.facetuis.server.model.pay.PayStatus;
 import com.facetuis.server.model.pay.PayType;
 import com.facetuis.server.model.pay.Payment;
 import com.facetuis.server.service.basic.BaseResult;
+import com.facetuis.server.service.basic.BasicService;
 import com.facetuis.server.service.payment.PaymentService;
 import com.facetuis.server.utils.PayCommonUtil;
 import com.facetuis.server.utils.PayUtils;
@@ -31,7 +32,7 @@ import java.util.TreeMap;
 import static org.apache.http.client.fluent.Request.*;
 
 @Service
-public class WechatPayService {
+public class WechatPayService extends BasicService {
 
     @Autowired
     private PaymentService paymentService;
@@ -63,7 +64,7 @@ public class WechatPayService {
         map.put("out_trade_no", tradeNo);
         map.put("total_fee",total_price);
         map.put("spbill_create_ip","127.0.0.1");
-        map.put("notify_url",notifyUrl);
+        map.put("notify_url",getServerUrl(notifyUrl));
         map.put("trade_type","APP");
         String sign = PayCommonUtil.createSign(map,key);
         map.put("sign",sign);

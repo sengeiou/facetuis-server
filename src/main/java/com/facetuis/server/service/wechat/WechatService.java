@@ -2,6 +2,7 @@ package com.facetuis.server.service.wechat;
 
 import com.alibaba.fastjson.JSONObject;
 import com.facetuis.server.service.basic.BaseResult;
+import com.facetuis.server.service.basic.BasicService;
 import com.facetuis.server.service.wechat.response.MpGetUserInfoResponse;
 import com.facetuis.server.service.wechat.vo.AccessTokenResponse;
 import com.facetuis.server.app.web.basic.BaseResponse;
@@ -14,7 +15,7 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 @Service
-public class WechatService {
+public class WechatService extends BasicService {
 
     private static final Logger logger = Logger.getLogger(WechatService.class.getName());
 

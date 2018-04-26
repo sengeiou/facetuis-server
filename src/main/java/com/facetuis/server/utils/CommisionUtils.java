@@ -152,4 +152,17 @@ public class CommisionUtils {
     public static Long multiply(Long val1,Double val2,int scale){
         return new BigDecimal(Long.toString(val1)).multiply(new BigDecimal(Double.toString(val2))).setScale(scale, BigDecimal.ROUND_HALF_UP).longValue();
     }
+
+    public static Double divide(Double val1,Double val2,int scale){
+        if(null == val1){
+            val1 = new Double(0);
+        }
+        if(null == val2 || val2 == 0){
+            val2 = new Double(1);
+        }
+        return new BigDecimal(Double.toString(val1)).divide(new BigDecimal(Double.toString(val2))).setScale(scale, BigDecimal.ROUND_HALF_UP).doubleValue();
+    }
+
+
+
 }

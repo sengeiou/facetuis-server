@@ -6,6 +6,7 @@ import com.facetuis.server.model.user.User;
 import com.facetuis.server.model.user.UserLevel;
 import com.facetuis.server.model.user.UserRelation;
 import com.facetuis.server.service.basic.BaseResult;
+import com.facetuis.server.service.basic.BasicService;
 import com.facetuis.server.service.payment.PaymentService;
 import com.facetuis.server.service.pinduoduo.PinDuoDuoService;
 import com.facetuis.server.service.user.utils.UserUtils;
@@ -22,7 +23,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 @Service
-public class UserService {
+public class UserService extends BasicService {
 
     private static Logger logger = Logger.getLogger(UserService.class.getName());
 

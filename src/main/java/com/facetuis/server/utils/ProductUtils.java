@@ -14,7 +14,7 @@ public class ProductUtils {
         if(productNo1 == null){
             productNo1 = new Product();
             productNo1.setUuid("1");
-            productNo1.setAmount("198");
+            productNo1.setAmount("1");
             productNo1.setTimeLimit("月");
             productNo1.setTimeLimitValue(1);
             productNo1.setTimeLimitTxt("一个月");

@@ -3,6 +3,7 @@ package com.facetuis.server.service.pinduoduo;
 import com.facetuis.server.dao.order.OrderCommisionRepository;
 import com.facetuis.server.dao.user.UserRepository;
 import com.facetuis.server.model.order.OrderCommision;
+import com.facetuis.server.service.basic.BasicService;
 import com.facetuis.server.service.pinduoduo.commision.CommisionContext;
 import com.facetuis.server.service.pinduoduo.commision.CommisionStrategy;
 import com.facetuis.server.service.pinduoduo.response.OrderDetail;
@@ -17,7 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class OrderCommisionService {
+public class OrderCommisionService extends BasicService {
 
     @Autowired
     private OrderCommisionRepository orderCommisionRepository;

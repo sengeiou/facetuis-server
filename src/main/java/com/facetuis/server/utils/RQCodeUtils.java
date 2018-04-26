@@ -141,8 +141,13 @@ public class RQCodeUtils {
      * void
      * TODO 生成不带Logo的二维码
      */
-    public static BufferedImage encode(String content) throws Exception {
-        return RQCodeUtils.encode(content, null, false);
+    public static BufferedImage encode(String content) {
+        try {
+            return RQCodeUtils.encode(content, null, false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**

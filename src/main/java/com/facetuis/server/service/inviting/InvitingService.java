@@ -1,6 +1,7 @@
 package com.facetuis.server.service.inviting;
 
 import com.facetuis.server.model.inviting.InvitingImage;
+import com.facetuis.server.service.basic.BasicService;
 import com.facetuis.server.utils.Base64Util;
 import com.facetuis.server.utils.RQCodeUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class InvitingService {
+public class InvitingService extends BasicService {
 
     @Value("${sys.recommend.url}")
     private String recommendUrl;

@@ -1,6 +1,7 @@
 package com.facetuis.server.service.headline;
 
 import com.facetuis.server.model.headline.Headline;
+import com.facetuis.server.service.basic.BasicService;
 import com.facetuis.server.service.headline.vo.HeadlineVO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -10,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class HeadlineService {
+public class HeadlineService extends BasicService {
 
 
 

@@ -6,6 +6,7 @@ import com.facetuis.server.model.user.User;
 import com.facetuis.server.model.user.UserLevel;
 import com.facetuis.server.model.user.UserRelation;
 import com.facetuis.server.service.basic.BaseResult;
+import com.facetuis.server.service.basic.BasicService;
 import com.facetuis.server.utils.SysFinalValue;
 import com.facetuis.server.utils.TimeUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -16,7 +17,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 @Service
-public class UserRelationService {
+public class UserRelationService extends BasicService {
 
     private static final Logger logger = Logger.getLogger(UserRelationService.class.getName());
 

@@ -2,6 +2,7 @@ package com.facetuis.server.service.pinduoduo;
 
 import com.alibaba.fastjson.JSONObject;
 import com.facetuis.server.service.basic.BaseResult;
+import com.facetuis.server.service.basic.BasicService;
 import com.facetuis.server.service.pinduoduo.response.PidCreateResonse;
 import com.facetuis.server.service.pinduoduo.utils.PRequestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 @Service
-public class PinDuoDuoService {
+public class PinDuoDuoService extends BasicService {
     @Autowired
     private PRequestUtils pRequestUtils;
 

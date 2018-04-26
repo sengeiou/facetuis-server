@@ -19,11 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/1.0/wechat/pay")
 public class WechatPayController extends FacetuisController {
 
+    private static Logger logger = Logger.getLogger(WechatPayController.class.getName());
 
     @Autowired
     private WechatPayService wechatPayService;

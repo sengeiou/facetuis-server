@@ -1,6 +1,7 @@
 package com.facetuis.server.service.banner;
 
 import com.facetuis.server.model.banner.Banner;
+import com.facetuis.server.service.basic.BasicService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -10,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class BannerService {
+public class BannerService extends BasicService {
 
     @Value("${sys.server.ip}")
     private String serverIp;

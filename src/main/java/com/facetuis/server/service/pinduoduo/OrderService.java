@@ -8,6 +8,7 @@ import com.facetuis.server.model.order.Order;
 import com.facetuis.server.model.user.User;
 import com.facetuis.server.model.user.UserRelation;
 import com.facetuis.server.service.basic.BaseResult;
+import com.facetuis.server.service.basic.BasicService;
 import com.facetuis.server.service.pinduoduo.response.OrderDetail;
 import com.facetuis.server.service.pinduoduo.response.OrderListResponse;
 import com.facetuis.server.service.pinduoduo.response.OrderVO;
@@ -27,7 +28,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 @Service
-public class OrderService {
+public class OrderService extends BasicService {
 
     private static final Logger logger = Logger.getLogger("订单业务逻辑");
 

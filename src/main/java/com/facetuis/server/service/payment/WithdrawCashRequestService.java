@@ -5,13 +5,14 @@ import com.facetuis.server.dao.payment.WithdrawCashRequestRepository;
 import com.facetuis.server.model.basic.BaseEntity;
 import com.facetuis.server.model.pay.WithdrawCashRequest;
 import com.facetuis.server.service.basic.BaseResult;
+import com.facetuis.server.service.basic.BasicService;
 import com.facetuis.server.service.payment.vo.UserCashVO;
 import com.facetuis.server.service.pinduoduo.OrderCommisionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class WithdrawCashRequestService {
+public class WithdrawCashRequestService extends BasicService {
 
     @Autowired
     private WithdrawCashRequestRepository withdrawCashRequestRepository;

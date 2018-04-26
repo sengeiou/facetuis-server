@@ -6,6 +6,7 @@ import com.facetuis.server.app.web.response.PromontionResponse;
 import com.facetuis.server.app.web.response.PromotionUrl;
 import com.facetuis.server.model.user.UserLevel;
 import com.facetuis.server.service.basic.BaseResult;
+import com.facetuis.server.service.basic.BasicService;
 import com.facetuis.server.service.pinduoduo.response.GoodsDetailResponse;
 import com.facetuis.server.service.pinduoduo.response.GoodsDetails;
 import com.facetuis.server.service.pinduoduo.response.GoodsSearchResponse;
@@ -30,7 +31,7 @@ import java.util.TreeMap;
 import java.util.logging.Logger;
 
 @Service
-public class GoodsService {
+public class GoodsService extends BasicService {
 
 
     private Logger logger = Logger.getLogger(GoodsService.class.getName());
@@ -113,10 +114,10 @@ public class GoodsService {
         return null;
     }
 
-    public byte[] createImage(String goodsId) {
+    public byte[] createImage(String goodsId,String link ) {
         GoodsDetails goods = getGoodsById(goodsId, UserLevel.LEVEL1.getLevel());
         if(goods != null){
-            byte[] image = GoodsImageUtils.createImage(goodsBackgroundImage, goods);
+            byte[] image = GoodsImageUtils.createImage(goodsBackgroundImage, goods,link);
             return image;
         }
         return null;

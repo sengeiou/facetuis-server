@@ -12,7 +12,9 @@ import com.facetuis.server.model.pay.PayStatus;
 import com.facetuis.server.model.pay.PayType;
 import com.facetuis.server.model.pay.Payment;
 import com.facetuis.server.service.basic.BaseResult;
+import com.facetuis.server.service.basic.BasicService;
 import com.facetuis.server.service.payment.PaymentService;
+import com.facetuis.server.utils.CommisionUtils;
 import com.facetuis.server.utils.PayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +26,7 @@ import static com.alipay.api.AlipayConstants.CHARSET;
 import static com.alipay.api.AlipayConstants.CHARSET_UTF8;
 
 @Service
-public class AliPayService {
+public class AliPayService extends BasicService {
 
     @Autowired
     private PaymentService paymentService;
@@ -55,19 +57,21 @@ public class AliPayService {
        String tradeNo = PayUtils.getTradeNo();
         paymentService.save(tradeNo,subject,total_amount, PayStatus.WAIT_PAY, PayType.ALIPAY,userId,productId);
         //实例化客户端
-        AlipayClient alipayClient = new DefaultAlipayClient(serverUrl, APP_ID, APP_PRIVATE_KEY, format, CHARSET_UTF8, ALIPAY_PUBLIC_KEY, "RSA");
+        AlipayClient alipayClient = new DefaultAlipayClient(serverUrl, APP_ID, APP_PRIVATE_KEY, format, CHARSET_UTF8, ALIPAY_PUBLIC_KEY, "RSA2");
         //实例化具体API对应的request类,类名称和接口名称对应,当前调用接口名称：alipay.trade.app.pay
         AlipayTradeAppPayRequest request = new AlipayTradeAppPayRequest();
         //SDK已经封装掉了公共参数，这里只需要传入业务参数。以下方法为sdk的model入参方式(model和biz_content同时存在的情况下取biz_content)。
         AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
-        model.setBody(body);
+        model.setBody("member");
         model.setSubject(subject);
         model.setOutTradeNo(tradeNo);//订单号
         model.setTimeoutExpress("30m");
-        model.setTotalAmount(total_amount);
+        double v = Double.parseDouble(total_amount);
+        Double divide = CommisionUtils.divide(v, 100.00, 2);
+        model.setTotalAmount(divide + "");
         model.setProductCode("QUICK_MSECURITY_PAY");
         request.setBizModel(model);
-        request.setNotifyUrl(notfiyUrl);
+        request.setNotifyUrl(getServerUrl(notfiyUrl));
         try {
             //这里和普通的接口调用不同，使用的是sdkExecute
             AlipayTradeAppPayResponse response = alipayClient.sdkExecute(request);

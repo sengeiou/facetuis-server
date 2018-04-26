@@ -21,6 +21,15 @@ public class GoodsDetails {
     private int sold_quantity;
     private int min_group_price;
     private int min_normal_price;
+    private int coupon_remain_quantity;
+
+    public int getCoupon_remain_quantity() {
+        return coupon_remain_quantity;
+    }
+
+    public void setCoupon_remain_quantity(int coupon_remain_quantity) {
+        this.coupon_remain_quantity = coupon_remain_quantity;
+    }
 
     private long aboutEarn;// 预计赚
 

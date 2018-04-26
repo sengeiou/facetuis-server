@@ -1,6 +1,7 @@
 package com.facetuis.server.model.commision;
 
 import com.facetuis.server.model.basic.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -9,7 +10,10 @@ import javax.persistence.Table;
 @Table(name = "t_commision")
 public class CommisionSettings extends BaseEntity {
 
+    //private Double
+
     // 总分出
+    @JsonIgnore
     private double totalRatio = 0.5;
     // 直属团长下无SVIP
     private double teamNoSvip = 0.2;
