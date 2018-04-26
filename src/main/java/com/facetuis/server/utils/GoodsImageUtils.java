@@ -29,24 +29,32 @@ public class GoodsImageUtils {
         BufferedImage resultImage = null;
         try {
             resultImage = ImageIO.read(new File(backgroundImgPath));
-            Graphics graphics = resultImage.createGraphics();
+            Graphics2D  graphics = resultImage.createGraphics();
             // 商品图片
             graphics.drawImage(goodsImage,0,0,750,760,null);
             // 卷后价格
             graphics.setFont( new Font("幼圆", Font.BOLD, 45));
+            graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
             graphics.setColor(new Color(255, 71, 89));
             graphics.drawString("￥" + CommisionUtils.divide ((goodsDetail.getMin_group_price() - goodsDetail.getCoupon_discount())/1.0,100.00,2) ,10,827);
             // 优惠券价格
             graphics.setFont( new Font("幼圆", Font.BOLD, 30));
+            graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
             graphics.setColor(new Color(255, 255, 255));
             graphics.drawString("￥" + CommisionUtils.divide ((goodsDetail.getCoupon_discount())/1.0,100.00,0) ,632,865);
             // 原价
             graphics.setFont( new Font("幼圆", Font.BOLD, 22));
+            graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
             graphics.setColor(new Color(136, 136, 136));
             graphics.drawString("原价 ￥" + CommisionUtils.divide ((goodsDetail.getMin_group_price())/1.0,100.00,2) ,10,870);
 
             // 标题
             graphics.setFont( new Font("幼圆", Font.BOLD, 28));
+            graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
             graphics.setColor(new Color(0, 0, 0));
             String goods_name = goodsDetail.getGoods_name();
             String name1 = "";
@@ -67,7 +75,7 @@ public class GoodsImageUtils {
 
             graphics.dispose();
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            boolean flag = ImageIO.write(resultImage, "jpg", out);
+            boolean flag = ImageIO.write(resultImage, "png", out);
             if(flag){
                 return out.toByteArray();
             }

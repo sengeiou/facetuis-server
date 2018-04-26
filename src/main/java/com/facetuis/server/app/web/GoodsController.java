@@ -103,7 +103,7 @@ public class GoodsController extends FacetuisController {
         PromotionUrl promontion = goodsService.promontion(pid, goodsId, true);
         byte[] image = goodsService.createImage(goodsId,promontion.getMobile_short_url());
 
-        response.setContentType("image/jpeg");
+        response.setContentType("image/png");
         ServletOutputStream outputStream = response.getOutputStream();
         outputStream.write(image);
         outputStream.flush();
