@@ -38,6 +38,16 @@ public class User extends BaseEntity {
     private String pid;
     private String recommendUrl;
 
+    private Boolean settingRQInGoodsImage = true;// 设置是否生成二维码图片到商品推广图中
+
+    public Boolean getSettingRQInGoodsImage() {
+        return settingRQInGoodsImage;
+    }
+
+    public void setSettingRQInGoodsImage(Boolean settingRQInGoodsImage) {
+        this.settingRQInGoodsImage = settingRQInGoodsImage;
+    }
+
     public String getRecommendUrl() {
         return recommendUrl;
     }

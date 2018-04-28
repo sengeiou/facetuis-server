@@ -287,5 +287,8 @@ public class UserService extends BasicService {
     }
 
 
+    public void save(User user){
+        userRepository.save(user);
+    }
 
 }

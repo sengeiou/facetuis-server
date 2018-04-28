@@ -4,6 +4,7 @@ import com.facetuis.server.app.web.basic.BaseResponse;
 import com.facetuis.server.app.web.basic.FacetuisController;
 import com.facetuis.server.app.web.request.RegisterRequest;
 import com.facetuis.server.app.web.request.UpgradedRequest;
+import com.facetuis.server.app.web.request.UserSettingsRequest;
 import com.facetuis.server.app.web.response.UserRecommanderResponse;
 import com.facetuis.server.model.user.User;
 import com.facetuis.server.model.user.UserLevel;
@@ -71,6 +72,16 @@ public class UserController extends FacetuisController{
                 return onResult(baseResult);
             }
         }
+        return successResult();
+    }
+
+    @RequestMapping(value = "/setting",method = RequestMethod.POST)
+    @NeedLogin(needLogin = true)
+    public BaseResponse setting(@RequestBody UserSettingsRequest userSettingsRequest){
+        User user = getUser();
+        user.setSettingRQInGoodsImage(userSettingsRequest.getSettingRQInGoodsImage());
+        userService.save(user);
+        userSettingsRequest.getSettingRQInGoodsImage();
         return successResult();
     }
 

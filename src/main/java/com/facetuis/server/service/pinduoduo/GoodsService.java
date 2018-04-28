@@ -114,12 +114,13 @@ public class GoodsService extends BasicService {
         return null;
     }
 
-    public byte[] createImage(String goodsId,String link ) {
+    public byte[] createImage(String goodsId,String link ,Integer imageIndex) {
         GoodsDetails goods = getGoodsById(goodsId, UserLevel.LEVEL1.getLevel());
         if(goods != null){
-            byte[] image = GoodsImageUtils.createImage(goodsBackgroundImage, goods,link);
+            byte[] image = GoodsImageUtils.createImage(goodsBackgroundImage, goods,link,imageIndex);
             return image;
         }
+        System.out.println("...........................................");
         return null;
     }
 }

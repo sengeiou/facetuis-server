@@ -97,18 +97,17 @@ public class GoodsController extends FacetuisController {
      */
     @RequestMapping(value = "/image/{goodsId}",method = RequestMethod.GET)
     @NeedLogin(needLogin = true)
-    public void getGoodsImage(@PathVariable String goodsId, HttpServletResponse response) throws IOException {
+    public void getGoodsImage(@PathVariable String goodsId,Integer imageIndex, HttpServletResponse response) throws IOException {
         User user = getUser();
         String pid = user.getPid();
         PromotionUrl promontion = goodsService.promontion(pid, goodsId, true);
-        byte[] image = goodsService.createImage(goodsId,promontion.getMobile_short_url());
-
+        byte[] image = goodsService.createImage(goodsId,promontion.getMobile_short_url(),imageIndex);
+        System.out.println( "image.length::" +  image.length);
         response.setContentType("image/png");
         ServletOutputStream outputStream = response.getOutputStream();
         outputStream.write(image);
         outputStream.flush();
         outputStream.close();
-
     }
 
 

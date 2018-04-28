@@ -36,7 +36,6 @@ public class RQCodeUtils {
      * @throws WriterException
      * @throws IOException
      * BufferedImage
-     * TODO 创建二维码图片
      */
     private static BufferedImage createImage(String content, String logoImgPath, boolean needCompress) throws WriterException, IOException {
         Hashtable<EncodeHintType, Object> hints = new Hashtable<EncodeHintType, Object>();
@@ -69,7 +68,6 @@ public class RQCodeUtils {
      * @param needCompress 是否压缩Logo
      * @throws IOException
      * void
-     * TODO 添加Logo
      */
     private static void insertImage(BufferedImage source, String logoImgPath, boolean needCompress) throws IOException{
         File file = new File(logoImgPath);
@@ -116,7 +114,6 @@ public class RQCodeUtils {
      * @param needCompress 是否压缩Logo
      * @throws Exception
      * void
-     * TODO 生成带Logo的二维码
      */
     public static BufferedImage encode(String content, String logoImgPath, boolean needCompress) throws Exception {
         BufferedImage image = RQCodeUtils.createImage(content, logoImgPath, needCompress);
@@ -139,7 +136,6 @@ public class RQCodeUtils {
      * @param content 二维码内容
      * @throws Exception
      * void
-     * TODO 生成不带Logo的二维码
      */
     public static BufferedImage encode(String content) {
         try {
@@ -159,7 +155,6 @@ public class RQCodeUtils {
      * @param needCompress 是否压缩Logo
      * @throws Exception
      * void
-     * TODO 生成带Logo的二维码，并输出到指定的输出流
      */
     public static void encode(String content, String logoImgPath, OutputStream output, boolean needCompress) throws Exception {
         BufferedImage image = RQCodeUtils.createImage(content, logoImgPath, needCompress);
@@ -173,7 +168,6 @@ public class RQCodeUtils {
      * @param output 输出流
      * @throws Exception
      * void
-     * TODO 生成不带Logo的二维码，并输出到指定的输出流
      */
     public static void encode(String content, OutputStream output) throws Exception {
         RQCodeUtils.encode(content, null, output, false);
@@ -186,7 +180,6 @@ public class RQCodeUtils {
      * @return 返回解析得到的二维码内容
      * @throws Exception
      * String
-     * TODO 二维码解析
      */
     public static String decode(File file) throws Exception {
         BufferedImage image;
@@ -211,7 +204,6 @@ public class RQCodeUtils {
      * @return 返回解析得到的二维码内容
      * @throws Exception
      * String
-     * TODO 二维码解析
      */
     public static String decode(String path) throws Exception {
         return RQCodeUtils.decode(new File(path));

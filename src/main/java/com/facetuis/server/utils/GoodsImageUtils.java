@@ -14,14 +14,36 @@ import java.net.URL;
 
 public class GoodsImageUtils {
 
-    public static byte[] createImage(String backgroundImgPath, GoodsDetails goodsDetail,String link){
+    public static byte[] createImage(String backgroundImgPath, GoodsDetails goodsDetail,String link,Integer imageIndex){
         String goodsImageUrl = goodsDetail.getGoods_image_url();
         // 获取产品主图
         BufferedImage goodsImage = null;
-        try {
-            goodsImage = ImageIO.read(new URL(goodsImageUrl));
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(imageIndex == null || imageIndex == 0 ) {
+            try {
+                goodsImage = ImageIO.read(new URL(goodsImageUrl));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }else{
+            String goods_gallery_urls = goodsDetail.getGoods_gallery_urls();
+            goods_gallery_urls = goods_gallery_urls.replace("[","");
+            goods_gallery_urls = goods_gallery_urls.replace("]","");
+            goods_gallery_urls = goods_gallery_urls.replaceAll("\"","");
+            String[] split = goods_gallery_urls.split(",");
+            if(imageIndex < split.length) {
+                goodsImageUrl = split[imageIndex - 1];
+                if(!StringUtils.isEmpty(goodsImageUrl)) {
+                    try {
+                        goodsImage = ImageIO.read(new URL(goodsImageUrl));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }else{
+                    return null;
+                }
+            }else{
+                return null;
+            }
         }
         // 根据推广链接生成二维码图片
         BufferedImage rqImageBuffered = RQCodeUtils.encode(link);
@@ -36,14 +58,14 @@ public class GoodsImageUtils {
             graphics.setFont( new Font("幼圆", Font.BOLD, 45));
             graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-            graphics.setColor(new Color(255, 71, 89));
+            graphics.setColor(new Color(217, 47, 156));
             graphics.drawString("￥" + CommisionUtils.divide ((goodsDetail.getMin_group_price() - goodsDetail.getCoupon_discount())/1.0,100.00,2) ,10,827);
             // 优惠券价格
-            graphics.setFont( new Font("幼圆", Font.BOLD, 30));
+            graphics.setFont( new Font("幼圆", Font.BOLD, 25));
             graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
             graphics.setColor(new Color(255, 255, 255));
-            graphics.drawString("￥" + CommisionUtils.divide ((goodsDetail.getCoupon_discount())/1.0,100.00,0) ,632,865);
+            graphics.drawString((CommisionUtils.divide ((goodsDetail.getCoupon_discount())/1.0,100.00,0) + "").replace(".0","") ,590,819);
             // 原价
             graphics.setFont( new Font("幼圆", Font.BOLD, 22));
             graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -82,6 +104,7 @@ public class GoodsImageUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.println("...........................................3");
         return null;
     }
 }
