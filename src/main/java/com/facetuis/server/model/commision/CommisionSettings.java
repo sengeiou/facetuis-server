@@ -24,9 +24,28 @@ public class CommisionSettings extends BaseEntity {
     private double directorNoSvip = 0.4;
     // 总监下有总监
     private double directorHaveSvip = 0.06;
-
     // 总监自买分出
     private double directorSelf = 0.6;
+    // 月版奖励
+    private double monthAdd = 38;
+    // 年版奖励
+    private double yearAdd = 380;
+
+    public double getMonthAdd() {
+        return monthAdd;
+    }
+
+    public void setMonthAdd(double monthAdd) {
+        this.monthAdd = monthAdd;
+    }
+
+    public double getYearAdd() {
+        return yearAdd;
+    }
+
+    public void setYearAdd(double yearAdd) {
+        this.yearAdd = yearAdd;
+    }
 
     public double getDirectorSelf() {
         return directorSelf;

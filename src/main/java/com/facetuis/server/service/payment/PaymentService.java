@@ -42,8 +42,14 @@ public class PaymentService extends BasicService {
         return paymentRepository.findByOutTradeNo(tradeNo);
     }
 
+
     public void updatePayment(Payment payment){
         paymentRepository.save(payment);
+    }
+
+
+    public Payment findByOutTradeNo(String outTradeNo){
+        return paymentRepository.findByOutTradeNo(outTradeNo);
     }
 
 }

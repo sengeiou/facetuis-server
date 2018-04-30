@@ -6,11 +6,14 @@ import com.facetuis.server.model.mobile.SmsModelCode;
 import com.facetuis.server.service.basic.BaseResult;
 import com.facetuis.server.service.sms.SmsService;
 import com.facetuis.server.utils.SMSUtils;
+import com.facetuis.server.utils.SysFinalValue;
 import org.apache.http.client.fluent.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 @RestController
@@ -31,7 +34,14 @@ public class SmsController extends FacetuisController {
      * @return
      */
     @RequestMapping( value = "/{mobileNumber}/{modelCode}",method = RequestMethod.POST)
-    public BaseResponse get(@PathVariable String mobileNumber, @PathVariable SmsModelCode modelCode ){
+    public BaseResponse get(@PathVariable String mobileNumber, @PathVariable SmsModelCode modelCode, String captcha , HttpServletRequest request){
+        if(SmsModelCode.REGISTER == modelCode){
+            String attribute = request.getSession().getAttribute(SysFinalValue.SESSION_CAPTCHA_ID).toString();
+            System.out.println(attribute + " ......1");
+            if(!attribute.equals(captcha)){
+                return setErrorResult(400,"图片验证码错误");
+            }
+        }
         if(SMSUtils.isSend(mobileNumber)){
             BaseResult result = smsService.sendMessage(mobileNumber,modelCode);
             return onResult(result);

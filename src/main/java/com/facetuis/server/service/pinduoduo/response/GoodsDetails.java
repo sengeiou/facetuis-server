@@ -22,6 +22,15 @@ public class GoodsDetails {
     private int min_group_price;
     private int min_normal_price;
     private int coupon_remain_quantity;
+    private String goods_thumbnail_url;
+
+    public String getGoods_thumbnail_url() {
+        return goods_thumbnail_url;
+    }
+
+    public void setGoods_thumbnail_url(String goods_thumbnail_url) {
+        this.goods_thumbnail_url = goods_thumbnail_url;
+    }
 
     public int getCoupon_remain_quantity() {
         return coupon_remain_quantity;

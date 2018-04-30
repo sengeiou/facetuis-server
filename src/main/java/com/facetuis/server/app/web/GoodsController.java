@@ -99,10 +99,10 @@ public class GoodsController extends FacetuisController {
     @NeedLogin(needLogin = true)
     public void getGoodsImage(@PathVariable String goodsId,Integer imageIndex, HttpServletResponse response) throws IOException {
         User user = getUser();
+        Boolean settingRQInGoodsImage = user.getSettingRQInGoodsImage();
         String pid = user.getPid();
         PromotionUrl promontion = goodsService.promontion(pid, goodsId, true);
-        byte[] image = goodsService.createImage(goodsId,promontion.getMobile_short_url(),imageIndex);
-        System.out.println( "image.length::" +  image.length);
+        byte[] image = goodsService.createImage(goodsId,promontion.getMobile_short_url(),imageIndex,settingRQInGoodsImage);
         response.setContentType("image/png");
         ServletOutputStream outputStream = response.getOutputStream();
         outputStream.write(image);

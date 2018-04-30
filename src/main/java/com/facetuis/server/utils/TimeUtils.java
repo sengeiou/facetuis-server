@@ -305,6 +305,18 @@ public class TimeUtils {
         return  format.format(cale.getTime());
     }
 
+	/**
+	 * 指定日期加上天数后的日期
+	 * @param num 为增加的天数
+	 * @return
+	 * @throws ParseException
+	 */
+	public static Date plusDay(int num,Date currdate){
+		Calendar ca = Calendar.getInstance();
+		ca.add(Calendar.DATE, num);// num为增加的天数，可以改变的
+		return ca.getTime();
+	}
+
 
 
 

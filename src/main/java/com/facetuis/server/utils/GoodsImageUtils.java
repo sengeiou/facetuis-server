@@ -14,7 +14,7 @@ import java.net.URL;
 
 public class GoodsImageUtils {
 
-    public static byte[] createImage(String backgroundImgPath, GoodsDetails goodsDetail,String link,Integer imageIndex){
+    public static byte[] createImage(String backgroundImgPath, GoodsDetails goodsDetail,String link,Integer imageIndex,Boolean settingRQInGoodsImage){
         String goodsImageUrl = goodsDetail.getGoods_image_url();
         // 获取产品主图
         BufferedImage goodsImage = null;
@@ -45,8 +45,11 @@ public class GoodsImageUtils {
                 return null;
             }
         }
-        // 根据推广链接生成二维码图片
-        BufferedImage rqImageBuffered = RQCodeUtils.encode(link);
+        BufferedImage rqImageBuffered = null;
+        if(settingRQInGoodsImage == null || settingRQInGoodsImage == true) {
+            // 根据推广链接生成二维码图片
+            rqImageBuffered = RQCodeUtils.encode(link);
+        }
 
         BufferedImage resultImage = null;
         try {
@@ -55,26 +58,26 @@ public class GoodsImageUtils {
             // 商品图片
             graphics.drawImage(goodsImage,0,0,750,760,null);
             // 卷后价格
-            graphics.setFont( new Font("幼圆", Font.BOLD, 45));
+            graphics.setFont( new Font("微软雅黑", Font.BOLD, 40));
             graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
             graphics.setColor(new Color(217, 47, 156));
             graphics.drawString("￥" + CommisionUtils.divide ((goodsDetail.getMin_group_price() - goodsDetail.getCoupon_discount())/1.0,100.00,2) ,10,827);
             // 优惠券价格
-            graphics.setFont( new Font("幼圆", Font.BOLD, 25));
+            graphics.setFont( new Font("微软雅黑", Font.BOLD, 25));
             graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
             graphics.setColor(new Color(255, 255, 255));
             graphics.drawString((CommisionUtils.divide ((goodsDetail.getCoupon_discount())/1.0,100.00,0) + "").replace(".0","") ,590,819);
             // 原价
-            graphics.setFont( new Font("幼圆", Font.BOLD, 22));
+            graphics.setFont( new Font("微软雅黑", Font.BOLD, 22));
             graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
             graphics.setColor(new Color(136, 136, 136));
             graphics.drawString("原价 ￥" + CommisionUtils.divide ((goodsDetail.getMin_group_price())/1.0,100.00,2) ,10,870);
 
             // 标题
-            graphics.setFont( new Font("幼圆", Font.BOLD, 28));
+            graphics.setFont( new Font("微软雅黑", Font.BOLD, 28));
             graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
             graphics.setColor(new Color(0, 0, 0));
@@ -93,8 +96,9 @@ public class GoodsImageUtils {
             }
 
             //二维码
-            graphics.drawImage(rqImageBuffered,60*2,538*2,180,180,null);
-
+            if(rqImageBuffered != null) {
+                graphics.drawImage(rqImageBuffered, 60 * 2, 538 * 2, 180, 180, null);
+            }
             graphics.dispose();
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             boolean flag = ImageIO.write(resultImage, "png", out);
@@ -104,7 +108,6 @@ public class GoodsImageUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("...........................................3");
         return null;
     }
 }

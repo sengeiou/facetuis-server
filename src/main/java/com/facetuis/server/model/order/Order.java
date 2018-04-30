@@ -22,7 +22,7 @@ public class Order extends BaseEntity{
     private Long ordePayTime;
     private Long promotionRate;
     private Long promotionAmount;
-    private Long orderStatus;
+    private Integer orderStatus;
     private String orderStatusDesc;
     private String orderGroupSuccessTime;
     private String orderModifyAt;
@@ -124,11 +124,11 @@ public class Order extends BaseEntity{
         this.promotionAmount = promotionAmount;
     }
 
-    public Long getOrderStatus() {
+    public Integer getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(Long orderStatus) {
+    public void setOrderStatus(Integer orderStatus) {
         this.orderStatus = orderStatus;
     }
 

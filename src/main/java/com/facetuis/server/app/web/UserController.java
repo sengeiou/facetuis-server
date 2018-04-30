@@ -6,11 +6,16 @@ import com.facetuis.server.app.web.request.RegisterRequest;
 import com.facetuis.server.app.web.request.UpgradedRequest;
 import com.facetuis.server.app.web.request.UserSettingsRequest;
 import com.facetuis.server.app.web.response.UserRecommanderResponse;
+import com.facetuis.server.model.commision.CommisionSettings;
+import com.facetuis.server.model.product.Product;
 import com.facetuis.server.model.user.User;
+import com.facetuis.server.model.user.UserCommision;
 import com.facetuis.server.model.user.UserLevel;
 import com.facetuis.server.service.basic.BaseResult;
+import com.facetuis.server.service.pinduoduo.UserCommisionService;
 import com.facetuis.server.service.user.UserService;
 import com.facetuis.server.utils.NeedLogin;
+import com.facetuis.server.utils.ProductUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +43,8 @@ public class UserController extends FacetuisController{
     private String host;
     @Value("${sys.web.register.url}")
     private String webRegister;
+    @Autowired
+    private UserCommisionService userCommisionService;
 
 
     /**
@@ -138,7 +145,16 @@ public class UserController extends FacetuisController{
         }
         BaseResult upload = userService.upload(user.getUuid(), request.getOutTradeNo(), request.getProductId());
         if(!upload.hasError()){
+            CommisionSettings commisionSettings = new CommisionSettings();
+            Product product = ProductUtils.getProduct(request.getProductId());
+            Double cash = 0.0;
+            if(product.getValues() == 30){
+                cash = commisionSettings.getMonthAdd();
+            }else{
+                cash = commisionSettings.getYearAdd();
+            }
             // 发送奖励
+            userCommisionService.addInvitingCash(user.getUuid(),cash);
         }
         return onResult(upload);
     }

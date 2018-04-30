@@ -15,7 +15,19 @@ public class Product extends BaseEntity {
     private String timeLimit; // 时长 单位 天 月 季 年
     private Integer timeLimitValue; // 时长 值 365
     private String timeLimitTxt;// 时长 文字描述
+    private Integer valuesDay;// 续费天数
 
+    public Integer getValues() {
+        return valuesDay;
+    }
+
+    public void setValues(Integer values) {
+        this.valuesDay = values;
+    }
+
+    public void setTimeLimitValue(Integer timeLimitValue) {
+        this.timeLimitValue = timeLimitValue;
+    }
 
     public String getTimeLimit() {
         return timeLimit;

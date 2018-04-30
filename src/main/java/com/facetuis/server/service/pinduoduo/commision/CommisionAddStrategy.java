@@ -37,6 +37,10 @@ public class CommisionAddStrategy implements CommisionStrategy {
             orderCommision = new OrderCommision();
             orderCommision.setUuid(UUID.randomUUID().toString());
             BeanUtils.copyProperties(orderDetail,orderCommision);
+            orderCommision.setOrderStatus(orderDetail.getOrderStatus());
+        }else{
+            // 已经计算过，不再计算
+            return orderCommision;
         }
         long promotionAmount = orderDetail.getPromotionAmount();
         // 如果计算完成
@@ -74,6 +78,8 @@ public class CommisionAddStrategy implements CommisionStrategy {
             orderCommision.setUser1Commision(CommisionUtils.multiply(promotionAmount,rate.getUser1Rate(),0));
             orderCommision.setUser2Commision(CommisionUtils.multiply(promotionAmount,rate.getUser2Rate(),0));
             orderCommision.setUser3Commision(CommisionUtils.multiply(promotionAmount,rate.getUser3Rate(),0));
+            orderCommision.setFinish(false); // 未完成结算
+            orderCommision.setCompute(false);// 未完成计算
         }
         return orderCommision;
     }

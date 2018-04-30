@@ -1,62 +1,85 @@
 package com.facetuis.server.utils;
 
+import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageOutputStream;
+import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.util.Random;
 
 /**
  * 图片验证码
  */
-public class ImageVfcUtil {
+public class CaptchafcUtil {
 
-    public byte[] getImage(String code){
-        // 在内存中创建图象
-        int width = 85, height = 20;
-        BufferedImage image = new BufferedImage(width, height,
-                BufferedImage.TYPE_INT_RGB);
-        // 获取图形上下文
-        Graphics g = image.getGraphics();
-        // 生成随机类
+
+    public static byte[]  getImage(String code){
+        // 图片的宽度。
+          int width = 157;
+        // 图片的高度。
+          int height = 47;
+        // 验证码字符个数
+          int codeCount = 4;
+        // 验证码干扰线数
+          int lineCount = 220;
+        int x = 0, fontHeight = 0, codeY = 0;
+        int red = 0, green = 0, blue = 0;
+        // 验证码图片Buffer
+        BufferedImage buffImg = null;
+        x = width / (codeCount + 2);//每个字符的宽度(左右各空出一个字符)
+        fontHeight = height - 2;//字体的高度
+        codeY = height - 4;
+
+        // 图像buffer
+        buffImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = buffImg.createGraphics();
+        // 生成随机数
         Random random = new Random();
-        // 设定背景色
-        g.setColor(getRandColor(200, 250));
+        // 将图像填充为白色
+        g.setColor(Color.WHITE);
         g.fillRect(0, 0, width, height);
-        // 设定字体
-        g.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-        // 随机产生155条干扰线，使图象中的认证码不易被其它程序探测到
-        g.setColor(getRandColor(160, 200));
-        for (int i = 0; i < 155; i++) {
-            int x = random.nextInt(width);
-            int y = random.nextInt(height);
-            int xl = random.nextInt(12);
-            int yl = random.nextInt(12);
-            g.drawLine(x, y, x + xl, y + yl);
-        }
-        // 取随机产生的认证码(6位数字)
-        String sRand = "";
-        for (int i = 0; i < 6; i++) {
-            String rand = String.valueOf(random.nextInt(10));
-            sRand += rand;
-            // 将认证码显示到图象中
-            g.setColor(new Color(20 + random.nextInt(110), 20 + random
-                    .nextInt(110), 20 + random.nextInt(110)));
-            // 调用函数出来的颜色相同，可能是因为种子太接近，所以只能直接生成
-            g.drawString(rand, 13 * i + 6, 16);
-        }
-        // 赋值验证码
-        this.str = sRand;
+        // 创建字体,可以修改为其它的
+        Font font = new Font("Fixedsys", Font.PLAIN, fontHeight);
+//        Font font = new Font("Times New Roman", Font.ROMAN_BASELINE, fontHeight);
+        g.setFont(font);
 
-        // 图象生效
-        g.dispose();
-        ByteArrayInputStream input = null;
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        try {
-            ImageOutputStream imageOut = ImageIO
-                    .createImageOutputStream(output);
-            ImageIO.write(image, "JPEG", imageOut);
-            imageOut.close();
-            input = new ByteArrayInputStream(output.toByteArray());
-        } catch (Exception e) {
-            System.out.println("验证码图片产生出现错误：" + e.toString());
+        for (int i = 0; i < lineCount; i++) {
+            // 设置随机开始和结束坐标
+            int xs = random.nextInt(width);//x坐标开始
+            int ys = random.nextInt(height);//y坐标开始
+            int xe = xs + random.nextInt(width / 8);//x坐标结束
+            int ye = ys + random.nextInt(height / 8);//y坐标结束
+
+            // 产生随机的颜色值，让输出的每个干扰线的颜色值都将不同。
+            red = random.nextInt(255);
+            green = random.nextInt(255);
+            blue = random.nextInt(255);
+            g.setColor(new Color(red, green, blue));
+            g.drawLine(xs, ys, xe, ye);
         }
+        String[] split = code.split("");
+        // 随机产生codeCount个字符的验证码。
+        for (int i = 0; i < codeCount; i++) {
+
+            // 产生随机的颜色值，让输出的每个字符的颜色值都将不同。
+            red = random.nextInt(255);
+            green = random.nextInt(255);
+            blue = random.nextInt(255);
+            g.setColor(new Color(red, green, blue));
+            g.drawString(split[i], (i + 1) * x, codeY);
+        }
+        g.dispose();
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            boolean flag = ImageIO.write(buffImg, "jpeg", out);
+            if(flag){
+                return out.toByteArray();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

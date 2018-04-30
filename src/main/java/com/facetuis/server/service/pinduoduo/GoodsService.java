@@ -53,7 +53,7 @@ public class GoodsService extends BasicService {
         map.put("goods_id_list","[" + id + "]");
         BaseResult<String> send = pRequestUtils.send(API_GOODS_DETAIL, map);
         GoodsDetailResponse details = JSONObject.parseObject(send.getResult(),GoodsDetailResponse.class);
-        if(details.getGoods_detail_response().getGoods_details().size() > 0){
+        if(details !=null && details.getGoods_detail_response() != null && details.getGoods_detail_response().getGoods_details().size() > 0){
             GoodsDetails goodsDetails = details.getGoods_detail_response().getGoods_details().get(0);
             if(goodsDetails == null){
                 return goodsDetails;
@@ -67,11 +67,16 @@ public class GoodsService extends BasicService {
     public Page<GoodsDetails> findByWrods(String words,String categoryId,String softType,int page,int level,String rangeList){
 
         SortedMap<String,String> map = new TreeMap<>();
-        map.put("keyword",words == "0" ? "" : words);
-        map.put("category_id",categoryId == "0" ? "" : categoryId);
+        if(words != null) {
+            map.put("keyword", words.equals("0") ? "" : words);
+        }
+        if(categoryId != null) {
+            map.put("category_id", categoryId.equals("0") ? "" : categoryId);
+        }
         map.put("sort_type",softType);
         map.put("page",page + "");
         map.put("page_size","50");
+        map.put("with_coupon","true");
         if(!StringUtils.isEmpty(rangeList) ) {
             try {
                 rangeList = URLEncoder.encode(rangeList, "UTF-8");
@@ -114,10 +119,10 @@ public class GoodsService extends BasicService {
         return null;
     }
 
-    public byte[] createImage(String goodsId,String link ,Integer imageIndex) {
+    public byte[] createImage(String goodsId,String link ,Integer imageIndex,Boolean settingRQInGoodsImage) {
         GoodsDetails goods = getGoodsById(goodsId, UserLevel.LEVEL1.getLevel());
         if(goods != null){
-            byte[] image = GoodsImageUtils.createImage(goodsBackgroundImage, goods,link,imageIndex);
+            byte[] image = GoodsImageUtils.createImage(goodsBackgroundImage, goods,link,imageIndex,settingRQInGoodsImage);
             return image;
         }
         System.out.println("...........................................");

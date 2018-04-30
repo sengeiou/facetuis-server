@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -17,7 +18,7 @@ public class HeadlineService extends BasicService {
 
     public PageImpl<HeadlineVO> list(){
         HeadlineVO<String> headline = new HeadlineVO();
-        headline.setContent("2018年5月7日脸推App正式上线，前期致力于拼多多导购，" +
+        headline.setContentText("2018年5月7日脸推App正式上线，前期致力于拼多多导购，" +
                 "让更多的人加入到脸推的大家庭享受到推广的力量带来的乐趣及回报！" +
                 "脸推，一个专心做产品的App，希望在接下来的日子里能够与脸推的家人一起共同成长和进步，即将对接更多的平台以追求我们不息的脚步！" +
                 "我们的口号：奋斗吧青春，既省钱又赚钱，我们一起努力着" +
@@ -26,6 +27,7 @@ public class HeadlineService extends BasicService {
         headline.setTitle("官方公告");
         headline.setType("TXT");
         headline.setSubTitle("SubTitle");
+        headline.setCreateTime(new Date());
 
         HeadlineVO headline1 = new HeadlineVO();
         HeadlineVO.HeadlineContent hc1 = headline1.new HeadlineContent();
@@ -38,8 +40,7 @@ public class HeadlineService extends BasicService {
         headline1.setTitle("title");
         headline1.setType("TXT");
         headline1.setSubTitle("#2018的第一次#脸推App上线了！");
-
-
+        headline1.setCreateTime(new Date());
 
         List<HeadlineVO> list = new ArrayList<>();
         list.add(headline);

@@ -76,8 +76,9 @@ public class OrderScheduled {
         if( order_list != null && order_list.size() != 0){
             // 同步订单
             orderTask.doUpdateOrderTask(response);
-            // 计算佣金
+            // 计算订单佣金
             orderTask.doComputeOrderTask(response);
+            // 计算用户佣金
             return true;
         }else{
             return false;

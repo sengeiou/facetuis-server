@@ -3,6 +3,7 @@ package com.facetuis.server.service.pinduoduo;
 import com.facetuis.server.dao.order.OrderCommisionRepository;
 import com.facetuis.server.dao.user.UserRepository;
 import com.facetuis.server.model.order.OrderCommision;
+import com.facetuis.server.model.order.OrderStatus;
 import com.facetuis.server.service.basic.BasicService;
 import com.facetuis.server.service.pinduoduo.commision.CommisionContext;
 import com.facetuis.server.service.pinduoduo.commision.CommisionStrategy;
@@ -26,6 +27,8 @@ public class OrderCommisionService extends BasicService {
     private CommisionContext commisionContext;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserCommisionService userCommisionService;
 
     /**
      * 订单佣金计算
@@ -40,10 +43,16 @@ public class OrderCommisionService extends BasicService {
         for(OrderDetail orderDetail : order_list){
             CommisionStrategy strategy = commisionContext.getStrategy(orderDetail.getOrderStatus());
             if(strategy != null) {
+                // 结算订单佣金
                 OrderCommision orderCommision = strategy.doCompute(orderDetail);
-                if(orderCommision != null){
-                    orderCommisionRepository.save(orderCommision);
+                // 未完成计算
+                if(!orderCommision.getCompute()){
+                    // 标志订单佣金计算已完成
+                    orderCommision.setFinish(true);
                 }
+                // 计算个人用户佣金
+                userCommisionService.computUserCommision(OrderStatus.getStatus(orderDetail.getOrderStatus()),orderCommision );
+                orderCommisionRepository.save(orderCommision);
             }
         }
         return;

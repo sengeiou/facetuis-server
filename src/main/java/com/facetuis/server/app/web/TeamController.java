@@ -7,6 +7,7 @@ import com.facetuis.server.app.web.response.TeamPopleCountResponse;
 import com.facetuis.server.app.web.response.TeamUsersResponse;
 import com.facetuis.server.model.order.Order;
 import com.facetuis.server.model.user.User;
+import com.facetuis.server.model.user.UserLevel;
 import com.facetuis.server.model.user.UserRelation;
 import com.facetuis.server.service.pinduoduo.OrderCommisionService;
 import com.facetuis.server.service.pinduoduo.OrderService;
@@ -54,14 +55,14 @@ public class TeamController extends FacetuisController {
         // 总人数
         int total = userRelationService.getTotal(user,relation);
         // 直属高级
-        Integer totalHigh = relation.getUser1HighTotal();
+        Integer totalHigh = relation != null? relation.getUser1HighTotal() :0;
         totalHigh = totalHigh == null ? 0 : totalHigh;
         // 今日人数
         List<UserRelation> userRelationsToday = userRelationService.countPeopleToday(user.getUuid());
         // 昨天人数
         List<UserRelation> userRelationYesterday = userRelationService.countPeopleYesterday(user.getUuid());
-        Integer people_directly = relation.getUser1Total();
-        Integer people_directly_next = relation.getUser2Total() + relation.getUser3Total();
+        Integer people_directly = relation != null ? relation.getUser1Total() : 0;
+        Integer people_directly_next =  relation != null ? relation.getUser2Total() + relation.getUser3Total() : 0;
 
         TeamPopleCountResponse teamPopleCountResponse = new TeamPopleCountResponse();
         teamPopleCountResponse.setPeople_directly(people_directly);
@@ -156,6 +157,41 @@ public class TeamController extends FacetuisController {
         }
         return successResult(responses);
     }
+
+    @RequestMapping(value = "/people/high",method = RequestMethod.GET)
+    @NeedLogin(needLogin = true)
+    public BaseResponse teamPeopleLeve2(String keywords){
+        String nickName = "";
+        String mobile = "";
+        User user = getUser();
+        List<User> users = null;
+        if(!StringUtils.isEmpty(keywords)){
+            if(SMSUtils.isChinaPhoneLegal(keywords)){
+                mobile = keywords;
+            }else {
+                nickName = keywords;
+            }
+            // 根据条件查询团队成员
+            users = userService.findByNickNameOrMobile(nickName, mobile);
+        }else{
+            // 查询所有成员
+            users = userRelationService.findHighUser(user.getUuid());
+        }
+        List<TeamUsersResponse> responses = new ArrayList<>();
+        if(user != null){
+            for(User u : users){
+                List<User> byInviteCode = userService.findByInviteCode(u.getRecommandCode());
+                if(u.getLevel() == UserLevel.LEVEL2) {
+                    TeamUsersResponse response = new TeamUsersResponse();
+                    BeanUtils.copyProperties(u, response);
+                    response.setRecommandNumber(byInviteCode.size());
+                    responses.add(response);
+                }
+            }
+        }
+        return successResult(responses);
+    }
+
 
     /**
      * 查询团队收入

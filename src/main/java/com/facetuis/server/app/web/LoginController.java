@@ -9,12 +9,22 @@ import com.facetuis.server.model.user.User;
 import com.facetuis.server.service.basic.BaseResult;
 import com.facetuis.server.service.sms.SmsService;
 import com.facetuis.server.service.user.UserService;
+import com.facetuis.server.utils.CaptchafcUtil;
+import com.facetuis.server.utils.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+
+import static com.facetuis.server.utils.SysFinalValue.SESSION_CAPTCHA_ID;
 
 @RestController
 @RequestMapping("/1.0/login")
@@ -129,6 +139,9 @@ public class LoginController extends FacetuisController {
             return onResult(baseResult);
         }
         User mobileUser = userService.findByMobile(mobile);
+        if(mobileUser == null){
+            return setErrorResult(400,"手机号不存在");
+        }
         return successResult(mobileUser);
     }
 
@@ -139,9 +152,20 @@ public class LoginController extends FacetuisController {
             return setErrorResult(400,"缺少微信openid");
         }
         User user = userService.findByOpenId(openid);
-        if(user != null){
-            user.setToken("");
-        }
         return successResult(user);
+    }
+
+    @RequestMapping(value = "/captcha",method = RequestMethod.GET)
+    public void getCaptcha(HttpServletRequest request, String mobile, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession();
+        String s = RandomUtils.randomNumber(4);
+        session.setAttribute(SESSION_CAPTCHA_ID,s);
+        System.out.println(s + " ......2");
+        byte[] image = CaptchafcUtil.getImage(s);
+        response.setContentType("image/png");
+        ServletOutputStream outputStream = response.getOutputStream();
+        outputStream.write(image);
+        outputStream.flush();
+        outputStream.close();
     }
 }

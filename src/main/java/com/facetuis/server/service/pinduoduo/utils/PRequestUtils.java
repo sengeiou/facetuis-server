@@ -1,10 +1,12 @@
 package com.facetuis.server.service.pinduoduo.utils;
 
+import com.alibaba.fastjson.JSONObject;
 import com.facetuis.server.service.basic.BaseResult;
 import com.facetuis.server.utils.MD5Utils;
 import com.facetuis.server.utils.URLUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.fluent.Request;
+import org.apache.http.entity.StringEntity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

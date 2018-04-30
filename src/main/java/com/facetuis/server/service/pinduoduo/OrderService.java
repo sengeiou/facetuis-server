@@ -108,6 +108,7 @@ public class OrderService extends BasicService {
                     o.setUuid(UUID.randomUUID().toString());
                     o.setCreateTime(new Date());
                     BeanUtils.copyProperties(order,o);
+                    o.setOrderStatus(order.getOrderStatus());
                     orderRepository.save(o);
                 }else{
                     o.setUpdateTime(new Date());

@@ -88,4 +88,5 @@ public class AliPayController extends FacetuisController {
         }
         return "SUCCESS";
     }
+
 }

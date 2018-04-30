@@ -194,6 +194,14 @@ public class UserRelationService extends BasicService {
         return list;
     }
 
+    public List<User> findHighUser(String userId){
+        UserRelation byUserId = userRelationRepository.findByUserId(userId);
+        String user1HighIds = byUserId.getUser1HighIds();
+        String[] split = user1HighIds.split(",");
+        List<String> ids = Arrays.asList(split);
+        return userRepository.findAllById(ids);
+    }
+
     /**
      * 统计今天团队人数
      * @param userId

@@ -37,6 +37,16 @@ public class User extends BaseEntity {
     private String unionId;// 微信统一开发者下的所有应用的用户唯一性ID
     private String pid;
     private String recommendUrl;
+    private Date expireTime;
+
+
+    public Date getExpireTime() {
+        return expireTime;
+    }
+
+    public void setExpireTime(Date expireTime) {
+        this.expireTime = expireTime;
+    }
 
     private Boolean settingRQInGoodsImage = true;// 设置是否生成二维码图片到商品推广图中
 

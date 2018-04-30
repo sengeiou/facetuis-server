@@ -1,6 +1,7 @@
 package com.facetuis.server.service.headline.vo;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 public class HeadlineVO<T> implements Serializable{
@@ -38,7 +39,25 @@ public class HeadlineVO<T> implements Serializable{
     private String title;
     private String subTitle;
     private T content;
+    private String contentText;
     private String type;
+    private Date createTime;
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getContentText() {
+        return contentText;
+    }
+
+    public void setContentText(String contentText) {
+        this.contentText = contentText;
+    }
 
     public String getSubTitle() {
         return subTitle;

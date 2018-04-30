@@ -19,7 +19,7 @@ public class ProductUtils {
             productNo1.setTimeLimitValue(1);
             productNo1.setTimeLimitTxt("一个月");
             productNo1.setTitle("SVIP总监一个月");
-
+            productNo1.setValues(30);
         }
 
         if(productNo2 == null){
@@ -30,6 +30,7 @@ public class ProductUtils {
             productNo2.setTimeLimitValue(1);
             productNo2.setTimeLimitTxt("一个月");
             productNo2.setTitle("SVIP总监一个月");
+            productNo1.setValues(30);
         }
 
         if(productNo3 == null){
@@ -40,6 +41,7 @@ public class ProductUtils {
             productNo3.setTimeLimitValue(1);
             productNo3.setTimeLimitTxt("一年");
             productNo3.setTitle("SVIP总监一年");
+            productNo1.setValues(365);
         }
     }
 

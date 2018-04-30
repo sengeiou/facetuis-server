@@ -130,6 +130,9 @@ public class WechatPayService extends BasicService {
         return new BaseResult(600,"处理失败");
     }
 
+    public Payment findByOutTradeNo(String outTradeNo){
+        return paymentService.findByOutTradeNo(outTradeNo);
+    }
 
 
 

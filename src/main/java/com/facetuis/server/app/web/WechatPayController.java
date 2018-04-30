@@ -2,6 +2,7 @@ package com.facetuis.server.app.web;
 
 import com.facetuis.server.app.web.basic.BaseResponse;
 import com.facetuis.server.app.web.basic.FacetuisController;
+import com.facetuis.server.model.pay.Payment;
 import com.facetuis.server.model.product.Product;
 import com.facetuis.server.model.user.User;
 import com.facetuis.server.service.basic.BaseResult;
@@ -73,6 +74,22 @@ public class WechatPayController extends FacetuisController {
             return "ERROR";
         }
         return baseResult.getResult();
+    }
+
+    /**
+     * 查询支付状态
+     * @param tradNo
+     * @return
+     */
+    @RequestMapping(value = "/result/{tradNo}",method = RequestMethod.GET)
+    public BaseResponse payResult(String tradNo){
+        Payment byOutTradeNo = wechatPayService.findByOutTradeNo(tradNo);
+        if(byOutTradeNo != null){
+            if(byOutTradeNo.getTradeNo() != null) {
+                return successResult();
+            }
+        }
+        return setErrorResult(600,"支付失败!");
     }
 
 

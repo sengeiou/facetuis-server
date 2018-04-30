@@ -10,7 +10,7 @@ import javax.persistence.Table;
 public class OrderCommision extends BaseEntity{
 
     private String orderSn;
-    private Long orderStatus;
+    private Integer orderStatus;
     private String pId;
     private Integer orderAmount;
     private Long orderCreateTime;
@@ -28,7 +28,16 @@ public class OrderCommision extends BaseEntity{
 
     private Boolean isCompute = false;// 是否分拥计算完成
 
-    private Boolean isFinish = false;//是否已完结
+    private Boolean isFinish = false;// 是否已计算到可提现金额
+    private Boolean isWaitFinish = false;// 是否已计算到待结算
+
+    public Boolean getWaitFinish() {
+        return isWaitFinish;
+    }
+
+    public void setWaitFinish(Boolean waitFinish) {
+        isWaitFinish = waitFinish;
+    }
 
     public Boolean getFinish() {
         return isFinish;
@@ -46,11 +55,11 @@ public class OrderCommision extends BaseEntity{
         this.orderSn = orderSn;
     }
 
-    public Long getOrderStatus() {
+    public Integer getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(Long orderStatus) {
+    public void setOrderStatus(Integer orderStatus) {
         this.orderStatus = orderStatus;
     }
 

@@ -2,6 +2,7 @@ package com.facetuis.server.service.user;
 
 import com.facetuis.server.dao.user.UserRepository;
 import com.facetuis.server.model.pay.Payment;
+import com.facetuis.server.model.product.Product;
 import com.facetuis.server.model.user.User;
 import com.facetuis.server.model.user.UserLevel;
 import com.facetuis.server.model.user.UserRelation;
@@ -12,13 +13,16 @@ import com.facetuis.server.service.pinduoduo.PinDuoDuoService;
 import com.facetuis.server.service.user.utils.UserUtils;
 import com.facetuis.server.service.wechat.WechatService;
 import com.facetuis.server.service.wechat.response.MpGetUserInfoResponse;
+import com.facetuis.server.utils.ProductUtils;
 import com.facetuis.server.utils.RandomUtils;
 import com.facetuis.server.utils.SysFinalValue;
+import com.facetuis.server.utils.TimeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.sql.Time;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -61,6 +65,9 @@ public class UserService extends BasicService {
 
     public User findByMobile(String mobile){
         User user = userRepository.findByMobileNumber(mobile);
+        if(user == null){
+            return null;
+        }
         user.setRecommendUrl(String.format(recommendUrl,user.getRecommandCode()));
         return user;
     }
@@ -262,6 +269,7 @@ public class UserService extends BasicService {
         }
         User user = userRepository.findById(userId).get();
         if(user != null){
+            Product product = ProductUtils.getProduct(productId);
             UserRelation relation = userRelationService.getRelation(user.getUuid());
             Integer user1Total = relation.getUser1Total();
             if(user1Total < 20){
@@ -270,20 +278,37 @@ public class UserService extends BasicService {
             if(relation.getUser2Total() + relation.getUser3Total() < 40){
                 return new BaseResult(600,"升级要求未达到：直属会员下级 ≤ 40人");
             }
-
             if(user.getLevel().equals(UserLevel.LEVEL1)){
                 user.setLevel(UserLevel.LEVEL2);
                 user.setLevelTxt(getLevelTxt(user.getLevel()));
-                userRepository.save(user);
+                setExpireTime(user, product);
                 // 将用户添加到上级用户的高级用户列表
                 if(!SysFinalValue.SYS_USER_ID.equals(user.getLevelUserId())){
                     userRelationService.addHigher(user.getUuid(),user.getLevelUserId());
                 }
             }else{
-                logger.info("用户" + userId + "已是最高级别，不能在升级" );
+                setExpireTime(user, product);
             }
+            userRepository.save(user);
         }
         return new BaseResult();
+    }
+
+    private void setExpireTime(User user, Product product) {
+        if(user.getExpireTime() == null) {
+            // 当期时间 + 产品时间
+            Date date = TimeUtils.plusDay(product.getValues(), new Date());
+            user.setExpireTime(date);
+        }else {
+            // 判断是否已过期
+            if (TimeUtils.compare(user.getExpireTime()) <= 0) {
+                Date date = TimeUtils.plusDay(product.getValues(), user.getExpireTime());
+                user.setExpireTime(date);
+            }else{
+                Date date = TimeUtils.plusDay(product.getValues(), new Date());
+                user.setExpireTime(date);
+            }
+        }
     }
 
 
