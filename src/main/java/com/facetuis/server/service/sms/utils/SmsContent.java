@@ -13,6 +13,7 @@ public class SmsContent {
         if(contents == null || contents.size() == 0){
             contents.put(SmsModelCode.LOGIN,"您的验证码是：【变量】。请不要把验证码泄露给其他人。");
             contents.put(SmsModelCode.CASH,"您的验证码是：【变量】。打死都不能告诉别人哦！如非本人操作，可不用理会！");
+            contents.put(SmsModelCode.REGISTER,"您的验证码是：【变量】。请不要把验证码泄露给其他人。");
         }
     }
 
@@ -32,6 +33,9 @@ public class SmsContent {
                 content = content.replace("【变量】", var[0]);
                 break;
             case LOGIN:
+                content = content.replace("【变量】", var[0]);
+                break;
+            case REGISTER:
                 content = content.replace("【变量】", var[0]);
                 break;
             default:

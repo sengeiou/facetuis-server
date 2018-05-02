@@ -25,16 +25,47 @@ public class WechatService extends BasicService {
     private String refreshUrl;
     @Value("${wechat.app.id}")
     private String WECHAT_APPID;
+    @Value("${wechat.app.mp.id}")
+    private String WECHAT_MP_APPID;
+    @Value("${wechat.app.mp.secret}")
+    private String WECHAT_MP_SECRET;
     @Value("${wechat.app.secret}")
     private String WECHAT_SECRET;
     @Value("${wechat.mp.user.info}")
     private String GET_USER_INFO;
 
 
+    /**
+     * 公众号
+     * @param code
+     * @return
+     */
+    public  BaseResult<AccessTokenResponse> getMPToken(String code){
+        return wchatToken(code,WECHAT_MP_APPID,WECHAT_MP_SECRET);
+    }
+
+
+    /**
+     * 微信移动应用
+     * @param code
+     * @return
+     */
     // 根据CODE获取AccessToken
     public  BaseResult<AccessTokenResponse> getToken(String code){
+        return wchatToken(code,WECHAT_APPID,WECHAT_SECRET);
+    }
+
+    /**
+     *
+     * 支持微信公众号、微信移动应用根据code获取accessToken
+     * @param code
+     * @param appid
+     * @param secret
+     * @return
+     */
+    private  BaseResult<AccessTokenResponse> wchatToken(String code,String appid,String secret){
         BaseResult result = new BaseResult();
-        String  url = String.format(GET_TOKEN_URL + "?appid=%s&secret=%s&code=%s&grant_type=authorization_code",WECHAT_APPID,WECHAT_SECRET,code);
+        String  url = String.format(GET_TOKEN_URL + "?appid=%s&secret=%s&code=%s&grant_type=authorization_code",appid,secret,code);
         String response = null;
         try{
             response =  Request.Get(url).execute().returnContent().asString();
@@ -46,8 +77,8 @@ public class WechatService extends BasicService {
         }
         if(!StringUtils.isEmpty(response)){
             AccessTokenResponse accessTokenResponse = JSONObject.parseObject(response, AccessTokenResponse.class);
-            String s = refreshToken(accessTokenResponse.getRefresh_token());
-            accessTokenResponse.setAccess_token(s);
+            logger.info("GET ACCESS_TOKEN" + response);
+            refreshToken(accessTokenResponse.getRefresh_token(),appid);
             result.setResult(accessTokenResponse);
         }else{
             result.setCode(600);
@@ -56,6 +87,13 @@ public class WechatService extends BasicService {
         return result;
     }
 
+
+    /**
+     * 微信公众号获取用户信息(微信移动应用通过客户端SDK获取用户信息，无服务端API)
+     * @param access_token
+     * @param openid
+     * @return
+     */
     public BaseResult<MpGetUserInfoResponse > getUserInfo(String access_token,String openid){
         BaseResult<MpGetUserInfoResponse> result = new BaseResult<>();
         String  url = String.format(GET_USER_INFO,access_token,openid);
@@ -63,7 +101,11 @@ public class WechatService extends BasicService {
         try{
             response =  Request.Get(url).execute().returnContent().asString();
             if(!StringUtils.isEmpty(response)){
+                logger.info("根据公众号信息获取用户信息 userInfo :: " + response);
                 MpGetUserInfoResponse accessTokenResponse = JSONObject.parseObject(response, MpGetUserInfoResponse.class);
+                if(accessTokenResponse != null && accessTokenResponse.getNickname() != null) {
+                    accessTokenResponse.setNickname(new String(accessTokenResponse.getNickname().getBytes("ISO-8859-1"), "UTF-8"));
+                }
                 result.setResult(accessTokenResponse);
             }else{
                 result.setCode(600);
@@ -77,13 +119,13 @@ public class WechatService extends BasicService {
     }
 
 
-    public String refreshToken(String refreshToken){
-        String  url = String.format(refreshUrl + "?appid=%s&secret=%s&grant_type=refresh_token&refresh_token=%s",WECHAT_APPID,WECHAT_SECRET,refreshToken);
+    public String refreshToken(String refreshToken,String appid){
+        String  url = String.format(refreshUrl + "?appid=%s&grant_type=refresh_token&refresh_token=%s",appid,refreshToken);
         String response = null;
         try{
             response =  Request.Get(url).execute().returnContent().asString();
             AccessTokenResponse accessTokenResponse = JSONObject.parseObject(response, AccessTokenResponse.class);
-            logger.info("刷新ACCESS_TOKEN" + response);
+            logger.info("刷新ACCESS_TOKEN ::" + response);
             return accessTokenResponse.getAccess_token();
         }catch (IOException e){
             e.printStackTrace();

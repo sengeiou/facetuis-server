@@ -74,7 +74,9 @@ public class UserService extends BasicService {
 
     public User findByOpenId(String openid){
         User user = userRepository.findByOpenid(openid);
-        user.setRecommendUrl(String.format(recommendUrl,user.getRecommandCode()));
+        if(user != null) {
+            user.setRecommendUrl(String.format(recommendUrl, user.getRecommandCode()));
+        }
         return user;
     }
 
@@ -114,7 +116,8 @@ public class UserService extends BasicService {
      */
     public BaseResult registerWechatByWeb(User user,String openid,String accessToken){
         // 根据公众号信息获取用户信息
-        BaseResult<MpGetUserInfoResponse> userInfo = wechatService.getUserInfo(openid, accessToken);
+        logger.info("根据公众号信息获取用户信息 openid :: " + openid + " | accessToken :: " + accessToken);
+        BaseResult<MpGetUserInfoResponse> userInfo = wechatService.getUserInfo(accessToken, openid);
         if(userInfo.hasError()){
            return userInfo;
         }
@@ -140,7 +143,6 @@ public class UserService extends BasicService {
      * @return
      */
     public BaseResult<User> registerWechat(User user, String openid, String accessToken, String inviteCode,String nickName,String headImg,String unionid){
-        userRepository.findByOpenid(openid);
         BaseResult<User> userReslt = getUser(user,inviteCode);
         if(userReslt.hasError()){
             return userReslt;
@@ -178,6 +180,7 @@ public class UserService extends BasicService {
             user = new User();
             user.setUuid(UUID.randomUUID().toString());
             user.setEnable(false);
+            user.setInviteCode(inviteCode);
         }else{
             if(inviteCode.length() < 5){
                 return new BaseResult<>(600,"邀请码格式错误");

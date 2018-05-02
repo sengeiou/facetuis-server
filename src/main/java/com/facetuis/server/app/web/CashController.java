@@ -8,6 +8,7 @@ import com.facetuis.server.service.payment.WithdrawCashRequestService;
 import com.facetuis.server.service.payment.vo.UserCashVO;
 import com.facetuis.server.utils.NeedLogin;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,8 +31,11 @@ public class CashController extends FacetuisController {
 
     @RequestMapping(method = RequestMethod.POST)
     @NeedLogin(needLogin = true)
-    public BaseResponse cash(WithdrawCashRequest request){
-        if(request.getAmount() <= 0){
+    public BaseResponse cash(WithdrawCashRequest request, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return erroorResult(bindingResult);
+        }
+        if(request == null || request.getAmount() <= 0){
             return new BaseResponse(400,"提现金额必须大于0");
         }
         User user = getUser();

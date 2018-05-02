@@ -6,16 +6,20 @@ import com.facetuis.server.app.web.request.RegisterRequest;
 import com.facetuis.server.app.web.request.UpgradedRequest;
 import com.facetuis.server.app.web.request.UserSettingsRequest;
 import com.facetuis.server.app.web.response.UserRecommanderResponse;
+import com.facetuis.server.dao.user.UserRepository;
 import com.facetuis.server.model.commision.CommisionSettings;
+import com.facetuis.server.model.mobile.SmsModelCode;
 import com.facetuis.server.model.product.Product;
 import com.facetuis.server.model.user.User;
 import com.facetuis.server.model.user.UserCommision;
 import com.facetuis.server.model.user.UserLevel;
 import com.facetuis.server.service.basic.BaseResult;
 import com.facetuis.server.service.pinduoduo.UserCommisionService;
+import com.facetuis.server.service.sms.SmsService;
 import com.facetuis.server.service.user.UserService;
 import com.facetuis.server.utils.NeedLogin;
 import com.facetuis.server.utils.ProductUtils;
+import com.facetuis.server.utils.SysFinalValue;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +49,33 @@ public class UserController extends FacetuisController{
     private String webRegister;
     @Autowired
     private UserCommisionService userCommisionService;
+    @Autowired
+    private SmsService smsService;
+    @Value("${sys.invite.code}")
+    private String sysInviteCode;
+    @Autowired
+    private UserRepository userRepository;
+
+    /**
+     * 判断是否微信浏览器访问注册页面
+     * 方法目的：跳转到网页注册页面
+     * @param ic
+     * @param request
+     * @param response
+     * @throws IOException
+     */
+    @RequestMapping(value = "/r",method = RequestMethod.GET)
+    public void regPage(String ic,HttpServletRequest request,HttpServletResponse response) throws IOException {
+        String userAgent = request.getHeader("user-agent").toLowerCase();
+        String redir = "http://" + host + "/register/regdisger.html?ic=" + ic;
+        redir = URLEncoder.encode(redir,"UTF-8");
+        if(userAgent.indexOf("micromessenger")>-1){//微信客户端
+            String location = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb48f855755bdeaff&redirect_uri=" + redir + "&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
+            response.sendRedirect(location);
+        }else{
+            response.sendRedirect(redir);
+        }
+    }
 
 
     /**
@@ -57,6 +88,21 @@ public class UserController extends FacetuisController{
     public BaseResponse register(@RequestBody RegisterRequest registerRequest,BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             return erroorResult(bindingResult);
+        }
+        BaseResult smsBaseResult = smsService.checkCode(registerRequest.getMobileNumber(), registerRequest.getCode(), SmsModelCode.REGISTER,false);
+        if(smsBaseResult.hasError()){
+            return onResult(smsBaseResult);
+        }
+
+        String inviteUserId = "";
+        if(registerRequest.getInviteCode().equals(sysInviteCode)){
+            inviteUserId = SysFinalValue.SYS_USER_ID;
+        }else{
+            User tempUser = userRepository.findByRecommandCodeLike( "%," + registerRequest.getInviteCode() + ",%");
+            if(tempUser == null){
+                 return new BaseResponse(600,"邀请码无效");
+            }
+            inviteUserId = tempUser.getUuid();
         }
         User mobileUser = userService.findByMobile(registerRequest.getMobileNumber());
         if(mobileUser != null){

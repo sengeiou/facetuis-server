@@ -32,7 +32,7 @@ public class WechatController extends FacetuisController {
 
 
     /**
-     * 微信公众号token验证
+     * 微信服务器调用->微信公众号token验证
      * @param signature
      * @param timestamp
      * @param nonce
@@ -50,22 +50,25 @@ public class WechatController extends FacetuisController {
 
     /**
      *
-     * 获取微信公众号code,重定向接受code
-     * @param recommder
+     * 根据微信code获取微信AccessToken
      * @param code
-     * @param response
      * @throws IOException
      */
-    @RequestMapping(value = "/mp/userinfo/{recommder}",method = RequestMethod.GET)
-    public void getCode(@PathVariable String recommder,String code,  HttpServletResponse response) throws IOException {
-        BaseResult<AccessTokenResponse> token = wechatService.getToken(code);
+    @RequestMapping(value = "/mp/token/{code}",method = RequestMethod.GET)
+    public BaseResponse getCode(@PathVariable String code)  {
+        BaseResult<AccessTokenResponse> token = wechatService.getMPToken(code);
         if(!token.hasError()){
-            AccessTokenResponse tokenResponse = new AccessTokenResponse();
-            String location = String.format(webRegister,tokenResponse.getOpenid(),tokenResponse.getAccess_token(),recommder);
-            // 重定向到网页注册页面
-            response.sendRedirect(location);
+            AccessTokenResponse response1 = token.getResult();
+            response1.setAccess_token(token.getResult().getAccess_token());
+            response1.setOpenid(token.getResult().getOpenid());
+            response1.setUnionid(token.getResult().getUnionid());
+            return successResult(response1);
         }
+        return onResult(token);
     }
+
+
+
 
     /**
      * APP微信登陆 根据code获取accessToken

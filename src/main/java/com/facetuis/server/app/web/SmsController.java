@@ -37,7 +37,6 @@ public class SmsController extends FacetuisController {
     public BaseResponse get(@PathVariable String mobileNumber, @PathVariable SmsModelCode modelCode, String captcha , HttpServletRequest request){
         if(SmsModelCode.REGISTER == modelCode){
             String attribute = request.getSession().getAttribute(SysFinalValue.SESSION_CAPTCHA_ID).toString();
-            System.out.println(attribute + " ......1");
             if(!attribute.equals(captcha)){
                 return setErrorResult(400,"图片验证码错误");
             }
