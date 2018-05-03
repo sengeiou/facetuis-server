@@ -21,12 +21,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.logging.Logger;
 
 import static com.alipay.api.AlipayConstants.CHARSET;
 import static com.alipay.api.AlipayConstants.CHARSET_UTF8;
 
 @Service
 public class AliPayService extends BasicService {
+
+    private static Logger logger = Logger.getLogger(AliPayService.class.getName());
 
     @Autowired
     private PaymentService paymentService;
@@ -90,6 +93,7 @@ public class AliPayService extends BasicService {
         } catch (AlipayApiException e) {
             e.printStackTrace();
         }
+        logger.info("AliPay callback sign verified:: " + signVerified  + " | status :: " + alipayNotifyRequest.getTrade_status());
         if(signVerified){
             if(alipayNotifyRequest.getTrade_status().equals("TRADE_SUCCESS")){
                 // 支付单号

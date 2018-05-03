@@ -296,9 +296,14 @@ public class OrderService extends BasicService {
 
      */
 
-    public Page<Order> getOrdersByPid(String pid,Pageable pageable)
+    public Page<Order> getOrdersByPid(String pid,Pageable pageable,Integer orderStatus)
     {
-        return orderRepository.findByPId(pid,pageable);
+        if(orderStatus == -9){
+            return orderRepository.findByPId(pid, pageable);
+        }else{
+            return orderRepository.findByPIdAndOrderStatus(pid,orderStatus, pageable);
+        }
+
     }
 
 }

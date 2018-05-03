@@ -33,4 +33,6 @@ public interface OrderRepository extends JpaRepository<Order,String> {
 
 
     Page<Order> findByPId(String pid,Pageable pageable);
+
+    Page<Order> findByPIdAndOrderStatus(String pid, Integer status, Pageable pageable);
 }

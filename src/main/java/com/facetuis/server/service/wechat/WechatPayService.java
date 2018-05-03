@@ -28,17 +28,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.logging.Logger;
 
 import static org.apache.http.client.fluent.Request.*;
 
 @Service
 public class WechatPayService extends BasicService {
 
+    private static final Logger logger = Logger.getLogger(WechatPayService.class.getName());
+
     @Autowired
     private PaymentService paymentService;
-    /**
-     *
-     */
+
     @Value("${wechat.app.id}")
     private String appid;
     @Value("${wechat.pay.mch.id}")
@@ -109,6 +110,7 @@ public class WechatPayService extends BasicService {
     public BaseResult<String> checkNotify(String xml) {
         try {
             Map<String,String> map = XmlUtils.doXMLParse(xml);
+            logger.info("AliPay callback sign result_code:: " + map.get("result_code"));
             if (map.get("result_code").toString().equalsIgnoreCase("SUCCESS")) {
                 //PayCommonUtil.isTenpaySign(map,key); 验证签名
                 String appid = map.get("appid");
