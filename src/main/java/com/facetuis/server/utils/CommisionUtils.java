@@ -143,14 +143,17 @@ public class CommisionUtils {
      */
     public static long getEarn(int level,long price){
         if(level == 0){
-            return multiply(price,cs.getTotalRatio(),0);
+            return multiply(price,cs.getTotalRatio(),0) / 1000;
         }else{
-            return multiply(price,cs.getTotalRatio() * (cs.getDirectorSelf() + 1) ,0);
+            return multiply(price,cs.getTotalRatio() * (cs.getDirectorSelf() + 1) ,0) / 1000;
         }
     }
 
     public static Long multiply(Long val1,Double val2,int scale){
         return new BigDecimal(Long.toString(val1)).multiply(new BigDecimal(Double.toString(val2))).setScale(scale, BigDecimal.ROUND_HALF_UP).longValue();
+    }
+
+    public static void main(String[] args) {
     }
 
     public static Double divide(Double val1,Double val2,int scale){

@@ -50,15 +50,17 @@ public class UserRelationService extends BasicService {
                 }
                 // 上级的上级ID
                 user2 = level1User.getLevelUserId();
-                userRelation.setUserLevel2Id(user2);
-                if(!user2.equals(SysFinalValue.SYS_USER_ID)){
-                    // 上级的上级
-                    User level3User = userRepository.findById(user2).get();
-                    if(level1User == null){
-                        logger.info("2-####### 未找到用户上级，用户::" + user.getLevelUserId());
+                if(!StringUtils.isEmpty(user2)) {
+                    userRelation.setUserLevel2Id(user2);
+                    if (!user2.equals(SysFinalValue.SYS_USER_ID)) {
+                        // 上级的上级
+                        User level3User = userRepository.findById(user2).get();
+                        if (level3User == null) {
+                            logger.info("2-####### 未找到用户上级，用户::" + user.getLevelUserId());
+                        }
+                        user3 = level3User.getLevelUserId();
+                        userRelation.setUserLevel3Id(user3);
                     }
-                    user3 = level3User.getLevelUserId();
-                    userRelation.setUserLevel3Id(user3);
                 }
                 addRelation(user1,user2,user3,user.getUuid());
             }
@@ -78,6 +80,10 @@ public class UserRelationService extends BasicService {
     public void addRelation(String user1 ,String user2,String user3,String user){
         // 更新上级 一级用户数据
         UserRelation userRelation = userRelationRepository.findByUserId(user1);
+        if(userRelation == null){
+            logger.info("上级用户关系未找到");
+            return;
+        }
         String user1Ids = userRelation.getUser1Ids();
         if(user1Ids == null){
             user1Ids = "";

@@ -23,12 +23,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import static com.facetuis.server.utils.SysFinalValue.SESSION_CAPTCHA_ID;
 
 @RestController
 @RequestMapping("/1.0/login")
 public class LoginController extends FacetuisController {
+
+
+    private static final  Logger logger = Logger.getLogger(LoginController.class.getName());
 
     @Autowired
     private UserService userService;
@@ -37,7 +41,7 @@ public class LoginController extends FacetuisController {
 
     @RequestMapping(method = RequestMethod.POST)
     public BaseResponse login(@RequestBody LoginRequest request) {
-
+        logger.info( "invite code :: " + request.getInvite_code());
         User mobileUser = null;
         User wechatUser = null;
         // 根据手机号获取用户
@@ -45,81 +49,54 @@ public class LoginController extends FacetuisController {
             mobileUser = userService.findByMobile(request.getMobile_number());
         }
         // 根据openid获取用户
-        if (!StringUtils.isEmpty(request.getOpenid())) {
-            wechatUser = userService.findByOpenId(request.getOpenid());
+        if (!StringUtils.isEmpty(request.getUnionid())) {
+            wechatUser = userService.findByUnionid(request.getUnionid());
         }
+
+        // 注册 - 无邀请码
+        if(mobileUser == null && wechatUser == null && !StringUtils.isEmpty(request.getMobile_number()) && !StringUtils.isEmpty(request.getUnionid()) ){
+            if (!StringUtils.isEmpty(request.getVerification_code())) {
+                BaseResult baseResult = smsService.checkCode(request.getMobile_number(), request.getVerification_code(), SmsModelCode.LOGIN, false);
+                if (baseResult.hasError()) {
+                    return onResult(baseResult);
+                }
+                BaseResult<User> userBaseResult = userService.registerMobile(wechatUser, request.getMobile_number(), null);
+                mobileUser = userBaseResult.getResult();
+                userService.registerWechat(
+                        mobileUser,
+                        request.getOpenid(),
+                        request.getAccess_token(),
+                        null,
+                        request.getNick_name(),
+                        request.getHead_image(),
+                        request.getUnionid()
+                );
+                return successResult();
+            }else{
+                return new BaseResponse(400, "请填写手机验证码");
+            }
+        }
+
         // 登录
         if (mobileUser != null && wechatUser != null) {
             if (mobileUser.getUuid().equals(wechatUser.getUuid())) {
                 User user = userService.login(mobileUser.getUuid());
+                // 更新access_token
+                if(!user.getAccessToken().equals(request.getAccess_token())){
+                    user.setAccessToken(request.getAccess_token());
+                    userService.save(user);
+                }
+                // 第一次登录保存邀请码
+                if(!StringUtils.isEmpty(request.getInvite_code()) && StringUtils.isEmpty(user.getInviteCode())){
+                    BaseResult<User> user1 = userService.getUser(user, request.getInvite_code());
+                    if(user1.hasError()){
+                        return onResult(user1);
+                    }
+                    userService.createUser(user1.getResult());
+                }
                 return successResult(user);
             } else {
                 return new BaseResponse(600, "手机用户和微信用户不匹配，登录失败");
-            }
-        }
-
-        // 首先绑定手机号码 第一次请求
-        if ( wechatUser == null &&  mobileUser == null  && StringUtils.isEmpty(request.getOpenid())  && !StringUtils.isEmpty(request.getMobile_number())) {
-            if (!StringUtils.isEmpty(request.getVerification_code())) {
-                BaseResult baseResult = smsService.checkCode(request.getMobile_number(), request.getVerification_code(), SmsModelCode.LOGIN,false);
-                if (baseResult.hasError()) {
-                    return onResult(baseResult);
-                }
-                userService.registerMobile(wechatUser,request.getMobile_number(),null);
-                return successResult();
-            } else {
-                return new BaseResponse(400, "请填写手机验证码");
-            }
-        }
-        // 验证完成后绑定微信 第二次请求
-        if(mobileUser != null  && wechatUser == null &&  !StringUtils.isEmpty(request.getOpenid()) && !StringUtils.isEmpty(request.getAccess_token()) ){
-            if(StringUtils.isEmpty(request.getInvite_code())){
-                return new BaseResponse(400,"邀请码不能为空");
-            }
-            BaseResult<User> userBaseResult = userService.registerWechat(
-                    mobileUser,
-                    request.getOpenid(),
-                    request.getAccess_token(),
-                    request.getInvite_code(),
-                    request.getNick_name(),
-                    request.getHead_image(),
-                    request.getUnionid());
-            if(userBaseResult.hasError()){
-                return onResult(userBaseResult);
-            }
-            return successResult(userBaseResult.getResult());
-        }
-
-        // 首先绑定微信 第一次请求
-        if(mobileUser == null && wechatUser == null  && StringUtils.isEmpty(request.getMobile_number()) && !StringUtils.isEmpty(request.getOpenid()) && !StringUtils.isEmpty(request.getAccess_token()) ){
-            userService.registerWechat(
-                    mobileUser,
-                    request.getOpenid(),
-                    request.getAccess_token(),
-                    null,
-                    request.getNick_name(),
-                    request.getHead_image(),
-                    request.getUnionid()
-            );
-            return successResult();
-        }
-        // 绑定手机号码 第二次请求
-        if(wechatUser != null && !StringUtils.isEmpty(request.getMobile_number()) ){
-            if (!StringUtils.isEmpty(request.getVerification_code())) {
-                if(StringUtils.isEmpty(request.getInvite_code())){
-                    return new BaseResponse(400,"邀请码不能为空");
-                }
-                BaseResult baseResult = smsService.checkCode(request.getMobile_number(), request.getVerification_code(),SmsModelCode.LOGIN, false);
-                if (baseResult.hasError()) {
-                    return onResult(baseResult);
-                }
-                BaseResult<User> userBaseResult = userService.registerMobile(wechatUser, request.getMobile_number(), request.getInvite_code());
-                    if(userBaseResult.hasError()){
-                    return onResult(userBaseResult);
-                }
-                return successResult(userBaseResult.getResult());
-            } else {
-                return new BaseResponse(400, "请填写手机验证码");
             }
         }
         return new BaseResponse(400,"缺少请求参数");
@@ -139,19 +116,16 @@ public class LoginController extends FacetuisController {
             return onResult(baseResult);
         }
         User mobileUser = userService.findByMobile(mobile);
-        if(mobileUser == null){
-            return setErrorResult(400,"手机号不存在");
-        }
         return successResult(mobileUser);
     }
 
 
     @RequestMapping(value = "/wechat",method = RequestMethod.GET)
-    public BaseResponse getWechat(String openid){
-        if(StringUtils.isEmpty(openid)){
-            return setErrorResult(400,"缺少微信openid");
+    public BaseResponse getWechat(String unionid){
+        if(StringUtils.isEmpty(unionid)){
+            return setErrorResult(400,"缺少微信Unionid");
         }
-        User user = userService.findByOpenId(openid);
+        User user = userService.findByUnionid(unionid);
         return successResult(user);
     }
 
@@ -160,7 +134,6 @@ public class LoginController extends FacetuisController {
         HttpSession session = request.getSession();
         String s = RandomUtils.randomNumber(4);
         session.setAttribute(SESSION_CAPTCHA_ID,s);
-        System.out.println(s + " ......2");
         byte[] image = CaptchafcUtil.getImage(s);
         response.setContentType("image/png");
         ServletOutputStream outputStream = response.getOutputStream();

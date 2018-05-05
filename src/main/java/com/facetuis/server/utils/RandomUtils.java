@@ -94,4 +94,8 @@ public class RandomUtils {
 		int s = random.nextInt(max)%(max-min+1) + min;
 		return s + "";
 	}
+
+	public static void main(String[] args) {
+		System.out.println(rate(0,10));
+	}
 }

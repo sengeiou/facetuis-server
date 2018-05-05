@@ -51,7 +51,21 @@ public class BannerService extends BasicService {
         list.add(b2);
         list.add(b3);
         list.add(b4);
-        list.add(b5);
+        //list.add(b5);
+        return new PageImpl<Banner>(list);
+    }
+
+
+    public Page<Banner> getBannerBig(){
+        Banner b1 = new Banner();
+        b1.setUuid("1");
+        b1.setImgUrl("http://" + serverIp + "/banner/big.jpg");
+        b1.setDescription("ddd");
+        b1.setName("111");
+
+        List<Banner> list = new ArrayList<>();
+        list.add(b1);
+
         return new PageImpl<Banner>(list);
     }
 

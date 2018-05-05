@@ -58,7 +58,7 @@ public class GoodsService extends BasicService {
             if(goodsDetails == null){
                 return goodsDetails;
             }
-            goodsDetails.setAboutEarn(CommisionUtils.getEarn(level,goodsDetails.getMin_group_price()));
+            goodsDetails.setAboutEarn(CommisionUtils.getEarn(level,(goodsDetails.getMin_group_price() -  goodsDetails.getCoupon_discount())  * goodsDetails.getPromotion_rate() ));
             return goodsDetails;
         }
         return null;
@@ -91,7 +91,7 @@ public class GoodsService extends BasicService {
             if (details.getGoods_search_response() != null) {
                 List<GoodsDetails> goods_list = details.getGoods_search_response().getGoods_list();
                 for (GoodsDetails goodsDetail : goods_list) {
-                    goodsDetail.setAboutEarn(CommisionUtils.getEarn(level, goodsDetail.getMin_group_price()));
+                    goodsDetail.setAboutEarn(CommisionUtils.getEarn(level, (goodsDetail.getMin_group_price() -  goodsDetail.getCoupon_discount()) * goodsDetail.getPromotion_rate() ));
                 }
                 return new PageImpl<>(details.getGoods_search_response().getGoods_list());
             }

@@ -47,7 +47,7 @@ public class PRequestUtils {
         map.put("sign", sign);
         String url = apiUrl + "?" + URLUtils.getUrlParamsByMap(map);
         try {
-            String result = Request.Post(url).execute().returnContent().asString();
+            String result = Request.Post(url).connectTimeout(3000).execute().returnContent().asString();
             return new BaseResult(result);
         } catch (IOException e) {
             logger.info("调用拼多多接口发生错误::" + api + " | " + e.getMessage());

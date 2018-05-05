@@ -27,15 +27,19 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.bind.BindResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import sun.rmi.runtime.Log;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/1.0/user")
 public class UserController extends FacetuisController{
+
+    private static final Logger logger  = Logger.getLogger(UserController.class.getName());
 
     @Autowired
     private UserService userService;
@@ -64,8 +68,8 @@ public class UserController extends FacetuisController{
      * @param response
      * @throws IOException
      */
-    @RequestMapping(value = "/r",method = RequestMethod.GET)
-    public void regPage(String ic,HttpServletRequest request,HttpServletResponse response) throws IOException {
+    @RequestMapping(value = "/enroll/{ic}",method = RequestMethod.GET)
+    public void regPage(@PathVariable String ic,HttpServletRequest request,HttpServletResponse response) throws IOException {
         String userAgent = request.getHeader("user-agent").toLowerCase();
         String redir = "http://" + host + "/register/regdisger.html?ic=" + ic;
         redir = URLEncoder.encode(redir,"UTF-8");
@@ -98,7 +102,7 @@ public class UserController extends FacetuisController{
         if(registerRequest.getInviteCode().equals(sysInviteCode)){
             inviteUserId = SysFinalValue.SYS_USER_ID;
         }else{
-            User tempUser = userRepository.findByRecommandCodeLike( "%," + registerRequest.getInviteCode() + ",%");
+            User tempUser = userRepository.findByRecommandCodeLike( "%" + registerRequest.getInviteCode() + ",%");
             if(tempUser == null){
                  return new BaseResponse(600,"邀请码无效");
             }
@@ -143,7 +147,7 @@ public class UserController extends FacetuisController{
      * 推广链接
      * @return
      */
-    @RequestMapping(value = "/enroll/{recommender}",method = RequestMethod.GET)
+    //@RequestMapping(value = "/enroll/{recommender}",method = RequestMethod.GET)
     public void enroll(@PathVariable String recommender, HttpServletRequest request, HttpServletResponse response) throws IOException {
         String ua = request.getHeader("user-agent");
         if (ua.indexOf("micromessenger") > 0) {
@@ -176,7 +180,7 @@ public class UserController extends FacetuisController{
     }
 
     /**
-     * 用户升级
+     * 用户/续费升级
      * @return
      */
     @RequestMapping(value = "/upgraded",method = RequestMethod.POST)
@@ -187,7 +191,8 @@ public class UserController extends FacetuisController{
         }
         User user = getUser();
         if(user.getLevel().equals(UserLevel.LEVEL2)){
-            return setErrorResult(600,"已经是最高级");
+           // return setErrorResult(600,"已经是最高级");
+            logger.info("用户续费");
         }
         BaseResult upload = userService.upload(user.getUuid(), request.getOutTradeNo(), request.getProductId());
         if(!upload.hasError()){

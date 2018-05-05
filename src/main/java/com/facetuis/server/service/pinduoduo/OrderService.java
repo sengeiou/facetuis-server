@@ -264,8 +264,9 @@ public class OrderService extends BasicService {
         if(!StringUtils.isEmpty(user3Ids)){
             String[] split = user3Ids.split(",");
             user3s = Arrays.asList(split);
+            user3s = new ArrayList<>(user3s);
         }
-        user1s.addAll(user2s);
+        user1s = new ArrayList<>(user2s);
         user1s.addAll(user3s);
         List<User> allUsers = userRepository.findAllById(user1s);
         List<String> pids = new ArrayList<>();

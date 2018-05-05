@@ -10,6 +10,7 @@ import com.facetuis.server.service.basic.BaseResult;
 import com.facetuis.server.service.basic.BasicService;
 import com.facetuis.server.service.payment.PaymentService;
 import com.facetuis.server.service.pinduoduo.PinDuoDuoService;
+import com.facetuis.server.service.pinduoduo.UserCommisionService;
 import com.facetuis.server.service.user.utils.UserUtils;
 import com.facetuis.server.service.wechat.WechatService;
 import com.facetuis.server.service.wechat.response.MpGetUserInfoResponse;
@@ -41,6 +42,8 @@ public class UserService extends BasicService {
     private PaymentService paymentService;
     @Autowired
     private WechatService wechatService;
+    @Autowired
+    private UserCommisionService userCommisionService;
 
 
     @Value("${sys.invite.code}")
@@ -84,7 +87,12 @@ public class UserService extends BasicService {
         User user = userRepository.findById(userId).get();
         user.setLoginTime(new Date());
         user.setToken(RandomUtils.random(64));
-        user.setRecommendUrl(String.format(recommendUrl,user.getRecommandCode()));
+        String recommandCode = user.getRecommandCode();
+        if(recommandCode != null) {
+            String[] split = recommandCode.split(",");
+            recommandCode = split[split.length - 1];
+        }
+        user.setRecommendUrl(String.format(recommendUrl,recommandCode));
         return userRepository.save(user);
     }
 
@@ -162,6 +170,8 @@ public class UserService extends BasicService {
         if(user.getEnable()){
             // 保存用户关系
             userRelationService.initUserRelation(user);
+            // 计算邀请奖励
+            userCommisionService.computInviting(user);
         }
     }
 
@@ -175,40 +185,43 @@ public class UserService extends BasicService {
     }
 
 
-    private BaseResult<User> getUser(User user,String  inviteCode) {
+    public BaseResult<User> getUser(User user,String  inviteCode) {
         if(user == null){
             user = new User();
             user.setUuid(UUID.randomUUID().toString());
             user.setEnable(false);
             user.setInviteCode(inviteCode);
         }else{
-            if(inviteCode.length() < 5){
-                return new BaseResult<>(600,"邀请码格式错误");
-            }
-            // 邀请码
             String inviteUserId = "";
-            if(inviteCode.equals(sysInviteCode)){
-                inviteUserId = SysFinalValue.SYS_USER_ID;
-            }else{
-                User tempUser = userRepository.findByRecommandCodeLike( "%," + inviteCode + ",%");
-                if(tempUser == null){
-                    return new BaseResult<>(600,"邀请码无效");
+            // 邀请码
+            if(!StringUtils.isEmpty(inviteCode)) {
+                if(inviteCode.length() < 5){
+                    return new BaseResult<>(600,"邀请码格式错误");
                 }
-                inviteUserId = tempUser.getUuid();
+                if (inviteCode.equals(sysInviteCode)) {
+                    inviteUserId = SysFinalValue.SYS_USER_ID;
+                } else {
+                    User tempUser = userRepository.findByRecommandCodeLike("%," + inviteCode + ",%");
+                    if (tempUser == null) {
+                        return new BaseResult<>(600, "邀请码无效 - 01");
+                    }
+                    inviteUserId = tempUser.getUuid();
+                }
+                user.setEnable(true);
+                user.setLevelUserId(inviteUserId);
+                user.setInviteCode( inviteCode );
+            }else {
+                // 设置推广位
+                String pid = pinDuoDuoService.createPid();
+                if (StringUtils.isEmpty(pid)) {
+                    return new BaseResult<>(600, "推广位创建失败");
+                }
+                user.setPid(pid);
+                user.setRecommandCode("," + getRecommandCode() + ",");
+                user.setToken(RandomUtils.random(64));
+                user.setLoginTime(new Date());
+                user.setLevelTxt(getLevelTxt(user.getLevel()));
             }
-            // 设置推广位
-            String pid = pinDuoDuoService.createPid();
-            if(StringUtils.isEmpty(pid)){
-                return new BaseResult<>(600,"推广位创建失败");
-            }
-            user.setPid(pid);
-            user.setLevelUserId(inviteUserId);
-            user.setEnable(true);
-            user.setRecommandCode("," + getRecommandCode()+ ",");
-            user.setToken(RandomUtils.random(64));
-            user.setLoginTime(new Date());
-            user.setLevelTxt(getLevelTxt(user.getLevel()));
-            user.setInviteCode( inviteCode );
         }
         return new BaseResult<>(user);
     }

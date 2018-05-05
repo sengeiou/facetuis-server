@@ -20,6 +20,24 @@ public class UserCommision extends BaseEntity {
     private CashStatus cashStatus; // 提现状态
     private Double finishCash;// 已经提现金额
     private Double invitingCash = 0.0;// 邀请用户奖励
+    private Double updateCash = 0.0;// 用户升级奖励
+    private Integer invitingPeople = 0;// 邀请奖励用户人数
+
+    public Integer getInvitingPeople() {
+        return invitingPeople;
+    }
+
+    public void setInvitingPeople(Integer invitingPeople) {
+        this.invitingPeople = invitingPeople;
+    }
+
+    public Double getUpdateCash() {
+        return updateCash;
+    }
+
+    public void setUpdateCash(Double updateCash) {
+        this.updateCash = updateCash;
+    }
 
     public Double getInvitingCash() {
         return invitingCash;

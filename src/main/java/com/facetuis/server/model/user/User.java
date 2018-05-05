@@ -123,10 +123,6 @@ public class User extends BaseEntity {
     }
 
     public String getRecommandCode() {
-        if(recommandCode != null) {
-            String[] split = recommandCode.split(",");
-            recommandCode = split[split.length - 1];
-        }
         return recommandCode;
     }
 

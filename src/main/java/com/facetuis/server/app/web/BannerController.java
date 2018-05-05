@@ -23,4 +23,10 @@ public class BannerController extends FacetuisController {
         return  successResult(banner);
     }
 
+    @RequestMapping(value = "/big",method = RequestMethod.GET)
+    public BaseResponse list_body(){
+        Page<Banner> banner = bannerService.getBannerBig();
+        return  successResult(banner);
+    }
+
 }

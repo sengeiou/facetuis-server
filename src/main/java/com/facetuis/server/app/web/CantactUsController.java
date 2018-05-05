@@ -2,6 +2,7 @@ package com.facetuis.server.app.web;
 
 import com.facetuis.server.app.web.basic.BaseResponse;
 import com.facetuis.server.app.web.basic.FacetuisController;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,9 @@ import java.util.List;
 @RequestMapping("/1.0/cantactus")
 public class CantactUsController extends FacetuisController {
 
+
+    @Value("${sys.server.ip}")
+    private String serverIp;
     public class CantactUs{
         private String name;
         private String pic;
@@ -40,9 +44,8 @@ public class CantactUsController extends FacetuisController {
     public BaseResponse get()
     {
         CantactUs cm=new CantactUs();
-        cm.setName("高佣联盟");
-        cm.setPic("http://www.baidu.com/pic/1.png");
-
+        cm.setName("脸推");
+        cm.setPic("http://" + serverIp  + "/rq.jpg");
         return successResult(cm);
     }
 
