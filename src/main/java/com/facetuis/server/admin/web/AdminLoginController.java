@@ -27,8 +27,6 @@ public class AdminLoginController extends FacetuisController {
         if(baseResult.hasError()){
             return onResult(baseResult);
         }
-
-
         return successResult(baseResult.getResult());
     }
 }

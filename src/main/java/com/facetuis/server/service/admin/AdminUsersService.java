@@ -47,6 +47,11 @@ public class AdminUsersService extends BasicService {
     }
 
 
+    public AdminUsers findByAccessToken(String token){
+        return adminUserRepository.findByAccessToken(token);
+    }
+
+
     public static void main(String[] args) {
         String p1= MD5Utils.MD5("123456");
         String p2=MD5Utils.MD5(p1);

@@ -8,5 +8,7 @@ public interface AdminUserRepository extends JpaRepository<AdminUsers,String> {
 
     public AdminUsers findByUserName (String userName);
 
+    public AdminUsers findByAccessToken(String accessToken);
+
 
 }
