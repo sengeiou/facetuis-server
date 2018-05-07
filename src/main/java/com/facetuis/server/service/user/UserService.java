@@ -63,7 +63,11 @@ public class UserService extends BasicService {
 
 
     public User findByUnionid(String unionid){
-        return userRepository.findByUnionId(unionid);
+        User user = userRepository.findByUnionId(unionid);
+        if(user != null) {
+            user.setRecommendUrl(String.format(recommendUrl, user.getRecommandCode()));
+        }
+        return user;
     }
 
     public User findByMobile(String mobile){

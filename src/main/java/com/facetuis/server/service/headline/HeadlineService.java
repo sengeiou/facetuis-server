@@ -3,6 +3,7 @@ package com.facetuis.server.service.headline;
 import com.facetuis.server.model.headline.Headline;
 import com.facetuis.server.service.basic.BasicService;
 import com.facetuis.server.service.headline.vo.HeadlineVO;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,9 @@ import java.util.List;
 public class HeadlineService extends BasicService {
 
 
+    @Value("${sys.server.ip}")
+    private String serverIp;
+
 
     public PageImpl<HeadlineVO> list(){
         HeadlineVO<String> headline = new HeadlineVO();
@@ -26,25 +30,25 @@ public class HeadlineService extends BasicService {
         headline.setId("1");
         headline.setTitle("官方公告");
         headline.setType("TXT");
-        headline.setSubTitle("SubTitle");
+        headline.setSubTitle("2018的第一个重大消息：脸推App上线了！");
         headline.setCreateTime(new Date());
 
         HeadlineVO headline1 = new HeadlineVO();
         HeadlineVO.HeadlineContent hc1 = headline1.new HeadlineContent();
-        hc1.setImg("http://xxxx/img");
+        hc1.setImg("http://" + serverIp + "/head/head_big.png");
         hc1.setTxt("描述");
         List< HeadlineVO.HeadlineContent> hcs1 = new ArrayList<>();
         hcs1.add(hc1);
         headline1.setContent(hcs1 );
         headline1.setId("1");
         headline1.setTitle("title");
-        headline1.setType("TXT");
+        headline1.setType("IMG");
         headline1.setSubTitle("#2018的第一次#脸推App上线了！");
         headline1.setCreateTime(new Date());
 
         List<HeadlineVO> list = new ArrayList<>();
         list.add(headline);
-        //list.add(headline1);
+        list.add(headline1);
         return new PageImpl<HeadlineVO>(list);
     }
 

@@ -62,7 +62,7 @@ public class LoginController extends FacetuisController {
                 }
                 BaseResult<User> userBaseResult = userService.registerMobile(wechatUser, request.getMobile_number(), null);
                 mobileUser = userBaseResult.getResult();
-                userService.registerWechat(
+                userBaseResult = userService.registerWechat(
                         mobileUser,
                         request.getOpenid(),
                         request.getAccess_token(),
@@ -71,7 +71,7 @@ public class LoginController extends FacetuisController {
                         request.getHead_image(),
                         request.getUnionid()
                 );
-                return successResult();
+                return successResult(userBaseResult.getResult());
             }else{
                 return new BaseResponse(400, "请填写手机验证码");
             }

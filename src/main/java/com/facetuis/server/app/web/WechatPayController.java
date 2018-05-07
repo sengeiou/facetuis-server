@@ -39,14 +39,18 @@ public class WechatPayController extends FacetuisController {
      * @return
      */
     @RequestMapping(value = "/payment/{productid}",method = RequestMethod.GET)
-    @NeedLogin(needLogin = true)
+    //@NeedLogin(needLogin = true)
     public BaseResponse payment(@PathVariable String productid, HttpServletRequest request){
         Product product = ProductUtils.getProduct(productid);
         if(product == null){
             return setErrorResult(600,"没有找到需要支付的产品");
         }
         User user = getUser();
-        BaseResult baseResult = wechatPayService.unifiedorder(product.getTitle(), product.getTitle(), product.getAmount(), IpUtils.getIpAddr(request),user.getUuid(),productid);
+        String userId = null;
+        if(user != null){
+            userId = user.getUuid();
+        }
+        BaseResult baseResult = wechatPayService.unifiedorder(product.getTitle(), product.getTitle(), product.getAmount(), IpUtils.getIpAddr(request),userId,productid);
         return onResult(baseResult);
     }
 

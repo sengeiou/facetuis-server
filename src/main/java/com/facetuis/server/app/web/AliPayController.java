@@ -36,15 +36,19 @@ public class AliPayController extends FacetuisController {
      * @return
      */
     @RequestMapping( value = "/order/info/{productId}",method = RequestMethod.GET)
-    @NeedLogin(needLogin = true)
+    //@NeedLogin(needLogin = true)
     public BaseResponse generateOrder(@PathVariable String productId){
         Product product = ProductUtils.getProduct(productId);
         if(product == null){
             return setErrorResult(400,"商品不存在");
         }
         User user = getUser();
+        String userId = null;
+        if(user != null){
+            userId = user.getUuid();
+        }
         String body = "用户：" + user.getMobileNumber() + "购买了" + product.getTitle();
-        BaseResult stringBaseResult = aliPayService.generateOrder(product.getAmount(), product.getTitle(), body,user.getUuid(),productId);
+        BaseResult stringBaseResult = aliPayService.generateOrder(product.getAmount(), product.getTitle(), body,userId,productId);
         return onResult(stringBaseResult);
     }
 

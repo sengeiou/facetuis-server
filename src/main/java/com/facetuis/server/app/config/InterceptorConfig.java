@@ -37,12 +37,12 @@ public class InterceptorConfig implements WebMvcConfigurer {
         registry.addInterceptor(authInterceptor())
                 .excludePathPatterns("/error")
                 .excludePathPatterns("/static/*")
-                .addPathPatterns("/**");
+                .addPathPatterns("/1.0/**");
         // 验证签名
         registry.addInterceptor(signInterceptor())
                 .excludePathPatterns("/error")
                 .excludePathPatterns("/static/*")
-                .addPathPatterns("/**");
+                .addPathPatterns("/1.0/**");
 
     }
 }
