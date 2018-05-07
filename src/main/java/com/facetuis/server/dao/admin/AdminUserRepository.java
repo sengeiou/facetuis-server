@@ -5,4 +5,8 @@ import com.facetuis.server.model.order.OrderCommision;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AdminUserRepository extends JpaRepository<AdminUsers,String> {
+
+    public AdminUsers findByUserName (String userName);
+
+
 }

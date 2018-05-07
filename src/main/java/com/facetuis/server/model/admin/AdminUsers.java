@@ -1,6 +1,7 @@
 package com.facetuis.server.model.admin;
 
 import com.facetuis.server.model.basic.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -10,6 +11,7 @@ import javax.persistence.Table;
 public class AdminUsers extends BaseEntity {
 
     private String userName;
+    @JsonIgnore
     private String password;
     private String accessToken;
 
