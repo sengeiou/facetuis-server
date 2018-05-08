@@ -81,6 +81,9 @@ public class LoginController extends FacetuisController {
         if (mobileUser != null && wechatUser != null) {
             if (mobileUser.getUuid().equals(wechatUser.getUuid())) {
                 User user = userService.login(mobileUser.getUuid());
+                if(StringUtils.isEmpty(user.getInviteCode())){
+                    return new BaseResponse(400, "登录失败，用户无邀请码");
+                }
                 // 更新access_token
                 if(!user.getAccessToken().equals(request.getAccess_token())){
                     user.setAccessToken(request.getAccess_token());

@@ -35,14 +35,22 @@ public class AuthInterceptor implements HandlerInterceptor {
         if (!HandlerMethod.class.isAssignableFrom(handler.getClass())){
             return true;
         }
+        String token = null;
         String accessToken = request.getHeader(SysFinalValue.ACCESS_TOKEN);
+        if(!StringUtils.isEmpty(accessToken)){
+            token = accessToken;
+        }
+        String deskAccessToken = request.getHeader(SysFinalValue.DESK_ACCESS_TOKEN);
+        if(!StringUtils.isEmpty(deskAccessToken)){
+            token = deskAccessToken;
+        }
         String c = request.getHeader(SysFinalValue.CLIENT_TYPE);
         boolean isNeedLogin = LoginUtils.isNeedLogin((HandlerMethod) handler);
         // 判断是否访问的接口是否需要登录
         if(isNeedLogin){
             boolean loginResult = false;
-            if(!StringUtils.isEmpty(accessToken)){
-                loginResult = doLogin(accessToken, request, response);
+            if(!StringUtils.isEmpty(token)){
+                loginResult = doLogin(token, request, response);
                 if(!loginResult){
                     return false;
                 }
@@ -53,8 +61,8 @@ public class AuthInterceptor implements HandlerInterceptor {
             }
             return loginResult;
         }else{
-            if(!StringUtils.isEmpty(accessToken)){
-                getUser(accessToken, request);
+            if(!StringUtils.isEmpty(token)){
+                getUser(token, request);
             }
             return true;
         }
@@ -72,6 +80,14 @@ public class AuthInterceptor implements HandlerInterceptor {
         User user = userService.getUserByToken(token);
         if (user == null) {
             logger.info("访问校验失败：AccessToken失效" );
+            result.setCode(100);
+            result.setMessage("Token验证失败");
+            return authFail(response, result);
+        }
+        if(!user.getEnable()){
+            logger.info("访问校验失败：用户状态不可用" );
+            result.setCode(100);
+            result.setMessage("用户状态不可用");
             return authFail(response, result);
         }
         if(!StringUtils.isEmpty(tokenTimeOut)){
@@ -98,8 +114,6 @@ public class AuthInterceptor implements HandlerInterceptor {
      * @throws IOException
      */
     private boolean authFail(HttpServletResponse response, BaseResponse result) throws IOException {
-        result.setCode(100);
-        result.setMessage("Token验证失败");
         response.setContentType("application/json;charset=UTF-8");
         response.getWriter().flush();
         response.getWriter().print(JSONObject.toJSON(result));

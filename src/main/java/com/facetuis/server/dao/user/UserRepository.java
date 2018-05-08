@@ -31,4 +31,7 @@ public interface UserRepository extends JpaRepository<User,String> {
 
     List<User> findByLevelUserId(String levelUserId);
 
+
+    User findByTokenOrDeskAppToken(String token,String deskToken);
+
 }

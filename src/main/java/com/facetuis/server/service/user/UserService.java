@@ -54,7 +54,7 @@ public class UserService extends BasicService {
 
     public User findRecommander(String userId){
         User user = userRepository.findById(userId).get();
-        if(user.getLevelUserId().equals(SysFinalValue.SYS_USER_ID)){
+        if(user == null || user.getLevelUserId() == null|| user.getLevelUserId().equals(SysFinalValue.SYS_USER_ID)){
             return null;
         }else{
             return userRepository.findById(user.getLevelUserId()).get();
@@ -75,7 +75,11 @@ public class UserService extends BasicService {
         if(user == null){
             return null;
         }
+        if(StringUtils.isEmpty(user.getDeskAppToken())){
+            user.setDeskAppToken(RandomUtils.random(80));
+        }
         user.setRecommendUrl(String.format(recommendUrl,user.getRecommandCode()));
+        userRepository.save(user);
         return user;
     }
 
@@ -214,6 +218,23 @@ public class UserService extends BasicService {
                 user.setEnable(true);
                 user.setLevelUserId(inviteUserId);
                 user.setInviteCode( inviteCode );
+                if(StringUtils.isEmpty(user.getPid())){
+                    // 设置推广位
+                    String pid = pinDuoDuoService.createPid();
+                    if (StringUtils.isEmpty(pid)) {
+                        return new BaseResult<>(600, "推广位创建失败");
+                    }
+                    user.setPid(pid);
+                }
+                if(StringUtils.isEmpty(user.getRecommandCode())){
+                    user.setRecommandCode("," + getRecommandCode() + ",");
+                }
+                if(StringUtils.isEmpty(user.getLevelTxt())){
+                    user.setLevelTxt(getLevelTxt(user.getLevel()));
+                }
+                if(StringUtils.isEmpty(user.getToken())){
+                    user.setToken(RandomUtils.random(64));
+                }
             }else {
                 // 设置推广位
                 String pid = pinDuoDuoService.createPid();
@@ -248,7 +269,8 @@ public class UserService extends BasicService {
 
 
     public User getUserByToken(String token) {
-        return userRepository.findByToken(token);
+        //return userRepository.findByToken(token);
+        return userRepository.findByTokenOrDeskAppToken(token,token);
     }
 
     public List<User> findByIds(List<String> userIds){

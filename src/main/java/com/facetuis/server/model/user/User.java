@@ -38,7 +38,15 @@ public class User extends BaseEntity {
     private String pid;
     private String recommendUrl;
     private Date expireTime;
+    private String deskAppToken;// 桌面应用token
 
+    public String getDeskAppToken() {
+        return deskAppToken;
+    }
+
+    public void setDeskAppToken(String deskAppToken) {
+        this.deskAppToken = deskAppToken;
+    }
 
     public Date getExpireTime() {
         return expireTime;

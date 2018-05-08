@@ -6,6 +6,8 @@ public class SysFinalValue {
 
     public final static String ACCESS_TOKEN = "auth-token";
 
+    public final static String DESK_ACCESS_TOKEN = "desk-token";
+
     public final static String ADMIN_ACCESS_TOKEN = "admin-auth-token";
 
     public final static String CLIENT_TYPE = "c";

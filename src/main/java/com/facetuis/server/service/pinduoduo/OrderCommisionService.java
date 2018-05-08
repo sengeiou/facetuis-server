@@ -72,10 +72,13 @@ public class OrderCommisionService extends BasicService {
         Long endTime = System.currentTimeMillis()/1000; // 订单结束时间
         // 3级收入
         Long teamUser3Total = orderCommisionRepository.findTeamUser3Total(userId, begTime, endTime);
+        teamUser3Total = teamUser3Total == null ? 0 : teamUser3Total;
         // 2级收入
         Long teamUser2Total = orderCommisionRepository.findTeamUser2Total(userId, begTime, endTime);
+        teamUser2Total = teamUser2Total == null ? 0 : teamUser2Total;
         // 1级收入
         Long teamUser1Total = orderCommisionRepository.findTeamUser1Total(userId, begTime, endTime);
+        teamUser1Total = teamUser1Total == null ? 0 : teamUser1Total;
         vo.setIncome_total(teamUser1Total + teamUser2Total + teamUser3Total);
 
 

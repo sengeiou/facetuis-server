@@ -97,7 +97,6 @@ public class UserController extends FacetuisController{
         if(smsBaseResult.hasError()){
             return onResult(smsBaseResult);
         }
-
         String inviteUserId = "";
         if(registerRequest.getInviteCode().equals(sysInviteCode)){
             inviteUserId = SysFinalValue.SYS_USER_ID;
@@ -110,12 +109,12 @@ public class UserController extends FacetuisController{
         }
         User mobileUser = userService.findByMobile(registerRequest.getMobileNumber());
         if(mobileUser != null){
-            return setErrorResult(600,"用户已存在");
+            return setErrorResult(600,"手机号已存在");
         }
         if(!StringUtils.isEmpty(registerRequest.getOpenid())){
             User unionidUser = userService.findByOpenId(registerRequest.getOpenid());
             if(unionidUser != null){
-                return setErrorResult(600,"用户已存在");
+                return setErrorResult(600,"微信帐号已存在");
             }
         }
         BaseResult<User> userBaseResult = userService.registerMobile(mobileUser, registerRequest.getMobileNumber(), registerRequest.getInviteCode());
