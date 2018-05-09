@@ -22,11 +22,15 @@ public class AdminLoginController extends FacetuisController {
 
     @RequestMapping(method = RequestMethod.POST)
     public BaseResponse login(@RequestBody LoginRequest loginRequest, BindingResult bindingResult){
-
+        if(bindingResult.hasErrors()){
+            return erroorResult(bindingResult);
+        }
        BaseResult<AdminUsers> baseResult= adminUsersService.login(loginRequest.getUserName(),loginRequest.getPassword()) ;//这里调用Service里login
         if(baseResult.hasError()){
             return onResult(baseResult);
         }
         return successResult(baseResult.getResult());
     }
+
+
 }

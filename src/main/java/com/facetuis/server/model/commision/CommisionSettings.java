@@ -27,23 +27,23 @@ public class CommisionSettings extends BaseEntity {
     // 总监自买分出
     private double directorSelf = 0.6;
     // 月版奖励
-    private double monthAdd = 3800;
+    private Long monthAdd = 3800l;
     // 年版奖励
-    private double yearAdd = 38000;
+    private Long yearAdd = 38000l;
 
-    public double getMonthAdd() {
+    public Long getMonthAdd() {
         return monthAdd;
     }
 
-    public void setMonthAdd(double monthAdd) {
+    public void setMonthAdd(Long monthAdd) {
         this.monthAdd = monthAdd;
     }
 
-    public double getYearAdd() {
+    public Long getYearAdd() {
         return yearAdd;
     }
 
-    public void setYearAdd(double yearAdd) {
+    public void setYearAdd(Long yearAdd) {
         this.yearAdd = yearAdd;
     }
 

@@ -37,6 +37,7 @@ public class HeadlineService extends BasicService {
         HeadlineVO.HeadlineContent hc1 = headline1.new HeadlineContent();
         hc1.setImg("http://" + serverIp + "/head/head_big.png");
         hc1.setTxt("描述");
+        hc1.setProductId("584952311");
         List< HeadlineVO.HeadlineContent> hcs1 = new ArrayList<>();
         hcs1.add(hc1);
         headline1.setContent(hcs1 );
@@ -64,6 +65,7 @@ public class HeadlineService extends BasicService {
         headline.setType("TXT");
         headline.setSubTitle("SubTitle");
         headline.setCreateTime(new Date());
+
         List<HeadlineVO> list = new ArrayList<>();
         list.add(headline);
         return new PageImpl<HeadlineVO>(list);

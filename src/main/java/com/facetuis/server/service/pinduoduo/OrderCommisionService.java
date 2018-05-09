@@ -91,10 +91,13 @@ public class OrderCommisionService extends BasicService {
         endTime = TimeUtils.stringToDateTime(endStr).getTime() / 1000;
         // 3级收入
         Long teamUser3TotalToday = orderCommisionRepository.findTeamUser3Total(userId, begTime, endTime);
+        teamUser3TotalToday = teamUser3TotalToday == null ? 0 :teamUser3TotalToday;
         // 2级收入
         Long teamUser2TotalToday = orderCommisionRepository.findTeamUser2Total(userId, begTime, endTime);
+        teamUser2TotalToday = teamUser2TotalToday == null ? 0 :teamUser2TotalToday;
         // 1级收入
         Long teamUser1TotalToday = orderCommisionRepository.findTeamUser1Total(userId, begTime, endTime);
+        teamUser1TotalToday = teamUser1TotalToday == null ? 0 :teamUser1TotalToday;
         vo.setIncome_today(teamUser1TotalToday + teamUser2TotalToday + teamUser3TotalToday);
         ////////////////////////////////////////////////////////////////////////////////
         ////////////////////////// 昨天收入//////////////////////////////////////////////
@@ -105,10 +108,13 @@ public class OrderCommisionService extends BasicService {
         endTime = TimeUtils.stringToDateTime(endStr).getTime() / 1000;
         // 3级收入
         Long teamUser3TotalYeartoday = orderCommisionRepository.findTeamUser3Total(userId, begTime, endTime);
+        teamUser3TotalYeartoday = teamUser3TotalYeartoday == null ? 0 :teamUser3TotalYeartoday;
         // 2级收入
         Long teamUser2TotalYeartoday = orderCommisionRepository.findTeamUser2Total(userId, begTime, endTime);
+        teamUser2TotalYeartoday = teamUser2TotalYeartoday == null ? 0 :teamUser2TotalYeartoday;
         // 1级收入
         Long teamUser1TotalYeartoday = orderCommisionRepository.findTeamUser1Total(userId, begTime, endTime);
+        teamUser1TotalYeartoday = teamUser1TotalYeartoday == null ? 0 :teamUser1TotalYeartoday;
         vo.setIncome_yesterday(teamUser1TotalYeartoday + teamUser2TotalYeartoday + teamUser3TotalYeartoday);
 
         /////////////////////////////////////////////////////////////////////////////////////
@@ -120,10 +126,13 @@ public class OrderCommisionService extends BasicService {
         endTime = TimeUtils.stringToDateTime(endStr).getTime() / 1000;
         // 3级收入
         Long teamUser3TotalMonth = orderCommisionRepository.findTeamUser3Total(userId, begTime, endTime);
+        teamUser3TotalMonth = teamUser3TotalMonth == null ? teamUser3TotalMonth : 0;
         // 2级收入
         Long teamUser2TotalMonth = orderCommisionRepository.findTeamUser2Total(userId, begTime, endTime);
+        teamUser2TotalMonth = teamUser2TotalMonth == null ? teamUser2TotalMonth : 0;
         // 1级收入
         Long teamUser1TotalMonth = orderCommisionRepository.findTeamUser1Total(userId, begTime, endTime);
+        teamUser1TotalMonth = teamUser1TotalMonth == null ? teamUser1TotalMonth : 0;
         vo.setIncome_this_month(teamUser3TotalMonth + teamUser2TotalMonth + teamUser1TotalMonth);
 
         /////////////////////////////////////////////////////////////////////////////////////
@@ -135,13 +144,17 @@ public class OrderCommisionService extends BasicService {
         endTime = TimeUtils.stringToDateTime(endStr).getTime() / 1000;
         // 3级收入
         Long teamUser3TotalLastMonth = orderCommisionRepository.findTeamUser3Total(userId, begTime, endTime);
+        teamUser3TotalLastMonth = teamUser3TotalLastMonth == null ? 0 : teamUser3TotalLastMonth;
         // 2级收入
         Long teamUser2TotalLastMonth = orderCommisionRepository.findTeamUser2Total(userId, begTime, endTime);
+        teamUser2TotalLastMonth = teamUser2TotalLastMonth == null ? 0 : teamUser2TotalLastMonth;
         // 1级收入
         Long teamUser1TotalLastMonth = orderCommisionRepository.findTeamUser1Total(userId, begTime, endTime);
+        teamUser1TotalLastMonth = teamUser1TotalLastMonth == null ? 0 : teamUser1TotalLastMonth;
         vo.setIncome_last_month(teamUser3TotalLastMonth + teamUser2TotalLastMonth + teamUser1TotalLastMonth);
         return vo;
     }
+
 
 
 }

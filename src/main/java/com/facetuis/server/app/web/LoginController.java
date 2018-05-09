@@ -60,13 +60,13 @@ public class LoginController extends FacetuisController {
                 if (baseResult.hasError()) {
                     return onResult(baseResult);
                 }
-                BaseResult<User> userBaseResult = userService.registerMobile(wechatUser, request.getMobile_number(), null);
+                BaseResult<User> userBaseResult = userService.registerMobile(wechatUser, request.getMobile_number(), request.getInvite_code());
                 mobileUser = userBaseResult.getResult();
                 userBaseResult = userService.registerWechat(
                         mobileUser,
                         request.getOpenid(),
                         request.getAccess_token(),
-                        null,
+                        request.getInvite_code(),
                         request.getNick_name(),
                         request.getHead_image(),
                         request.getUnionid()
@@ -81,7 +81,7 @@ public class LoginController extends FacetuisController {
         if (mobileUser != null && wechatUser != null) {
             if (mobileUser.getUuid().equals(wechatUser.getUuid())) {
                 User user = userService.login(mobileUser.getUuid());
-                if(StringUtils.isEmpty(user.getInviteCode())){
+                if(StringUtils.isEmpty(request.getInvite_code())){
                     return new BaseResponse(400, "登录失败，用户无邀请码");
                 }
                 // 更新access_token

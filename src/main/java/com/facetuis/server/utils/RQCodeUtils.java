@@ -210,7 +210,13 @@ public class RQCodeUtils {
     }
 
     public static void main(String[] args) throws Exception {
-        encode("http://www.baidu.com");
+        BufferedImage encode = encode("http://api.facetuis.com/facetuis/1.0/user/enroll/13666");
 
+        try {
+            File outputfile = new File("c:/13666.jpg");
+            ImageIO.write(encode, "jpg", outputfile);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

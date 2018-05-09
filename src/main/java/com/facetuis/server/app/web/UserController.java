@@ -197,7 +197,7 @@ public class UserController extends FacetuisController{
         if(!upload.hasError()){
             CommisionSettings commisionSettings = new CommisionSettings();
             Product product = ProductUtils.getProduct(request.getProductId());
-            Double cash = 0.0;
+            Long cash = 0l;
             if(product.getValues() == 30){
                 cash = commisionSettings.getMonthAdd();
             }else{

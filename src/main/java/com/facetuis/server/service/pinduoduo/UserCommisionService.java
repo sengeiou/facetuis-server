@@ -5,8 +5,11 @@ import com.facetuis.server.dao.user.UserRepository;
 import com.facetuis.server.model.commision.CommisionSettings;
 import com.facetuis.server.model.order.OrderCommision;
 import com.facetuis.server.model.order.OrderStatus;
+import com.facetuis.server.model.reward.Reward;
+import com.facetuis.server.model.reward.RewardType;
 import com.facetuis.server.model.user.User;
 import com.facetuis.server.model.user.UserCommision;
+import com.facetuis.server.service.reward.RewardService;
 import com.facetuis.server.utils.RandomUtils;
 import com.facetuis.server.utils.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +33,8 @@ public class UserCommisionService {
     private UserCommisionRepository userCommisionRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private RewardService rewardService;
 
 
     /**
@@ -64,38 +69,38 @@ public class UserCommisionService {
             if (orderStatus == OrderStatus.SETTLEMENT && orderCommision.getFinish()) {
                 // 计算订单可提现金额 = 用户分拥金额
                 // 计算
-                Double userCommisionAmount = userCommison.getOrderCash() + orderCommision.getUserCommision();// 购买用户的佣金
+                Long userCommisionAmount = userCommison.getOrderCash() + orderCommision.getUserCommision();// 购买用户的佣金
                 userCommison.setOrderCash(userCommisionAmount);
                 userCommisionRepository.save(userCommison);
 
-                Double user1CommisionAmount = user1Commison.getOrderCash() + orderCommision.getUser1Commision();// 上级用户的佣金
+                Long user1CommisionAmount = user1Commison.getOrderCash() + orderCommision.getUser1Commision();// 上级用户的佣金
                 user1Commison.setOrderCash(user1CommisionAmount);
                 userCommisionRepository.save(user1Commison);
 
-                Double user2CommisionAmount = user2Commison.getOrderCash() + orderCommision.getUser2Commision();// 上级的上级佣金
+                Long user2CommisionAmount = user2Commison.getOrderCash() + orderCommision.getUser2Commision();// 上级的上级佣金
                 user2Commison.setOrderCash(user2CommisionAmount);
                 userCommisionRepository.save(user2Commison);
 
-                Double user3CommisionAmount = user3Commison.getOrderCash() + orderCommision.getUser3Commision();// 上级的上级佣金
+                Long user3CommisionAmount = user3Commison.getOrderCash() + orderCommision.getUser3Commision();// 上级的上级佣金
                 user3Commison.setOrderCash(user3CommisionAmount);
                 userCommisionRepository.save(user3Commison);
                 // 结算金额计算完成
                 orderCommision.setFinish(true);
             } else if (!orderCommision.getWaitFinish()) {
                 // 佣金未结算 =》 佣金待结算 = 支付状态为未结算的订单 + 上次未结算的佣金金额 + 要结算的佣金金额
-                Double userCommisionAmount = userCommison.getWaitSettlement() + orderCommision.getUserCommision();// 购买用户的佣金
+                Long userCommisionAmount = userCommison.getWaitSettlement() + orderCommision.getUserCommision();// 购买用户的佣金
                 userCommison.setWaitSettlement(userCommisionAmount);
                 userCommisionRepository.save(userCommison);
 
-                Double user1CommisionAmount = user1Commison.getWaitSettlement() + orderCommision.getUser1Commision();// 上级用户的佣金
+                Long user1CommisionAmount = user1Commison.getWaitSettlement() + orderCommision.getUser1Commision();// 上级用户的佣金
                 user1Commison.setWaitSettlement(user1CommisionAmount);
                 userCommisionRepository.save(user1Commison);
 
-                Double user2CommisionAmount = user2Commison.getWaitSettlement() + orderCommision.getUser2Commision();// 上级的上级佣金
+                Long user2CommisionAmount = user2Commison.getWaitSettlement() + orderCommision.getUser2Commision();// 上级的上级佣金
                 user2Commison.setWaitSettlement(user2CommisionAmount);
                 userCommisionRepository.save(user2Commison);
 
-                Double user3CommisionAmount = user3Commison.getWaitSettlement() + orderCommision.getUser3Commision();// 上级的上级佣金
+                Long user3CommisionAmount = user3Commison.getWaitSettlement() + orderCommision.getUser3Commision();// 上级的上级佣金
                 user3Commison.setWaitSettlement(user3CommisionAmount);
                 userCommisionRepository.save(user3Commison);
 
@@ -110,15 +115,21 @@ public class UserCommisionService {
      * @param userId
      * @param price
      */
-    public void addInvitingCash(String userId,Double price){
+    public void addInvitingCash(String userId,Long price){
         UserCommision userCommision = userCommisionRepository.findByUserId(userId);
         if(userCommision == null){
             userCommision = new UserCommision();
             userCommision.setUuid(UUID.randomUUID().toString());
         }
-        double cash = userCommision.getUpdateCash() + price;
+        Long cash = userCommision.getUpdateCash() + price;
         userCommision.setUpdateCash(cash);
         userCommisionRepository.save(userCommision);
+    }
+
+
+    public void countInviting(String userId){
+
+
     }
 
 
@@ -158,15 +169,26 @@ public class UserCommisionService {
                 if (number % 2 == 0) {
                     //开启奖励
                     // 最终奖励金额
-                    Double cash = Double.parseDouble(RandomUtils.rate(randomCashMix, randomCashMax));
-                    double result = levelUserCommision.getInvitingCash() + cash;
+                    Long cash = Long.parseLong(RandomUtils.rate(randomCashMix, randomCashMax));
+                    Long result = levelUserCommision.getInvitingCash() + cash;
                     levelUserCommision.setInvitingCash(result);
                     levelUserCommision.setInvitingPeople(levelUserCommision.getInvitingPeople() + 1);
                     userCommisionRepository.save(levelUserCommision);
+                    // 记录奖励
+                    createReward(user.getUuid(),result);
                 }else{
                     logger.info("随机结果::不奖励");
                 }
             }
         }
+    }
+
+    private void createReward(String userId,Long amount){
+        Reward reward = new Reward();
+        reward.setUuid(UUID.randomUUID().toString());
+        reward.setAmount(amount);
+        reward.setUserId(userId);
+        reward.setRewardType(RewardType.INVITING);
+        rewardService.create(reward);
     }
 }

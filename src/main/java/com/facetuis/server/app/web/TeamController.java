@@ -5,12 +5,14 @@ import com.facetuis.server.app.web.basic.FacetuisController;
 import com.facetuis.server.app.web.response.TeamOrderCountResponse;
 import com.facetuis.server.app.web.response.TeamPopleCountResponse;
 import com.facetuis.server.app.web.response.TeamUsersResponse;
+import com.facetuis.server.dao.user.UserCommisionRepository;
 import com.facetuis.server.model.order.Order;
 import com.facetuis.server.model.user.User;
 import com.facetuis.server.model.user.UserLevel;
 import com.facetuis.server.model.user.UserRelation;
 import com.facetuis.server.service.pinduoduo.OrderCommisionService;
 import com.facetuis.server.service.pinduoduo.OrderService;
+import com.facetuis.server.service.pinduoduo.UserCommisionService;
 import com.facetuis.server.service.pinduoduo.response.OrderVO;
 import com.facetuis.server.service.pinduoduo.response.TeamIncomVO;
 import com.facetuis.server.service.user.UserRelationService;
@@ -46,6 +48,9 @@ public class TeamController extends FacetuisController {
     private UserService userService;
     @Autowired
     private OrderCommisionService orderCommisionService;
+    @Autowired
+    private UserCommisionService userCommisionService;
+
 
     @RequestMapping(value = "/people/count",method = RequestMethod.GET)
     @NeedLogin(needLogin = true)
@@ -203,5 +208,12 @@ public class TeamController extends FacetuisController {
         User user = getUser();
         TeamIncomVO income = orderCommisionService.getIncome(user.getUuid());
         return successResult(income);
+    }
+
+    @RequestMapping(value = "/inviting/count")
+    @NeedLogin(needLogin = true)
+    public BaseResponse inviting(){
+        User user = getUser();
+        return successResult();
     }
 }

@@ -13,14 +13,14 @@ import javax.persistence.Table;
 public class UserCommision extends BaseEntity {
 
     private String userId;
-    private Double orderCash = 0.0; // 订单可提现金额
-    private Double waitSettlement = 0.0; // 等待结算金额
-    private Double finishSettlement = 0.0;// 已完结结算金额
+    private Long orderCash = 0l; // 订单可提现金额
+    private Long waitSettlement = 0l; // 等待结算金额
+    private Long finishSettlement = 0l;// 已完结结算金额
     @Enumerated(EnumType.STRING)
     private CashStatus cashStatus; // 提现状态
     private Double finishCash;// 已经提现金额
-    private Double invitingCash = 0.0;// 邀请用户奖励
-    private Double updateCash = 0.0;// 用户升级奖励
+    private Long invitingCash = 0l;// 邀请用户奖励
+    private Long updateCash = 0l;// 用户升级奖励
     private Integer invitingPeople = 0;// 邀请奖励用户人数
 
     public Integer getInvitingPeople() {
@@ -31,19 +31,11 @@ public class UserCommision extends BaseEntity {
         this.invitingPeople = invitingPeople;
     }
 
-    public Double getUpdateCash() {
-        return updateCash;
-    }
-
-    public void setUpdateCash(Double updateCash) {
-        this.updateCash = updateCash;
-    }
-
-    public Double getInvitingCash() {
+    public Long getInvitingCash() {
         return invitingCash;
     }
 
-    public void setInvitingCash(Double invitingCash) {
+    public void setInvitingCash(Long invitingCash) {
         this.invitingCash = invitingCash;
     }
 
@@ -71,27 +63,35 @@ public class UserCommision extends BaseEntity {
         this.userId = userId;
     }
 
-    public Double getOrderCash() {
+    public Long getOrderCash() {
         return orderCash;
     }
 
-    public void setOrderCash(Double orderCash) {
+    public void setOrderCash(Long orderCash) {
         this.orderCash = orderCash;
     }
 
-    public Double getWaitSettlement() {
+    public Long getWaitSettlement() {
         return waitSettlement;
     }
 
-    public void setWaitSettlement(Double waitSettlement) {
+    public void setWaitSettlement(Long waitSettlement) {
         this.waitSettlement = waitSettlement;
     }
 
-    public Double getFinishSettlement() {
+    public Long getFinishSettlement() {
         return finishSettlement;
     }
 
-    public void setFinishSettlement(Double finishSettlement) {
+    public void setFinishSettlement(Long finishSettlement) {
         this.finishSettlement = finishSettlement;
+    }
+
+    public Long getUpdateCash() {
+        return updateCash;
+    }
+
+    public void setUpdateCash(Long updateCash) {
+        this.updateCash = updateCash;
     }
 }
