@@ -9,9 +9,5 @@ public interface UserCommisionRepository extends JpaRepository<UserCommision,Str
 
     UserCommision findByUserId(String userId);
 
-    @Query(value = "select sum(inviting_cash) from t_user_commision where user_id = ?1  and to_days(create_time) = to_days(now())",nativeQuery = true)
-    Long invitingToday(String userId);
 
-    @Query(value = "select sum(inviting_cash) from t_user_commision where user_id = ?1  and TO_DAYS( NOW( ) ) - TO_DAYS( create_time) = 1",nativeQuery = true)
-    Long invitingYesterday(String userId);
 }

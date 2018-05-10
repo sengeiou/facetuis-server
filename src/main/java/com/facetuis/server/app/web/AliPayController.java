@@ -36,7 +36,7 @@ public class AliPayController extends FacetuisController {
      * @return
      */
     @RequestMapping( value = "/order/info/{productId}",method = RequestMethod.GET)
-    //@NeedLogin(needLogin = true)
+    @NeedLogin(needLogin = true)
     public BaseResponse generateOrder(@PathVariable String productId){
         Product product = ProductUtils.getProduct(productId);
         if(product == null){

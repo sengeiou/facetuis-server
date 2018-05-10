@@ -61,7 +61,7 @@ public class WechatPayService extends BasicService {
         map.put("appid",appid);
         map.put("mch_id",mchid);
         map.put("nonce_str",random);
-        map.put("body","bbbb");
+        map.put("body",detail);
         map.put("out_trade_no", tradeNo);
         map.put("total_fee",total_price);
         map.put("spbill_create_ip","127.0.0.1");
@@ -96,6 +96,7 @@ public class WechatPayService extends BasicService {
                 parameterMap2.put("timestamp", Long.parseLong(String.valueOf(System.currentTimeMillis()).toString().substring(0,10)) + "");
                 String sign2 = PayCommonUtil.createSign(parameterMap2,key);
                 parameterMap2.put("sign", sign2);
+                parameterMap2.put("out_trade_no",tradeNo);
                 baseResult.setResult(parameterMap2);
                 return  baseResult;
             }

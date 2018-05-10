@@ -13,6 +13,7 @@ import com.facetuis.server.service.reward.RewardService;
 import com.facetuis.server.utils.RandomUtils;
 import com.facetuis.server.utils.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.sql.Time;
@@ -35,6 +36,10 @@ public class UserCommisionService {
     private UserRepository userRepository;
     @Autowired
     private RewardService rewardService;
+    @Value("${sys.activiy.inviting.start}")
+    private String invitingStart;
+    @Value("${sys.activiy.inviting.end}")
+    private String invitingEnd;
 
 
     /**
@@ -67,8 +72,9 @@ public class UserCommisionService {
             }
             // 佣金已结算 && 已完成佣金结算
             if (orderStatus == OrderStatus.SETTLEMENT && orderCommision.getFinish()) {
-                // 计算订单可提现金额 = 用户分拥金额
-                // 计算
+                // 计算订单可提现金额 = 用户分佣金额
+                // 可提现金额 + 订单佣金
+
                 Long userCommisionAmount = userCommison.getOrderCash() + orderCommision.getUserCommision();// 购买用户的佣金
                 userCommison.setOrderCash(userCommisionAmount);
                 userCommisionRepository.save(userCommison);
@@ -127,20 +133,14 @@ public class UserCommisionService {
     }
 
 
-    public void countInviting(String userId){
-
-
-    }
-
-
     /**
      * 计算邀请奖励
      * 奖励上级用户
      * @param user
      */
     public void computInviting(final User user) {
-        Date startTime = TimeUtils.stringToDate("2018-05-01 00:00:00");
-        Date endTime = TimeUtils.stringToDateTime("2018-05-31 00:00:00");
+        Date startTime = TimeUtils.stringToDate(invitingStart);
+        Date endTime = TimeUtils.stringToDateTime(invitingEnd);
         int randomCashMix = 1;
         int randomCashMax = 50;
         int newPeoples = 0; // 拉人多少人后才能获得奖励

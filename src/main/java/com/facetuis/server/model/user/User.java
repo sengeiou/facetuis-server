@@ -1,7 +1,9 @@
 package com.facetuis.server.model.user;
 
 import com.facetuis.server.model.basic.BaseEntity;
+import com.facetuis.server.utils.DateJsonTypeHHmm;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +26,7 @@ public class User extends BaseEntity {
     @JsonProperty("invite_code")
     private String inviteCode; // 邀请码
     private String token; //  本系统token
+    @JsonSerialize(using = DateJsonTypeHHmm.class)
     private Date loginTime;
     @JsonProperty("access_token")
     private String accessToken;//微信票据
@@ -37,6 +40,7 @@ public class User extends BaseEntity {
     private String unionId;// 微信统一开发者下的所有应用的用户唯一性ID
     private String pid;
     private String recommendUrl;
+    @JsonSerialize(using = DateJsonTypeHHmm.class)
     private Date expireTime;
     private String deskAppToken;// 桌面应用token
 

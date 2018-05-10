@@ -18,7 +18,7 @@ public class UserCommision extends BaseEntity {
     private Long finishSettlement = 0l;// 已完结结算金额
     @Enumerated(EnumType.STRING)
     private CashStatus cashStatus; // 提现状态
-    private Double finishCash;// 已经提现金额
+    private Long finishCash;// 已经提现金额
     private Long invitingCash = 0l;// 邀请用户奖励
     private Long updateCash = 0l;// 用户升级奖励
     private Integer invitingPeople = 0;// 邀请奖励用户人数
@@ -39,11 +39,11 @@ public class UserCommision extends BaseEntity {
         this.invitingCash = invitingCash;
     }
 
-    public Double getFinishCash() {
+    public Long getFinishCash() {
         return finishCash;
     }
 
-    public void setFinishCash(Double finishCash) {
+    public void setFinishCash(Long finishCash) {
         this.finishCash = finishCash;
     }
 

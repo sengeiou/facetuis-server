@@ -203,6 +203,9 @@ public class UserRelationService extends BasicService {
     public List<User> findHighUser(String userId){
         UserRelation byUserId = userRelationRepository.findByUserId(userId);
         String user1HighIds = byUserId.getUser1HighIds();
+        if(StringUtils.isEmpty(user1HighIds)){
+            return Collections.EMPTY_LIST;
+        }
         String[] split = user1HighIds.split(",");
         List<String> ids = Arrays.asList(split);
         return userRepository.findAllById(ids);

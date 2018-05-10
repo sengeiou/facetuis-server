@@ -2,19 +2,21 @@ package com.facetuis.server.app.web;
 
 import com.facetuis.server.app.web.basic.BaseResponse;
 import com.facetuis.server.app.web.basic.FacetuisController;
+import com.facetuis.server.app.web.request.TeamOrdersSearchType;
+import com.facetuis.server.app.web.request.TeamPeopleSearchType;
 import com.facetuis.server.app.web.response.TeamOrderCountResponse;
 import com.facetuis.server.app.web.response.TeamPopleCountResponse;
 import com.facetuis.server.app.web.response.TeamUsersResponse;
-import com.facetuis.server.dao.user.UserCommisionRepository;
 import com.facetuis.server.model.order.Order;
 import com.facetuis.server.model.user.User;
 import com.facetuis.server.model.user.UserLevel;
 import com.facetuis.server.model.user.UserRelation;
 import com.facetuis.server.service.pinduoduo.OrderCommisionService;
 import com.facetuis.server.service.pinduoduo.OrderService;
-import com.facetuis.server.service.pinduoduo.UserCommisionService;
 import com.facetuis.server.service.pinduoduo.response.OrderVO;
 import com.facetuis.server.service.pinduoduo.response.TeamIncomVO;
+import com.facetuis.server.service.reward.RewardService;
+import com.facetuis.server.service.reward.vo.RewardInvitingVO;
 import com.facetuis.server.service.user.UserRelationService;
 import com.facetuis.server.service.user.UserService;
 import com.facetuis.server.utils.NeedLogin;
@@ -23,6 +25,7 @@ import com.facetuis.server.utils.TimeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -49,7 +53,7 @@ public class TeamController extends FacetuisController {
     @Autowired
     private OrderCommisionService orderCommisionService;
     @Autowired
-    private UserCommisionService userCommisionService;
+    private RewardService rewardService;
 
 
     @RequestMapping(value = "/people/count",method = RequestMethod.GET)
@@ -80,11 +84,56 @@ public class TeamController extends FacetuisController {
     }
 
 
-    @RequestMapping("/orders/count")
+    /**
+     * 指定时间团队人数列表
+     * @return
+     */
+    @RequestMapping(value = "/people/count/{type}",method = RequestMethod.GET)
+    @NeedLogin(needLogin = true)
+    public BaseResponse teamPeopleCountToday(@PathVariable TeamPeopleSearchType type){
+        User user = getUser();
+        List<UserRelation> userRelations = new ArrayList<>();
+        List<String> userIds = new ArrayList<>();
+        if(type == TeamPeopleSearchType.TODAY) {
+            userRelations = userRelationService.countPeopleToday(user.getUuid());
+        }
+        if(type == TeamPeopleSearchType.YESTERDAY){
+            userRelations = userRelationService.countPeopleYesterday(user.getUuid());
+        }
+        if(type == TeamPeopleSearchType.LEVEL1){
+            UserRelation relation = userRelationService.getRelation(user.getUuid());
+            String user1HighIds = relation.getUserLevel1Id();
+            String[] split = user1HighIds.split(",");
+            if(split.length > 0) {
+                userIds = Arrays.asList(split);
+            }
+        }
+        if(type == TeamPeopleSearchType.LEVEL2){
+            UserRelation relation = userRelationService.getRelation(user.getUuid());
+            String user1HighIds = relation.getUserLevel2Id();
+            String[] split = user1HighIds.split(",");
+            if(split.length > 0) {
+                userIds = Arrays.asList(split);
+            }
+        }
+        for(UserRelation userRelation : userRelations){
+            userIds.add(userRelation.getUserId());
+        }
+        List<TeamUsersResponse> responses = new ArrayList<>();
+        if(userIds.size() > 0) {
+            List<User> users = userService.findByIds(userIds);
+            getTeamUser(users, responses);
+        }
+        return successResult(responses);
+    }
+
+
+
+    @RequestMapping(value = "/orders/count",method = RequestMethod.GET)
     @NeedLogin(needLogin = true)
     public BaseResponse getTeamOrdersCount(){
         TeamOrderCountResponse response = new TeamOrderCountResponse();
-        PageRequest pageable = PageRequest.of(0,10);
+        PageRequest pageable = PageRequest.of(0,1000);
         User user = getUser();
         String todayTime = TimeUtils.date2String(new Date());
         String yesterdayTime = TimeUtils.date2String(TimeUtils.getDateBefore(new Date(),1));
@@ -109,6 +158,35 @@ public class TeamController extends FacetuisController {
         response.setOrder_last_month((int)upperMonthyOrders.getTotalElements());
         return successResult(response);
     }
+
+    @RequestMapping(value = "/orders/count/{type}",method = RequestMethod.GET)
+    @NeedLogin(needLogin = true)
+    public BaseResponse getTeamOrdersType(@PathVariable TeamOrdersSearchType type,PageRequest pageable){
+        User user = getUser();
+        Page<Order> orders = null;
+        if(type == TeamOrdersSearchType.TODAY){
+            String todayTime = TimeUtils.date2String(new Date());
+            orders = orderService.findByDate(todayTime + " 00:00:00", todayTime + " 23:59:59", user.getUuid(), pageable);
+        }
+        if(type == TeamOrdersSearchType.YESTERDAY){
+            String yesterdayTime = TimeUtils.date2String(TimeUtils.getDateBefore(new Date(),1));
+            orders = orderService.findByDate(yesterdayTime + " 00:00:00", yesterdayTime + " 23:59:59", user.getUuid(), pageable);
+        }
+        if(type == TeamOrdersSearchType.MONTH){
+            String monthFirst = TimeUtils.getMonthFirstDay();
+            String monthLast = TimeUtils.getMonthLastDay();
+            orders = orderService.findByDate(monthFirst + " 00:00:00", monthLast + " 23:59:59", user.getUuid(), pageable);
+        }
+        if(type == TeamOrdersSearchType.PRE_MONTH){
+            String upperMonthFirst = TimeUtils.upperMonthFirst();
+            String upperMonthLast = TimeUtils.upperMonthLast();
+            orders = orderService.findByDate(upperMonthFirst + " 00:00:00", upperMonthLast + " 23:59:59", user.getUuid(), pageable);
+        }
+        return successResult(orders);
+    }
+
+
+
 
     @RequestMapping(value = "/orders/{status}",method = RequestMethod.GET)
     @NeedLogin(needLogin = true)
@@ -184,17 +262,21 @@ public class TeamController extends FacetuisController {
         }
         List<TeamUsersResponse> responses = new ArrayList<>();
         if(user != null){
-            for(User u : users){
-                List<User> byInviteCode = userService.findByInviteCode(u.getRecommandCode());
-                if(u.getLevel() == UserLevel.LEVEL2) {
-                    TeamUsersResponse response = new TeamUsersResponse();
-                    BeanUtils.copyProperties(u, response);
-                    response.setRecommandNumber(byInviteCode.size());
-                    responses.add(response);
-                }
-            }
+            getTeamUser(users, responses);
         }
         return successResult(responses);
+    }
+
+    private void getTeamUser(List<User> users, List<TeamUsersResponse> responses) {
+        for(User u : users){
+            List<User> byInviteCode = userService.findByInviteCode(u.getRecommandCode());
+            if(u.getLevel() == UserLevel.LEVEL2) {
+                TeamUsersResponse response = new TeamUsersResponse();
+                BeanUtils.copyProperties(u, response);
+                response.setRecommandNumber(byInviteCode.size());
+                responses.add(response);
+            }
+        }
     }
 
 
@@ -210,10 +292,23 @@ public class TeamController extends FacetuisController {
         return successResult(income);
     }
 
+    @Value("${sys.activiy.inviting.start}")
+    private String invitingStart;
+    @Value("${sys.activiy.inviting.end}")
+    private String invitingEnd;
+
+
+    /**
+     * 统计邀请奖励
+     * @return
+     */
     @RequestMapping(value = "/inviting/count")
     @NeedLogin(needLogin = true)
     public BaseResponse inviting(){
         User user = getUser();
-        return successResult();
+        RewardInvitingVO invitingVO = rewardService.getInvitingVO(user.getUuid());
+        invitingVO.setInvitingStart(invitingStart);
+        invitingVO.setInvitingEnd(invitingEnd);
+        return successResult(invitingVO);
     }
 }

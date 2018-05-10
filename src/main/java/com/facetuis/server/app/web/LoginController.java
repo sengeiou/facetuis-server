@@ -71,6 +71,8 @@ public class LoginController extends FacetuisController {
                         request.getHead_image(),
                         request.getUnionid()
                 );
+                User result = userBaseResult.getResult();
+                result.setRecommandCode(result.getRecommandCode().replaceAll(",",""));
                 return successResult(userBaseResult.getResult());
             }else{
                 return new BaseResponse(400, "请填写手机验证码");
@@ -97,6 +99,7 @@ public class LoginController extends FacetuisController {
                     }
                     userService.createUser(user1.getResult());
                 }
+                user.setRecommandCode(user.getRecommandCode().replaceAll(",",""));
                 return successResult(user);
             } else {
                 return new BaseResponse(600, "手机用户和微信用户不匹配，登录失败");

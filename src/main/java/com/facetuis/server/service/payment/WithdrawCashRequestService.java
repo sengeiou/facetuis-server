@@ -73,18 +73,19 @@ public class WithdrawCashRequestService extends BasicService {
         UserCashVO vo = new UserCashVO();
         // 查询可提现
         UserCommision userCommision = userCommisionRepository.findByUserId(userId);
+
         // 订单可提现
-        Long orderCash = userCommision.getOrderCash();
+        Long orderCash = userCommision == null ?  0 : userCommision.getOrderCash();
         // 升级可提现
-        Long updateCash = userCommision.getUpdateCash();
+        Long updateCash =  userCommision == null ?  0 :  userCommision.getUpdateCash();
         // 邀请可提现
-        Long invitingCash = userCommision.getInvitingCash();
+        Long invitingCash =  userCommision == null ?  0 :  userCommision.getInvitingCash();
         vo.setAmount(orderCash + updateCash + invitingCash + "");
 
         // 查询已结算
-        vo.setWaitAmount(userCommision.getWaitSettlement() + "");
+        vo.setWaitAmount( userCommision == null ?  "0" : userCommision.getWaitSettlement() + "");
         // 查询待结算 = 已提现 + 可提现
-        double historyCash = userCommision.getOrderCash() + userCommision.getFinishCash();
+        long historyCash = (userCommision == null ?  0 : userCommision.getOrderCash()) +  (userCommision == null ?  0 :userCommision.getFinishCash());
         vo.setSettlementAmount(historyCash + "");
         return vo;
     }

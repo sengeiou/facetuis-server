@@ -12,6 +12,7 @@ import com.facetuis.server.service.pinduoduo.response.OrderListBody;
 import com.facetuis.server.service.pinduoduo.response.OrderListResponse;
 import com.facetuis.server.service.pinduoduo.response.TeamIncomVO;
 import com.facetuis.server.utils.TimeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -126,13 +127,13 @@ public class OrderCommisionService extends BasicService {
         endTime = TimeUtils.stringToDateTime(endStr).getTime() / 1000;
         // 3级收入
         Long teamUser3TotalMonth = orderCommisionRepository.findTeamUser3Total(userId, begTime, endTime);
-        teamUser3TotalMonth = teamUser3TotalMonth == null ? teamUser3TotalMonth : 0;
+        teamUser3TotalMonth = teamUser3TotalMonth == null ? 0 : teamUser3TotalMonth;
         // 2级收入
         Long teamUser2TotalMonth = orderCommisionRepository.findTeamUser2Total(userId, begTime, endTime);
-        teamUser2TotalMonth = teamUser2TotalMonth == null ? teamUser2TotalMonth : 0;
+        teamUser2TotalMonth = teamUser2TotalMonth == null ? 0 : teamUser2TotalMonth;
         // 1级收入
         Long teamUser1TotalMonth = orderCommisionRepository.findTeamUser1Total(userId, begTime, endTime);
-        teamUser1TotalMonth = teamUser1TotalMonth == null ? teamUser1TotalMonth : 0;
+        teamUser1TotalMonth = teamUser1TotalMonth == null ? 0 : teamUser1TotalMonth;
         vo.setIncome_this_month(teamUser3TotalMonth + teamUser2TotalMonth + teamUser1TotalMonth);
 
         /////////////////////////////////////////////////////////////////////////////////////
