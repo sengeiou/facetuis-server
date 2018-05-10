@@ -175,7 +175,7 @@ public class UserController extends FacetuisController{
             return successResult(response);
         }
         BeanUtils.copyProperties(recommander, response);
-        return successResult(new UserRecommanderResponse());
+        return successResult(response);
     }
 
     /**

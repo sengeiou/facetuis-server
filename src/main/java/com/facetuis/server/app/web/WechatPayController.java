@@ -39,7 +39,7 @@ public class WechatPayController extends FacetuisController {
      * @return
      */
     @RequestMapping(value = "/payment/{productid}",method = RequestMethod.GET)
-    //@NeedLogin(needLogin = true)
+    @NeedLogin(needLogin = true)
     public BaseResponse payment(@PathVariable String productid, HttpServletRequest request){
         Product product = ProductUtils.getProduct(productid);
         if(product == null){
@@ -86,7 +86,7 @@ public class WechatPayController extends FacetuisController {
      * @return
      */
     @RequestMapping(value = "/result/{tradNo}",method = RequestMethod.GET)
-    public BaseResponse payResult(String tradNo){
+    public BaseResponse payResult(@PathVariable String tradNo){
         Payment byOutTradeNo = wechatPayService.findByOutTradeNo(tradNo);
         if(byOutTradeNo != null){
             if(byOutTradeNo.getTradeNo() != null) {

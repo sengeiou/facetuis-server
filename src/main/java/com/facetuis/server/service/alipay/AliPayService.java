@@ -86,31 +86,23 @@ public class AliPayService extends BasicService {
     }
 
 
-    public BaseResult checkNotify(Map<String,String> map, AlipayNotifyRequest alipayNotifyRequest){
-        boolean signVerified = false; //调用SDK验证签名
-        try {
-            signVerified = AlipaySignature.rsaCheckV1(map, ALIPAY_PUBLIC_KEY, CHARSET);
-        } catch (AlipayApiException e) {
-            e.printStackTrace();
-        }
-        logger.info("AliPay callback sign verified:: " + signVerified  + " | status :: " + alipayNotifyRequest.getTrade_status());
-        if(signVerified){
-            if(alipayNotifyRequest.getTrade_status().equals("TRADE_SUCCESS")){
-                // 支付单号
-                String out_trade_no = alipayNotifyRequest.getOut_trade_no();
-                Payment payment = paymentService.findByTradeNo(out_trade_no);
-                if(payment != null){
-                    if(payment.getAmount().equals(alipayNotifyRequest.getTotal_amount())){
-                        if(alipayNotifyRequest.getApp_id().equals(APP_ID)){
-                            payment.setPayStatus(PayStatus.PAY_SUCCESS);
-                            payment.setTradeNo(alipayNotifyRequest.getTrade_no());
-                            paymentService.updatePayment(payment);
-                        }
+    public BaseResult checkNotify(Map<String,String> map, AlipayNotifyRequest alipayNotifyRequest) {
+        logger.info("AliPay callback sign verified::  | status :: " + alipayNotifyRequest.getTrade_status());
+        if (alipayNotifyRequest.getTrade_status().equals("TRADE_SUCCESS")) {
+            // 支付单号
+            String out_trade_no = alipayNotifyRequest.getOut_trade_no();
+            Payment payment = paymentService.findByTradeNo(out_trade_no);
+            if (payment != null) {
+                if (payment.getAmount().equals(alipayNotifyRequest.getTotal_amount())) {
+                    if (alipayNotifyRequest.getApp_id().equals(APP_ID)) {
+                        payment.setPayStatus(PayStatus.PAY_SUCCESS);
+                        payment.setTradeNo(alipayNotifyRequest.getTrade_no());
+                        paymentService.updatePayment(payment);
                     }
                 }
             }
         }
-        return new BaseResult(600,"签名校验失败");
+        return new BaseResult(600, "签名校验失败");
     }
 
 

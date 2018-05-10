@@ -122,6 +122,7 @@ public class LoginController extends FacetuisController {
             return onResult(baseResult);
         }
         User mobileUser = userService.findByMobile(mobile);
+        mobileUser.setRecommandCode(mobileUser.getRecommandCode().replaceAll(",",""));
         return successResult(mobileUser);
     }
 
@@ -132,6 +133,7 @@ public class LoginController extends FacetuisController {
             return setErrorResult(400,"缺少微信Unionid");
         }
         User user = userService.findByUnionid(unionid);
+        user.setRecommandCode(user.getRecommandCode().replaceAll(",",""));
         return successResult(user);
     }
 

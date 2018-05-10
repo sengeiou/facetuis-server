@@ -22,10 +22,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/1.0/alipay")
 public class AliPayController extends FacetuisController {
+
+    private static Logger logger = Logger.getLogger(AliPayController.class.getName());
 
     @Autowired
     private AliPayService aliPayService;
@@ -47,7 +50,7 @@ public class AliPayController extends FacetuisController {
         if(user != null){
             userId = user.getUuid();
         }
-        String body = "用户：" + user.getMobileNumber() + "购买了" + product.getTitle();
+        String body = "用户：" + userId + "购买了" + product.getTitle();
         BaseResult stringBaseResult = aliPayService.generateOrder(product.getAmount(), product.getTitle(), body,userId,productId);
         return onResult(stringBaseResult);
     }

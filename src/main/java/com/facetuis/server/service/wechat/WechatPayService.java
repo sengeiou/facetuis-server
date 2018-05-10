@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
@@ -61,7 +62,7 @@ public class WechatPayService extends BasicService {
         map.put("appid",appid);
         map.put("mch_id",mchid);
         map.put("nonce_str",random);
-        map.put("body",detail);
+        map.put("body",body);
         map.put("out_trade_no", tradeNo);
         map.put("total_fee",total_price);
         map.put("spbill_create_ip","127.0.0.1");
@@ -70,6 +71,11 @@ public class WechatPayService extends BasicService {
         String sign = PayCommonUtil.createSign(map,key);
         map.put("sign",sign);
         String xml = PayCommonUtil.getRequestXml(map);
+        try {
+            xml = new String(xml.getBytes(),"ISO8859-1");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         try {
             String respone = Post(unifiedorderUrl)
                     .bodyString(xml, ContentType.APPLICATION_XML)
@@ -83,6 +89,7 @@ public class WechatPayService extends BasicService {
                             }
                     );
             Map<String,String> result = XmlUtils.doXMLParse(respone);
+            logger.info("result:: " +  result.get("return_msg"));
             if(result.get("return_code").equals("SUCCESS")){
                 // paymentService.save(tradeNo,total_amount, PayStatus.WAIT_PAY, PayType.ALIPAY);
                 paymentService.save(tradeNo,body,total_price,PayStatus.WAIT_PAY,PayType.WECHAT_PAY,userId,productId);
