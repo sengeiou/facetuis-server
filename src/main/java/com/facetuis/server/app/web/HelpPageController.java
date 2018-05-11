@@ -132,11 +132,8 @@ public class HelpPageController extends FacetuisController {
         list.add(hp2);
         list.add(hp3);
         list.add(hp4);
-        list.add(hp4);
-        list.add(hp4);
         list.add(hp5);
         list.add(hp6);
-        list.add(hp4);
         list.add(hp7);
         list.add(hp8);
         list.add(hp9);

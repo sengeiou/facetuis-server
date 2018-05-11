@@ -42,9 +42,9 @@ public class HeadlineService extends BasicService {
         hcs1.add(hc1);
         headline1.setContent(hcs1 );
         headline1.setId("1");
-        headline1.setTitle("title");
+        headline1.setTitle("今日爆款");
         headline1.setType("IMG");
-        headline1.setSubTitle("#2018的第一次#脸推App上线了！");
+        headline1.setSubTitle("电风扇落地扇台式扇学生宿舍摇头机械电扇遥控静音");
         headline1.setCreateTime(new Date());
 
         List<HeadlineVO> list = new ArrayList<>();

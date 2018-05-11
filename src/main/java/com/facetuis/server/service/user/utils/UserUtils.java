@@ -10,4 +10,8 @@ public class UserUtils {
         return RandomUtils.rate(13000,9999999);
     }
 
+    public static void main(String[] args) {
+        System.out.println(generateRecommandCode());
+    }
+
 }

@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.domain.GoodsDetail;
 import com.facetuis.server.app.web.response.PromontionResponse;
 import com.facetuis.server.app.web.response.PromotionUrl;
+import com.facetuis.server.dao.goods.GoodsRepository;
+import com.facetuis.server.model.goods.Goods;
 import com.facetuis.server.model.user.UserLevel;
 import com.facetuis.server.service.basic.BaseResult;
 import com.facetuis.server.service.basic.BasicService;
@@ -14,6 +16,7 @@ import com.facetuis.server.service.pinduoduo.utils.PRequestUtils;
 import com.facetuis.server.utils.Base64Util;
 import com.facetuis.server.utils.CommisionUtils;
 import com.facetuis.server.utils.GoodsImageUtils;
+import com.facetuis.server.utils.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,10 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Collections;
-import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.logging.Logger;
 
 @Service
@@ -46,6 +46,38 @@ public class GoodsService extends BasicService {
 
     @Value("${sys.goods.backgroud.image}")
     private String goodsBackgroundImage;
+
+
+
+    @Autowired
+    private GoodsRepository goodsRepository;
+
+
+    public void addShare(String goodsId){
+        Goods goods = goodsRepository.findByGoodsId(goodsId);
+        if(goods != null) {
+            goods.setShareNum(goods.getShareNum() + 15);
+        }else{
+            goods = new Goods();
+            goods.setUuid(UUID.randomUUID().toString());
+            goods.setGoodsId(goodsId);
+            goods.setShareNum(Long.parseLong(RandomUtils.rate(3000,8000)));
+        }
+        goodsRepository.save(goods);
+    }
+
+    public Long getShare(String goodsId){
+        Goods goods = goodsRepository.findByGoodsId(goodsId);
+        if(goods != null){
+            return goods.getShareNum();
+        }
+        goods = new Goods();
+        goods.setShareNum(Long.parseLong(RandomUtils.rate(3000,8000)));
+        goods.setGoodsId(goodsId);
+        goods.setUuid(UUID.randomUUID().toString());
+        goodsRepository.save(goods);
+        return goods.getShareNum();
+    }
 
 
     public GoodsDetails getGoodsById(String id,int level){

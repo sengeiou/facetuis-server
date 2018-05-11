@@ -84,12 +84,12 @@ public class AuthInterceptor implements HandlerInterceptor {
             result.setMessage("Token验证失败");
             return authFail(response, result);
         }
-        if(!user.getEnable()){
-            logger.info("访问校验失败：用户状态不可用" );
-            result.setCode(100);
-            result.setMessage("用户状态不可用");
-            return authFail(response, result);
-        }
+//        if(!user.getEnable()){
+//            logger.info("访问校验失败：用户状态不可用" );
+//            result.setCode(100);
+//            result.setMessage("用户状态不可用");
+//            return authFail(response, result);
+//        }
         if(!StringUtils.isEmpty(tokenTimeOut)){
             long loginTime = user.getLoginTime().getTime();
             long now = System.currentTimeMillis();

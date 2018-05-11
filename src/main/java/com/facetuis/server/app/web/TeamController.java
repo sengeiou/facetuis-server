@@ -312,8 +312,8 @@ public class TeamController extends FacetuisController {
     public BaseResponse inviting(){
         User user = getUser();
         RewardInvitingVO invitingVO = rewardService.getInvitingVO(user.getUuid());
-        invitingVO.setInvitingStart(invitingStart);
-        invitingVO.setInvitingEnd(invitingEnd);
+        invitingVO.setInvitingStart(invitingStart.replace("00:00:00",""));
+        invitingVO.setInvitingEnd(invitingEnd.replace("23:59:59",""));
         return successResult(invitingVO);
     }
 }

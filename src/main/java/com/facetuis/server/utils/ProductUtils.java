@@ -39,8 +39,8 @@ public class ProductUtils {
             productNo3.setAmount("1");
             productNo3.setTimeLimit("年");
             productNo3.setTimeLimitValue(1);
-            productNo3.setTimeLimitTxt("一年");
-            productNo3.setTitle("SVIP总监一年");
+            productNo3.setTimeLimitTxt("永久");
+            productNo3.setTitle("无邀请码超级团长永久");
             productNo3.setValues(365);
         }
     }
@@ -65,5 +65,10 @@ public class ProductUtils {
             return productNo3;
         }
         return null;
+    }
+
+    public static void main(String[] args) {
+        String rate = RandomUtils.rate(2000, 8000);
+
     }
 }

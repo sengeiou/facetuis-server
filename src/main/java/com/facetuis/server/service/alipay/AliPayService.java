@@ -87,22 +87,20 @@ public class AliPayService extends BasicService {
 
 
     public BaseResult checkNotify(Map<String,String> map, AlipayNotifyRequest alipayNotifyRequest) {
-        logger.info("AliPay callback sign verified::  | status :: " + alipayNotifyRequest.getTrade_status());
+        logger.info("AliPay callback sign verified::  | status :: " + alipayNotifyRequest.getTrade_status() + " | " + alipayNotifyRequest.getOut_trade_no());
         if (alipayNotifyRequest.getTrade_status().equals("TRADE_SUCCESS")) {
             // 支付单号
             String out_trade_no = alipayNotifyRequest.getOut_trade_no();
-            Payment payment = paymentService.findByTradeNo(out_trade_no);
+            Payment payment = paymentService.findByOutTradeNo(out_trade_no);
             if (payment != null) {
-                if (payment.getAmount().equals(alipayNotifyRequest.getTotal_amount())) {
-                    if (alipayNotifyRequest.getApp_id().equals(APP_ID)) {
-                        payment.setPayStatus(PayStatus.PAY_SUCCESS);
-                        payment.setTradeNo(alipayNotifyRequest.getTrade_no());
-                        paymentService.updatePayment(payment);
-                    }
+                if (alipayNotifyRequest.getApp_id().equals(APP_ID)) {
+                    payment.setPayStatus(PayStatus.PAY_SUCCESS);
+                    payment.setTradeNo(alipayNotifyRequest.getTrade_no());
+                    paymentService.updatePayment(payment);
                 }
             }
         }
-        return new BaseResult(600, "签名校验失败");
+        return new BaseResult(600, "未找到支付信息");
     }
 
 

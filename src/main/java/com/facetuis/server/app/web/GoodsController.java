@@ -10,10 +10,7 @@ import com.facetuis.server.utils.NeedLogin;
 import org.omg.PortableInterceptor.INACTIVE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -108,6 +105,19 @@ public class GoodsController extends FacetuisController {
         outputStream.write(image);
         outputStream.flush();
         outputStream.close();
+    }
+
+
+    @RequestMapping(value = "/share/{goodsId}",method = RequestMethod.GET)
+    public BaseResponse getShare(@PathVariable String goodsId){
+        Long share = goodsService.getShare(goodsId);
+        return successResult(share);
+    }
+
+    @RequestMapping(value = "/share/{goodsId}",method = RequestMethod.POST)
+    public BaseResponse addShare(@PathVariable String goodsId){
+        goodsService.addShare(goodsId);
+        return successResult();
     }
 
 
