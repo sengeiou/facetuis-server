@@ -1,6 +1,10 @@
 package com.facetuis.server.app.web.response;
 
+import com.facetuis.server.utils.DateJsonTypeHHmm;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import java.util.Date;
 
 public class TeamUsersResponse {
 
@@ -12,6 +16,16 @@ public class TeamUsersResponse {
     private String mobileNumber;
     @JsonProperty("recommand_number")
     private Integer recommandNumber;
+    @JsonSerialize(using = DateJsonTypeHHmm.class)
+    private Date createTime;
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
 
     public String getHeadImg() {
         return headImg;
