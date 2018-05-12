@@ -18,7 +18,7 @@ import java.util.Date;
 public class WithdrawCashRequest extends BaseEntity {
 
     private String userId;
-    private Double amount;
+    private Long amount;
     @JsonIgnore
     @Enumerated(EnumType.ORDINAL)
     private CashStatus status;
@@ -60,11 +60,11 @@ public class WithdrawCashRequest extends BaseEntity {
         this.userId = userId;
     }
 
-    public Double getAmount() {
+    public Long getAmount() {
         return amount;
     }
 
-    public void setAmount(Double amount) {
+    public void setAmount(Long amount) {
         this.amount = amount;
     }
 

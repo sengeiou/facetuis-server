@@ -51,13 +51,16 @@ public class WithdrawCashRequestService extends BasicService {
                 return new BaseResult(600,"账户冻结中");
             }
             // 查询可提现金额
-            double cash = userCommision.getOrderCash();
+            Long cash = userCommision.getOrderCash();
             if(cash < withdrawCashRequest.getAmount()){
                 return new BaseResult(600,"提现金额不能大于可提现金额");
             }
+
             withdrawCashRequest.setUuid(UUID.randomUUID().toString());
             withdrawCashRequest.setStatus(WAIT_CASH);
             withdrawCashRequest.setWithdrawTime(new Date());
+            withdrawCashRequest.setAmount(cash);
+            withdrawCashRequest.setUserId(userId);
             withdrawCashRequestRepository.save(withdrawCashRequest);
         }else{
             return new BaseResult(600,"暂不能提现");
@@ -73,19 +76,19 @@ public class WithdrawCashRequestService extends BasicService {
         UserCashVO vo = new UserCashVO();
         // 查询可提现
         UserCommision userCommision = userCommisionRepository.findByUserId(userId);
-
+        boolean uc = userCommision == null;
         // 订单可提现
-        Long orderCash = userCommision == null ?  0 : userCommision.getOrderCash();
+        Long orderCash = uc ?  0 : userCommision.getOrderCash();
         // 升级可提现
-        Long updateCash =  userCommision == null ?  0 :  userCommision.getUpdateCash();
+        Long updateCash =  uc ?  0 :  userCommision.getUpdateCash();
         // 邀请可提现
-        Long invitingCash =  userCommision == null ?  0 :  userCommision.getInvitingCash();
+        Long invitingCash = uc ?  0 :  userCommision.getInvitingCash();
         vo.setAmount(orderCash + updateCash + invitingCash + "");
 
         // 查询已结算
-        vo.setWaitAmount( userCommision == null ?  "0" : userCommision.getWaitSettlement() + "");
+        vo.setWaitAmount( uc ?  "0" : userCommision.getWaitSettlement() + "");
         // 查询待结算 = 已提现 + 可提现
-        long historyCash = (userCommision == null ?  0 : userCommision.getOrderCash()) +  (userCommision == null ?  0 :userCommision.getFinishCash());
+        long historyCash = (uc ?  0 : userCommision.getOrderCash()) +  (uc ?  0 :userCommision.getFinishCash());
         vo.setSettlementAmount(historyCash + "");
         return vo;
     }

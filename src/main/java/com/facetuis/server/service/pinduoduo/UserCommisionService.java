@@ -54,21 +54,25 @@ public class UserCommisionService {
             if (userCommison == null) {
                 userCommison = new UserCommision();
                 userCommison.setUuid(UUID.randomUUID().toString());
+                userCommison.setUserId(orderCommision.getUserId());
             }
             UserCommision user1Commison = userCommisionRepository.findByUserId(orderCommision.getUser1Id());//购买用户上级
             if (user1Commison == null) {
                 user1Commison = new UserCommision();
                 user1Commison.setUuid(UUID.randomUUID().toString());
+                user1Commison.setUserId(orderCommision.getUser1Id());
             }
             UserCommision user2Commison = userCommisionRepository.findByUserId(orderCommision.getUser2Id());//购买用户上级上级
             if (user2Commison == null) {
                 user2Commison = new UserCommision();
                 user2Commison.setUuid(UUID.randomUUID().toString());
+                user2Commison.setUserId(orderCommision.getUser2Id());
             }
             UserCommision user3Commison = userCommisionRepository.findByUserId(orderCommision.getUser3Id());//购买用户上级上级
             if (user3Commison == null) {
                 user3Commison = new UserCommision();
                 user3Commison.setUuid(UUID.randomUUID().toString());
+                user3Commison.setUserId(orderCommision.getUser3Id());
             }
             // 佣金已结算 && 已完成佣金结算
             if (orderStatus == OrderStatus.SETTLEMENT && orderCommision.getFinish()) {
@@ -126,6 +130,7 @@ public class UserCommisionService {
         if(userCommision == null){
             userCommision = new UserCommision();
             userCommision.setUuid(UUID.randomUUID().toString());
+            userCommision.setUserId(userId);
         }
         Long cash = userCommision.getUpdateCash() + price;
         userCommision.setUpdateCash(cash);
@@ -172,6 +177,7 @@ public class UserCommisionService {
                     Long cash = Long.parseLong(RandomUtils.rate(randomCashMix, randomCashMax));
                     Long result = levelUserCommision.getInvitingCash() + cash;
                     levelUserCommision.setInvitingCash(result);
+                    levelUserCommision.setUserId(levelUserId);
                     levelUserCommision.setInvitingPeople(levelUserCommision.getInvitingPeople() + 1);
                     userCommisionRepository.save(levelUserCommision);
                     // 记录奖励

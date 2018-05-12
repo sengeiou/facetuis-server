@@ -40,7 +40,7 @@ public class UserCommision extends BaseEntity {
     }
 
     public Long getFinishCash() {
-        return finishCash;
+        return  finishCash == null ? 0l : finishCash;
     }
 
     public void setFinishCash(Long finishCash) {

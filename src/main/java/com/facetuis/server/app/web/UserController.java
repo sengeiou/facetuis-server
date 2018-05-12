@@ -203,7 +203,7 @@ public class UserController extends FacetuisController{
             }else{
                 cash = commisionSettings.getYearAdd();
             }
-            // 发送奖励
+            // 发送用户升级奖励
             userCommisionService.addInvitingCash(user.getUuid(),cash);
         }
         return onResult(upload);
