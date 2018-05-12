@@ -50,12 +50,14 @@ public class WithdrawCashRequestService extends BasicService {
             if(userCommision.getCashStatus() == CashStatus.FREEZE){
                 return new BaseResult(600,"账户冻结中");
             }
-            // 查询可提现金额
-            Long cash = userCommision.getOrderCash();
+            // 查询可提现金额 =  各种可提现金额 - 已提现金额
+            Long cash = userCommision.getOrderCash() + userCommision.getInvitingCash()  + userCommision.getUpdateCash() - userCommision.getFinishCash();
             if(cash < withdrawCashRequest.getAmount()){
                 return new BaseResult(600,"提现金额不能大于可提现金额");
             }
-
+            // 设置提现状态为冻结
+            userCommision.setCashStatus(CashStatus.FREEZE);
+            userCommisionRepository.save(userCommision);
             withdrawCashRequest.setUuid(UUID.randomUUID().toString());
             withdrawCashRequest.setStatus(WAIT_CASH);
             withdrawCashRequest.setWithdrawTime(new Date());
