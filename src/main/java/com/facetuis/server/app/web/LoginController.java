@@ -42,6 +42,10 @@ public class LoginController extends FacetuisController {
     @RequestMapping(method = RequestMethod.POST)
     public BaseResponse login(@RequestBody LoginRequest request) {
         logger.info( "invite code :: " + request.getInvite_code());
+        logger.info( "getHead_image :: " + request.getHead_image());
+        logger.info( "getNick_name  :: " + request.getNick_name());
+        logger.info( "getAccess_token :: " + request.getAccess_token());
+
         User mobileUser = null;
         User wechatUser = null;
         // 根据手机号获取用户
@@ -89,6 +93,16 @@ public class LoginController extends FacetuisController {
                 // 更新access_token
                 if(!user.getAccessToken().equals(request.getAccess_token())){
                     user.setAccessToken(request.getAccess_token());
+                    userService.save(user);
+                }
+                //更新头像
+                if( !StringUtils.isEmpty(request.getHead_image())){
+                    user.setHeadImg(request.getHead_image());
+                    userService.save(user);
+                }
+                // 更新昵称
+                if( !StringUtils.isEmpty(request.getNick_name())){
+                    user.setNickName(request.getNick_name());
                     userService.save(user);
                 }
                 // 第一次登录保存邀请码

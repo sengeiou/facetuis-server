@@ -32,7 +32,7 @@ public class OrderCommision extends BaseEntity{
     private Boolean isWaitFinish = false;// 是否已计算到待结算
 
     public Boolean getWaitFinish() {
-        return isWaitFinish;
+        return isWaitFinish == null ? false : isWaitFinish;
     }
 
     public void setWaitFinish(Boolean waitFinish) {
@@ -40,7 +40,7 @@ public class OrderCommision extends BaseEntity{
     }
 
     public Boolean getFinish() {
-        return isFinish;
+        return isFinish == null ? false : isFinish;
     }
 
     public void setFinish(Boolean finish) {
