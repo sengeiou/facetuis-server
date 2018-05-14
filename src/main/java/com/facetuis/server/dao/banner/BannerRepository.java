@@ -5,4 +5,5 @@ import com.facetuis.server.model.banner.Banner;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BannerRepository extends JpaRepository<Banner,String> {
+
 }

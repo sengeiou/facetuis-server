@@ -11,6 +11,7 @@ import com.facetuis.server.model.user.User;
 import com.facetuis.server.model.user.UserCommision;
 import com.facetuis.server.service.reward.RewardService;
 import com.facetuis.server.utils.RandomUtils;
+import com.facetuis.server.utils.SysFinalValue;
 import com.facetuis.server.utils.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -149,13 +150,16 @@ public class UserCommisionService {
         int randomCashMix = 1;
         int randomCashMax = 50;
         int newPeoples = 0; // 拉人多少人后才能获得奖励
-        int rewardNum = 10;// 最多奖励人数
+        int rewardNum = 3;// 最多奖励人数
         //判断是否在当前时间段内
         int startTimeResult = TimeUtils.compare(startTime);
         int endTimeResult = TimeUtils.compare(endTime);
         if(startTimeResult >= 0 && endTimeResult <= 0) {
             // 上级已经邀请多少人
             String levelUserId = user.getLevelUserId();// 上级用户
+            if(SysFinalValue.SYS_USER_ID.equals(levelUserId)){
+                return;
+            }
             List<User> byLevelUserId = userRepository.findByLevelUserId(levelUserId);
             int invitingPeopleNum = byLevelUserId.size();// 上级邀请人数
             // 上级已经奖励人数
@@ -181,7 +185,7 @@ public class UserCommisionService {
                     levelUserCommision.setInvitingPeople(levelUserCommision.getInvitingPeople() + 1);
                     userCommisionRepository.save(levelUserCommision);
                     // 记录奖励
-                    createReward(user.getUuid(),result);
+                    createReward(levelUserId,cash);
                 }else{
                     logger.info("随机结果::不奖励");
                 }

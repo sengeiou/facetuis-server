@@ -103,18 +103,26 @@ public class TeamController extends FacetuisController {
         }
         if(type == TeamPeopleSearchType.LEVEL1){
             UserRelation relation = userRelationService.getRelation(user.getUuid());
-            String user1HighIds = relation.getUserLevel1Id();
-            String[] split = user1HighIds.split(",");
-            if(split.length > 0) {
-                userIds = Arrays.asList(split);
+            if(relation != null) {
+                String user1HighIds = relation.getUserLevel1Id();
+                if (!StringUtils.isEmpty(user1HighIds)) {
+                    String[] split = user1HighIds.split(",");
+                    if (split.length > 0) {
+                        userIds = Arrays.asList(split);
+                    }
+                }
             }
         }
         if(type == TeamPeopleSearchType.LEVEL2){
             UserRelation relation = userRelationService.getRelation(user.getUuid());
-            String user1HighIds = relation.getUserLevel2Id();
-            String[] split = user1HighIds.split(",");
-            if(split.length > 0) {
-                userIds = Arrays.asList(split);
+            if(relation != null) {
+                String user1HighIds = relation.getUserLevel2Id();
+                if (!StringUtils.isEmpty(user1HighIds)) {
+                    String[] split = user1HighIds.split(",");
+                    if (split.length > 0) {
+                        userIds = Arrays.asList(split);
+                    }
+                }
             }
         }
         for(UserRelation userRelation : userRelations){

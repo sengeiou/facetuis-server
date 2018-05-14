@@ -111,7 +111,7 @@ public class GoodsController extends FacetuisController {
     @RequestMapping(value = "/share/{goodsId}",method = RequestMethod.GET)
     public BaseResponse getShare(@PathVariable String goodsId){
         Long share = goodsService.getShare(goodsId);
-        return successResult(share);
+        return successResult(share + "");
     }
 
     @RequestMapping(value = "/share/{goodsId}",method = RequestMethod.POST)

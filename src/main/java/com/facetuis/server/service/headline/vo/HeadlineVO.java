@@ -1,5 +1,9 @@
 package com.facetuis.server.service.headline.vo;
 
+import com.facetuis.server.utils.DateJsonTypeDay;
+import com.facetuis.server.utils.DateJsonTypeHHmm;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -41,6 +45,7 @@ public class HeadlineVO<T> implements Serializable{
     private T content;
     private String contentText;
     private String type;
+    @JsonSerialize(using = DateJsonTypeDay.class)
     private Date createTime;
 
     public Date getCreateTime() {

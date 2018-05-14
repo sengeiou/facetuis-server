@@ -14,7 +14,7 @@ public class ProductUtils {
         if(productNo1 == null){
             productNo1 = new Product();
             productNo1.setUuid("1");
-            productNo1.setAmount("1");
+            productNo1.setAmount("100");
             productNo1.setTimeLimit("月");
             productNo1.setTimeLimitValue(1);
             productNo1.setTimeLimitTxt("一个月");
@@ -25,7 +25,7 @@ public class ProductUtils {
         if(productNo2 == null){
             productNo2 = new Product();
             productNo2.setUuid("2");
-            productNo2.setAmount("1");
+            productNo2.setAmount("100");
             productNo2.setTimeLimit("月");
             productNo2.setTimeLimitValue(1);
             productNo2.setTimeLimitTxt("一个月");
@@ -36,7 +36,7 @@ public class ProductUtils {
         if(productNo3 == null){
             productNo3 = new Product();
             productNo3.setUuid("3");
-            productNo3.setAmount("1");
+            productNo3.setAmount("100");
             productNo3.setTimeLimit("年");
             productNo3.setTimeLimitValue(1);
             productNo3.setTimeLimitTxt("永久");

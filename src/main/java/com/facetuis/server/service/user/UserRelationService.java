@@ -159,7 +159,6 @@ public class UserRelationService extends BasicService {
                  };
             }
             return total;
-
         }else {
             return relation.getUser1Total() + relation.getUser2Total() + relation.getUser3Total();
         }

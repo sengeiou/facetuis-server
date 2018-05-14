@@ -76,7 +76,7 @@ public class LoginController extends FacetuisController {
                         request.getUnionid()
                 );
                 User result = userBaseResult.getResult();
-                result.setRecommandCode(result.getRecommandCode().replaceAll(",",""));
+                result.setRecommandCode(result.getDisplayRecommend());
                 return successResult(userBaseResult.getResult());
             }else{
                 return new BaseResponse(400, "请填写手机验证码");
@@ -113,7 +113,7 @@ public class LoginController extends FacetuisController {
                     }
                     userService.createUser(user1.getResult());
                 }
-                user.setRecommandCode(user.getRecommandCode().replaceAll(",",""));
+                user.setRecommandCode(user.getDisplayRecommend());
                 return successResult(user);
             } else {
                 return new BaseResponse(600, "手机用户和微信用户不匹配，登录失败");
@@ -137,7 +137,7 @@ public class LoginController extends FacetuisController {
         }
         User mobileUser = userService.findByMobile(mobile);
         if(mobileUser != null) {
-            mobileUser.setRecommandCode(mobileUser.getRecommandCode().replaceAll(",", ""));
+            mobileUser.setRecommandCode(mobileUser.getDisplayRecommend());
         }
         return successResult(mobileUser);
     }
@@ -150,7 +150,7 @@ public class LoginController extends FacetuisController {
         }
         User user = userService.findByUnionid(unionid);
         if( user != null) {
-            user.setRecommandCode(user.getRecommandCode().replaceAll(",", ""));
+            user.setRecommandCode(user.getDisplayRecommend());
         }
         return successResult(user);
     }

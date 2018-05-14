@@ -50,6 +50,9 @@ public class WithdrawCashRequestService extends BasicService {
             if(userCommision.getCashStatus() == CashStatus.FREEZE){
                 return new BaseResult(600,"账户冻结中");
             }
+            if( userCommision.getOrderCash() <= 0){
+                return new BaseResult(600,"账户中还没有已结算订单");
+            }
             // 查询可提现金额 =  各种可提现金额 - 已提现金额
             Long cash = userCommision.getOrderCash() + userCommision.getInvitingCash()  + userCommision.getUpdateCash() - userCommision.getFinishCash();
             if(cash < withdrawCashRequest.getAmount()){

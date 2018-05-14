@@ -4,6 +4,7 @@ import com.facetuis.server.model.basic.BaseEntity;
 import com.facetuis.server.utils.DateJsonTypeHHmm;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -208,4 +209,17 @@ public class User extends BaseEntity {
     public void setInviteCode(String inviteCode) {
         this.inviteCode = inviteCode;
     }
+
+
+    public String getDisplayRecommend(){
+        if(!StringUtils.isEmpty(this.recommandCode)){
+            String[] split = this.recommandCode.split(",");
+            for(int i = 0; i < split.length ; i ++){
+                return split[split.length - 1];
+            }
+        }
+        return "";
+    }
+
+   
 }
