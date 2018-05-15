@@ -104,7 +104,7 @@ public class TeamController extends FacetuisController {
         if(type == TeamPeopleSearchType.LEVEL1){
             UserRelation relation = userRelationService.getRelation(user.getUuid());
             if(relation != null) {
-                String user1HighIds = relation.getUserLevel1Id();
+                String user1HighIds = relation.getUser1Ids();
                 if (!StringUtils.isEmpty(user1HighIds)) {
                     String[] split = user1HighIds.split(",");
                     if (split.length > 0) {
@@ -116,7 +116,7 @@ public class TeamController extends FacetuisController {
         if(type == TeamPeopleSearchType.LEVEL2){
             UserRelation relation = userRelationService.getRelation(user.getUuid());
             if(relation != null) {
-                String user1HighIds = relation.getUserLevel2Id();
+                String user1HighIds = relation.getUser2Ids();
                 if (!StringUtils.isEmpty(user1HighIds)) {
                     String[] split = user1HighIds.split(",");
                     if (split.length > 0) {
@@ -128,12 +128,15 @@ public class TeamController extends FacetuisController {
         for(UserRelation userRelation : userRelations){
             userIds.add(userRelation.getUserId());
         }
+        TeamPeopleResponse result = new TeamPeopleResponse();
         List<TeamUsersResponse> responses = new ArrayList<>();
         if(userIds.size() > 0) {
             List<User> users = userService.findByIds(userIds);
             getTeamUser(users, responses,null);
         }
-        return successResult(responses);
+        result.setList(responses);
+        result.setTotal(responses.size());
+        return successResult(result);
     }
 
 

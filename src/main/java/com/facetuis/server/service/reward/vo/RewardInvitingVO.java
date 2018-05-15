@@ -6,10 +6,10 @@ public class RewardInvitingVO {
 
     private String invitingStart;
     private String invitingEnd;
-    private long totalAmount;
-    private long todayAmount;
-    private long yesterdayAmount;
-    private long monthAmount;
+    private Long totalAmount;
+    private Long todayAmount;
+    private Long yesterdayAmount;
+    private Long monthAmount;
 
     public String getInvitingStart() {
         return invitingStart;
@@ -27,35 +27,35 @@ public class RewardInvitingVO {
         this.invitingEnd = invitingEnd;
     }
 
-    public long getMonthAmount() {
-        return monthAmount;
-    }
-
-    public void setMonthAmount(long monthAmount) {
-        this.monthAmount = monthAmount;
-    }
-
-    public long getTotalAmount() {
+    public Long getTotalAmount() {
         return totalAmount;
     }
 
-    public void setTotalAmount(long totalAmount) {
+    public void setTotalAmount(Long totalAmount) {
         this.totalAmount = totalAmount;
     }
 
-    public long getTodayAmount() {
+    public Long getTodayAmount() {
         return todayAmount;
     }
 
-    public void setTodayAmount(long todayAmount) {
+    public void setTodayAmount(Long todayAmount) {
         this.todayAmount = todayAmount;
     }
 
-    public long getYesterdayAmount() {
+    public Long getYesterdayAmount() {
         return yesterdayAmount;
     }
 
-    public void setYesterdayAmount(long yesterdayAmount) {
+    public void setYesterdayAmount(Long yesterdayAmount) {
         this.yesterdayAmount = yesterdayAmount;
+    }
+
+    public Long getMonthAmount() {
+        return monthAmount;
+    }
+
+    public void setMonthAmount(Long monthAmount) {
+        this.monthAmount = monthAmount;
     }
 }
