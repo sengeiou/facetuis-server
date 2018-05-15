@@ -1,5 +1,6 @@
 package com.facetuis.server.service.pinduoduo;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.facetuis.server.dao.order.OrderRepository;
 import com.facetuis.server.dao.user.UserRelationRepository;
@@ -147,6 +148,7 @@ public class OrderService extends BasicService {
             logger.info("未找到推广位");
             return new PageImpl<>(Collections.EMPTY_LIST);
         }
+        System.out.println("star :: " + star + " | end :: " + end + " | pid :: " + pids.get(0));
         Page<Order> orders = orderRepository.findOrder(pids, star, end,pageable);
         return orders;
     }
@@ -248,32 +250,39 @@ public class OrderService extends BasicService {
             return Collections.EMPTY_LIST;
         }
         String user1Ids = userRelation.getUser1Ids();// 所属一级用户
+        System.out.println("所属一级用户 :: " + user1Ids );
         List<String> user1s = new ArrayList<>();
-        if(!StringUtils.isEmpty(user1Ids)){
-            String[] split = user1Ids.split(",");
-            user1s = Arrays.asList(split);
-        }
+        getUserIds(user1Ids, user1s);
         String user2Ids = userRelation.getUser2Ids();// 所属二级用户
+        System.out.println("所属二级用户 :: " + user2Ids );
         List<String> user2s = new ArrayList<>();
-        if(!StringUtils.isEmpty(user2Ids)){
-            String[] split = user2Ids.split(",");
-            user2s = Arrays.asList(split);
-        }
+        getUserIds(user2Ids, user2s);
         String user3Ids = userRelation.getUser3Ids();// 所属三级用户
+        System.out.println("所属三级用户 :: " + user3Ids );
         List<String> user3s = new ArrayList<>();
-        if(!StringUtils.isEmpty(user3Ids)){
-            String[] split = user3Ids.split(",");
-            user3s = Arrays.asList(split);
-            user3s = new ArrayList<>(user3s);
-        }
-        user1s = new ArrayList<>(user2s);
+        getUserIds(user3Ids, user3s);
+        user1s.addAll(user2s);
         user1s.addAll(user3s);
+        System.out.println("user1s :: " + JSONArray.toJSONString(user1s) + " | " );
         List<User> allUsers = userRepository.findAllById(user1s);
         List<String> pids = new ArrayList<>();
         for(User user : allUsers){
+            System.out.println("user pid :: " + user.getUuid() + " = " + user.getPid() + " | " );
             pids.add(user.getPid());
         }
+        System.out.println("pids :: " + pids.toArray()  + " | " + pids.size());
         return pids;
+    }
+
+    private void getUserIds(String userIds, List<String> users) {
+        if(!StringUtils.isEmpty(userIds)){
+            String[] split = userIds.split(",");
+            for(String s : split){
+                if(!StringUtils.isEmpty(s)) {
+                    users.add(s);
+                }
+            }
+        }
     }
 
     private Page<OrderVO> getOrderVo(List<Order> content){
@@ -304,6 +313,14 @@ public class OrderService extends BasicService {
         }else{
             return orderRepository.findByPIdAndOrderStatus(pid,orderStatus, pageable);
         }
+
+    }
+
+    public static void main(String[] args) {
+        List<String> a = new ArrayList<>();
+        List<String> b = new ArrayList<>();
+        a.addAll(b);
+        int i = 0;
 
     }
 

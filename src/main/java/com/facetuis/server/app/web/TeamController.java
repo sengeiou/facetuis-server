@@ -131,7 +131,7 @@ public class TeamController extends FacetuisController {
         List<TeamUsersResponse> responses = new ArrayList<>();
         if(userIds.size() > 0) {
             List<User> users = userService.findByIds(userIds);
-            getTeamUser(users, responses);
+            getTeamUser(users, responses,null);
         }
         return successResult(responses);
     }
@@ -275,15 +275,15 @@ public class TeamController extends FacetuisController {
         }
         List<TeamUsersResponse> responses = new ArrayList<>();
         if(user != null){
-            getTeamUser(users, responses);
+            getTeamUser(users, responses,UserLevel.LEVEL2);
         }
         return successResult(responses);
     }
 
-    private void getTeamUser(List<User> users, List<TeamUsersResponse> responses) {
+    private void getTeamUser(List<User> users, List<TeamUsersResponse> responses,UserLevel level) {
         for(User u : users){
             List<User> byInviteCode = userService.findByInviteCode(u.getRecommandCode());
-            if(u.getLevel() == UserLevel.LEVEL2) {
+            if(level == null || u.getLevel() == level) {
                 TeamUsersResponse response = new TeamUsersResponse();
                 BeanUtils.copyProperties(u, response);
                 response.setRecommandNumber(byInviteCode.size());

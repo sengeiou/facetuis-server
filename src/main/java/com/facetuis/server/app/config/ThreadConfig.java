@@ -13,7 +13,7 @@ public class ThreadConfig {
     private int corePoolSize = 10;//线程池维护线程的最少数量
     private int maxPoolSize = 50;//线程池维护线程的最大数量
     private int queueCapacity = 20; //缓存队列
-    private int keepAlive = 60;//允许的空闲时间
+    private int keepAlive = 10;//允许的空闲时间
 
     @Bean
     public Executor threadOrderUpdateExecutor() {
