@@ -22,12 +22,12 @@ public interface OrderRepository extends JpaRepository<Order,String> {
     void deleteByOrderSnIn(List<String> orderSn);
 
 
-    @Query(value = "select * from t_order where p_id in ?1 and  order_create_time > ?2  and  order_create_time < ?3 ",nativeQuery = true)
+    @Query(value = "select * from t_order where p_id in ?1 and  order_create_time > ?2  and  order_create_time < ?3 order by order_create_time DESC ",nativeQuery = true)
     Page<Order> findOrder(List<String> pids, long startTime, long endTime, Pageable pageable);
 
 
 
-    @Query(value = "select * from t_order where p_id in ?1 and  order_create_time > ?2  and  order_create_time < ?3 and order_status = ?4 ",nativeQuery = true)
+    @Query(value = "select * from t_order where p_id in ?1 and  order_create_time > ?2  and  order_create_time < ?3 and order_status = ?4 order by order_create_time DESC  ",nativeQuery = true)
     Page<Order> findOrderByStatus(List<String> pids, long startTime, long endTime,int status, Pageable pageable);
 
 

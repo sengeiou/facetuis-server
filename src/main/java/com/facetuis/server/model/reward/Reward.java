@@ -11,10 +11,20 @@ import javax.persistence.Table;
 @Table(name = "t_reward")
 public class Reward extends BaseEntity {
 
-    private String userId;// 奖励用户
-    private Long amount;// 奖励金额
+    private String userId;// 用户
+    private Long amount;// 金额
     @Enumerated(EnumType.STRING)
-    private RewardType rewardType;// 奖励类型
+    private RewardType rewardType;// 类型
+    @Enumerated(EnumType.STRING)
+    private RewardAction action;
+
+    public RewardAction getAction() {
+        return action;
+    }
+
+    public void setAction(RewardAction action) {
+        this.action = action;
+    }
 
     public RewardType getRewardType() {
         return rewardType;

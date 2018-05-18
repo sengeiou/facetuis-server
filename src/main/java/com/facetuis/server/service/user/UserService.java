@@ -65,7 +65,7 @@ public class UserService extends BasicService {
     public User findByUnionid(String unionid){
         User user = userRepository.findByUnionId(unionid);
         if(user != null) {
-            user.setRecommendUrl(String.format(recommendUrl, user.getRecommandCode()));
+            user.setRecommendUrl(String.format(recommendUrl, user.getDisplayRecommend()));
         }
         return user;
     }
@@ -78,15 +78,15 @@ public class UserService extends BasicService {
         if(StringUtils.isEmpty(user.getDeskAppToken())){
             user.setDeskAppToken(RandomUtils.random(80));
         }
-        user.setRecommendUrl(String.format(recommendUrl,user.getRecommandCode()));
         userRepository.save(user);
+        user.setRecommendUrl(String.format(recommendUrl,user.getDisplayRecommend()));
         return user;
     }
 
     public User findByOpenId(String openid){
         User user = userRepository.findByOpenid(openid);
         if(user != null) {
-            user.setRecommendUrl(String.format(recommendUrl, user.getRecommandCode()));
+            user.setRecommendUrl(String.format(recommendUrl, user.getDisplayRecommend()));
         }
         return user;
     }
@@ -209,7 +209,7 @@ public class UserService extends BasicService {
                 if (inviteCode.equals(sysInviteCode)) {
                     inviteUserId = SysFinalValue.SYS_USER_ID;
                 } else {
-                    User tempUser = userRepository.findByRecommandCodeLike("%," + inviteCode + ",%");
+                    User tempUser = userRepository.findByRecommandCodeLike("%," + inviteCode + "%");
                     if (tempUser == null) {
                         return new BaseResult<>(600, "邀请码无效 - 01");
                     }
@@ -257,7 +257,7 @@ public class UserService extends BasicService {
     @Value("${user.level.no2.txt}")
     private String userLevelNo2Txt;
 
-    private String getLevelTxt(UserLevel level) {
+    public String getLevelTxt(UserLevel level) {
         switch (level) {
             case LEVEL1:
                 return userLevelNo1Txt;
@@ -290,7 +290,14 @@ public class UserService extends BasicService {
     }
 
     public List<User> findByInviteCode(String inviteCode){
-       return userRepository.findByInviteCode(inviteCode);
+        String[] split = inviteCode.split(",");
+        List<String> list = new ArrayList<>();
+        for(String s : split){
+            if(!StringUtils.isEmpty(s)) {
+                list.add(s);
+            }
+        }
+        return userRepository.findByInviteCodeIn(list);
     }
 
     /**
@@ -351,6 +358,18 @@ public class UserService extends BasicService {
                 user.setExpireTime(date);
             }
         }
+    }
+
+    public void lowerLevel(User user){
+        if(user == null){
+            return;
+        }
+        user.setLevel(UserLevel.LEVEL1);
+        user.setLevelTxt(getLevelTxt(UserLevel.LEVEL2));
+        save(user);
+        // 更改用户关系
+        userRelationService.removeHighter(user.getUuid());
+
     }
 
 

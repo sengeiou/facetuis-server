@@ -90,9 +90,9 @@ public class WithdrawCashRequestService extends BasicService {
         Long invitingCash = uc ?  0 :  userCommision.getInvitingCash();
         vo.setAmount(orderCash + updateCash + invitingCash + "");
 
-        // 查询已结算
+        // 查询待结算
         vo.setWaitAmount( uc ?  "0" : userCommision.getWaitSettlement() + "");
-        // 查询待结算 = 已提现 + 可提现
+        // 查询已结算 = 已提现 + 可提现
         long historyCash = (uc ?  0 : userCommision.getOrderCash()) +  (uc ?  0 :userCommision.getFinishCash());
         vo.setSettlementAmount(historyCash + "");
         return vo;

@@ -78,7 +78,7 @@ public class WechatService extends BasicService {
         if(!StringUtils.isEmpty(response)){
             AccessTokenResponse accessTokenResponse = JSONObject.parseObject(response, AccessTokenResponse.class);
             logger.info("GET ACCESS_TOKEN" + response);
-            refreshToken(accessTokenResponse.getRefresh_token(),appid);
+            accessTokenResponse = refreshToken(accessTokenResponse.getRefresh_token(),appid);
             result.setResult(accessTokenResponse);
         }else{
             result.setCode(600);
@@ -119,18 +119,18 @@ public class WechatService extends BasicService {
     }
 
 
-    public String refreshToken(String refreshToken,String appid){
+    public AccessTokenResponse refreshToken(String refreshToken,String appid){
         String  url = String.format(refreshUrl + "?appid=%s&grant_type=refresh_token&refresh_token=%s",appid,refreshToken);
         String response = null;
         try{
             response =  Request.Get(url).execute().returnContent().asString();
             AccessTokenResponse accessTokenResponse = JSONObject.parseObject(response, AccessTokenResponse.class);
             logger.info("刷新ACCESS_TOKEN ::" + response);
-            return accessTokenResponse.getAccess_token();
+            return accessTokenResponse;
         }catch (IOException e){
             e.printStackTrace();
         }
-        return "";
+        return null;
     }
 
 }

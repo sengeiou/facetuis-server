@@ -110,6 +110,7 @@ public class OrderService extends BasicService {
                     o.setCreateTime(new Date());
                     BeanUtils.copyProperties(order,o);
                     o.setOrderStatus(order.getOrderStatus());
+                    o.setGoodsPrice(new Long(order.getGoodsPrice()));
                     orderRepository.save(o);
                 }else{
                     o.setUpdateTime(new Date());
@@ -213,9 +214,11 @@ public class OrderService extends BasicService {
         String user2Ids = userRelation.getUser2Ids();
         String user1Ids = userRelation.getUser1Ids();
         String pid = "";
+        String searchUserId = "";
         if(!StringUtils.isEmpty(mobile)){
             User user = userRepository.findByMobileNumber(mobile);
             pid = user.getPid();
+            searchUserId = user.getUuid();
         }else if(!StringUtils.isEmpty(nickName)){
             List<User> byNickNameLike = userRepository.findByNickName("%" + nickName + "%");
             if(byNickNameLike.size() >= 1){
@@ -225,14 +228,19 @@ public class OrderService extends BasicService {
         if(StringUtils.isEmpty(pid)){
             return new PageImpl<OrderVO>(Collections.EMPTY_LIST) ;
         }
-        if( user1Ids.contains(pid) || user2Ids.contains(pid) || user3Ids.contains(pid) ){
+        if( (user1Ids != null && user1Ids.contains(searchUserId)) || (user2Ids != null && user2Ids.contains(searchUserId)) ||  (user3Ids != null && user3Ids.contains(searchUserId)) ){
             String startTime = TimeUtils.date2String(TimeUtils.getDateBefore(new Date(), 60)) + " 00:00:00";
             String endTime = TimeUtils.date2String(new Date()) + " 23:59:59";
             List<String> pids = new ArrayList<>();
             pids.add(pid);
             long star =  TimeUtils.stringToDateTime(startTime).getTime()/1000;
             long end = TimeUtils.stringToDateTime(endTime).getTime()/1000;
-            Page<Order> orders = orderRepository.findOrderByStatus(pids, star, end, status, pageable);
+            Page<Order> orders = null;
+            if(status != -9) {
+                 orders = orderRepository.findOrderByStatus(pids, star, end, status, pageable);
+            }else{
+                 orders = orderRepository.findOrder(pids, star, end, pageable);
+            }
             return getOrderVo(orders.getContent());
         }
         return  new PageImpl<OrderVO>(Collections.EMPTY_LIST) ;
@@ -285,7 +293,7 @@ public class OrderService extends BasicService {
         }
     }
 
-    private Page<OrderVO> getOrderVo(List<Order> content){
+    public Page<OrderVO> getOrderVo(List<Order> content){
         if(content.size() > 0){
             List<OrderVO> list = new ArrayList<>();
             for(Order order : content){

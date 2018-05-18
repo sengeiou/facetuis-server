@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 public class CommisionContext {
 
     @Autowired
-    private CommisionAddStrategy commisionAddStrategy;
+    private CommisionCreateStrategy commisionCreateStrategy;
 
     @Autowired
     private CommisionSubStrategy commisionSubStrategy;
@@ -15,17 +15,17 @@ public class CommisionContext {
     public CommisionStrategy getStrategy(int status){
         switch (status){
             case 0:
-                return commisionAddStrategy;
+                return commisionCreateStrategy;
             case 1:
-                return commisionAddStrategy;
+                return commisionCreateStrategy;
             case 2:
-                return commisionAddStrategy;
+                return commisionCreateStrategy;
             case 3:
-                return commisionAddStrategy;
+                return commisionCreateStrategy;
             case 4:
                 return commisionSubStrategy;
             case 5:
-                return commisionAddStrategy;
+                return commisionCreateStrategy;
             default:
                 return null;
         }

@@ -25,4 +25,8 @@ public interface UserRelationRepository extends JpaRepository<UserRelation,Strin
     @Query(value = "select * from t_users_relation where user_level3id = ?1 and TO_DAYS( NOW( ) ) - TO_DAYS( create_time) = 1",nativeQuery = true)
     List<UserRelation> findByUserLevel3IdYesterday(String userId);
 
+    List<UserRelation> findByUser1HighIdsLike(String userId);
+
+
+
 }

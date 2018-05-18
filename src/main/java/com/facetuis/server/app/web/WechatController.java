@@ -87,7 +87,7 @@ public class WechatController extends FacetuisController {
             return onResult(baseResult);
         }
         AccessTokenResponse response = baseResult.getResult();
-        wechatTokenResponse.setAccess_token(response.getAccess_token());
+        wechatTokenResponse.setAccess_token(response.getRefresh_token());
         wechatTokenResponse.setOpenid(response.getOpenid());
         return successResult(wechatTokenResponse);
     }

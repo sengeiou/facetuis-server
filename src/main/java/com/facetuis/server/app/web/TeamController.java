@@ -173,28 +173,29 @@ public class TeamController extends FacetuisController {
 
     @RequestMapping(value = "/orders/count/{type}",method = RequestMethod.GET)
     @NeedLogin(needLogin = true)
-    public BaseResponse getTeamOrdersType(@PathVariable TeamOrdersSearchType type,PageRequest pageable,int status){
+    public BaseResponse getTeamOrdersType(@PathVariable TeamOrdersSearchType type,Pageable pageable){
         User user = getUser();
         Page<Order> orders = null;
         if(type == TeamOrdersSearchType.TODAY){
             String todayTime = TimeUtils.date2String(new Date());
-            orders = orderService.findByDateAndStatus(todayTime + " 00:00:00", todayTime + " 23:59:59", user.getUuid(),status, pageable);
+            orders = orderService.findByDate(todayTime + " 00:00:00", todayTime + " 23:59:59", user.getUuid(), pageable);
         }
         if(type == TeamOrdersSearchType.YESTERDAY){
             String yesterdayTime = TimeUtils.date2String(TimeUtils.getDateBefore(new Date(),1));
-            orders = orderService.findByDateAndStatus(yesterdayTime + " 00:00:00", yesterdayTime + " 23:59:59", user.getUuid(),status, pageable);
+            orders = orderService.findByDate(yesterdayTime + " 00:00:00", yesterdayTime + " 23:59:59", user.getUuid(), pageable);
         }
         if(type == TeamOrdersSearchType.MONTH){
             String monthFirst = TimeUtils.getMonthFirstDay();
             String monthLast = TimeUtils.getMonthLastDay();
-            orders = orderService.findByDateAndStatus(monthFirst + " 00:00:00", monthLast + " 23:59:59", user.getUuid(),status, pageable);
+            orders = orderService.findByDate(monthFirst + " 00:00:00", monthLast + " 23:59:59", user.getUuid(), pageable);
         }
         if(type == TeamOrdersSearchType.PRE_MONTH){
             String upperMonthFirst = TimeUtils.upperMonthFirst();
             String upperMonthLast = TimeUtils.upperMonthLast();
-            orders = orderService.findByDateAndStatus(upperMonthFirst + " 00:00:00", upperMonthLast + " 23:59:59", user.getUuid(),status, pageable);
+            orders = orderService.findByDate(upperMonthFirst + " 00:00:00", upperMonthLast + " 23:59:59", user.getUuid(), pageable);
         }
-        return successResult(orders);
+        Page<OrderVO> orderVo = orderService.getOrderVo(orders.getContent());
+        return successResult(orderVo);
     }
 
 

@@ -34,6 +34,10 @@ public class SmsService  extends BasicService {
     private String smsAppID;
     @Value("${sms.app.secret}")
     private String smsAppKey;
+    @Value("${sys.is.open.mobile.check}")
+    private String isOpenCheck;
+
+
     public BaseResult sendMessage(String mobile,SmsModelCode modelCode){
         String vcode  = RandomUtils.randomNumber(6);// 验证码
         String content  = SmsContent.getContent(modelCode,vcode);// 短信内容
@@ -80,7 +84,7 @@ public class SmsService  extends BasicService {
      * @return
      */
     public BaseResult checkCode(String mobile,String code, SmsModelCode modelCode, boolean changeRead){
-        if( 1 == 0 + 1){
+        if( !Boolean.parseBoolean(isOpenCheck)){
             return new BaseResult();
         }
         SmsMessage smsMessage = smsMessageRepository.findByMobileNumberAndModelCode(mobile,modelCode);

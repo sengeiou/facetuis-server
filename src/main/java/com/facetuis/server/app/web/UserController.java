@@ -172,7 +172,7 @@ public class UserController extends FacetuisController{
         UserRecommanderResponse response = new UserRecommanderResponse();
         User recommander = userService.findRecommander(user.getUuid());
         if(recommander == null){
-            return successResult(response);
+            return successResult();
         }
         BeanUtils.copyProperties(recommander, response);
         return successResult(response);

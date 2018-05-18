@@ -35,7 +35,7 @@ public class OrderScheduled {
     public void syncByUpdateTime(){
         if(updateTime == null){
             // 启动第一次更新时长 3 个小时
-            updateTime = System.currentTimeMillis()/1000 - 60 * 60 * 3;
+            updateTime = System.currentTimeMillis()/1000 - 60 * 60 * 24 * 15;
         }
         long now = System.currentTimeMillis()/1000;
         syncOrdersByUpdate(updateTime + "",now + "");
@@ -47,6 +47,7 @@ public class OrderScheduled {
     private void syncOrdersByUpdate(String startTime, String endTime) {
         boolean next = false;
         int page = 1;
+        logger.info("同步订单：" + startTime + " | " + endTime );
         do {
             OrderListResponse response = orderService.getOrderByUpdate(startTime, endTime, "", page);
             next = syncBiz(response,startTime,endTime);
@@ -72,7 +73,7 @@ public class OrderScheduled {
             return false;
         }
         List<OrderDetail> order_list = response.getOrder_list_get_response().getOrder_list();
-        System.out.println("同步订单：" + startTime + " | " + endTime + " | 本次同步：" + order_list.size());
+        logger.info("同步订单：" + startTime + " | " + endTime + " | 本次同步：" + order_list.size());
         if( order_list != null && order_list.size() != 0){
             // 同步订单
             orderTask.doUpdateOrderTask(response);

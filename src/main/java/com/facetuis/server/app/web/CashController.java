@@ -4,11 +4,13 @@ import com.facetuis.server.app.web.basic.BaseResponse;
 import com.facetuis.server.app.web.basic.FacetuisController;
 import com.facetuis.server.model.pay.WithdrawCashRequest;
 import com.facetuis.server.model.user.User;
+import com.facetuis.server.service.basic.BaseResult;
 import com.facetuis.server.service.payment.WithdrawCashRequestService;
 import com.facetuis.server.service.payment.vo.UserCashVO;
 import com.facetuis.server.utils.NeedLogin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,7 +33,7 @@ public class CashController extends FacetuisController {
 
     @RequestMapping(method = RequestMethod.POST)
     @NeedLogin(needLogin = true)
-    public BaseResponse cash(WithdrawCashRequest request, BindingResult bindingResult){
+    public BaseResponse cash(@RequestBody WithdrawCashRequest request, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             return erroorResult(bindingResult);
         }
@@ -41,8 +43,8 @@ public class CashController extends FacetuisController {
         User user = getUser();
         String uuid = user.getUuid();
         request.setUserId(uuid);
-        withdrawCashRequestService.create(request);
-        return successResult();
+        BaseResult baseResult = withdrawCashRequestService.create(request);
+        return onResult(baseResult);
     }
 
 }

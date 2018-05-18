@@ -25,7 +25,7 @@ public class InvitingController extends FacetuisController{
     @NeedLogin(needLogin = true)
     public BaseResponse imgList(){
         User user = getUser();
-        Page<InvitingImage> page = invitingService.imageList(user.getRecommandCode().replaceAll(",",""));
+        Page<InvitingImage> page = invitingService.imageList(user.getDisplayRecommend());
         return successResult(page);
     }
 

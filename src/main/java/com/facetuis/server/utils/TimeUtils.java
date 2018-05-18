@@ -289,6 +289,7 @@ public class TimeUtils {
         return  lastDay.format(calendar.getTime());
     }
 
+	//得到上月的第一天
     public static String upperMonthFirst(){
         SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
         //获取前月的第一天
@@ -297,7 +298,7 @@ public class TimeUtils {
         cal_1.set(Calendar.DAY_OF_MONTH,1);//设置为1号,当前日期既为本月第一天
         return format.format(cal_1.getTime());
     }
-
+	//得到上月的最后一天
     public static String upperMonthLast(){
         SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
         Calendar cale = Calendar.getInstance();

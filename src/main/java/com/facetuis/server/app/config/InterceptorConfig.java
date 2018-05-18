@@ -3,6 +3,7 @@ package com.facetuis.server.app.config;
 import com.facetuis.server.app.interceptor.AuthInterceptor;
 import com.facetuis.server.app.interceptor.LoggerInterceptor;
 import com.facetuis.server.app.interceptor.SignInterceptor;
+import com.facetuis.server.app.interceptor.UserLevelInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -27,6 +28,11 @@ public class InterceptorConfig implements WebMvcConfigurer {
         return new AuthInterceptor();
     }
 
+    @Bean
+    UserLevelInterceptor userLevelInterceptor(){
+        return new UserLevelInterceptor();
+    }
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loggerInterceptor())
@@ -40,6 +46,11 @@ public class InterceptorConfig implements WebMvcConfigurer {
                 .addPathPatterns("/1.0/**");
         // 验证签名
         registry.addInterceptor(signInterceptor())
+                .excludePathPatterns("/error")
+                .excludePathPatterns("/static/*")
+                .addPathPatterns("/1.0/**");
+        // 用户级别校验
+        registry.addInterceptor(userLevelInterceptor())
                 .excludePathPatterns("/error")
                 .excludePathPatterns("/static/*")
                 .addPathPatterns("/1.0/**");

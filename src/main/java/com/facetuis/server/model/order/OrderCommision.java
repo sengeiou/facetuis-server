@@ -28,8 +28,17 @@ public class OrderCommision extends BaseEntity{
 
     private Boolean isCompute = false;// 是否分拥计算完成
 
-    private Boolean isFinish = false;// 是否已计算到可提现金额
-    private Boolean isWaitFinish = false;// 是否已计算到待结算
+    private Boolean isFinish = false;// 当前订单是否已经在个人佣金中完成订单结算 （是否已计算到可提现金额）
+    private Boolean isWaitFinish = false;// 当前订单是否已经在个人佣金中完成订单待结算 （是否已计算到待结算）
+    private Boolean isFailFinish = false;// 当前订单审核失败时，是否已经完成个人用户的订单佣金扣除
+
+    public Boolean getFailFinish() {
+        return isFailFinish;
+    }
+
+    public void setFailFinish(Boolean failFinish) {
+        isFailFinish = failFinish;
+    }
 
     public Boolean getWaitFinish() {
         return isWaitFinish == null ? false : isWaitFinish;

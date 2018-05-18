@@ -138,7 +138,7 @@ public class UserRelationService extends BasicService {
         if(relation == null){
             return 0;
         }
-        if(user.getLevel().equals(UserLevel.LEVEL1)){
+        if(user.getLevel().equals(UserLevel.LEVEL1) && false){
             int total = 0;
             int user1Total = relation.getUser1Total();
             total = total + user1Total;
@@ -254,16 +254,15 @@ public class UserRelationService extends BasicService {
     public void addHigher(String userId,String higherId){
         UserRelation userRelation = userRelationRepository.findByUserId(higherId);
         // 新增一级用户
-        String user1Ids = userRelation.getUser1Ids();
-        user1Ids = user1Ids + "," + userId;
-        userRelation.setUser1Ids(user1Ids);
-        // 统计数量 +1
-        Integer user1Total = userRelation.getUser1Total();
-        user1Total = user1Total + 1;
-        userRelation.setUser1Total(user1Total);
+//        String user1Ids = userRelation.getUser1Ids();
+//        user1Ids = user1Ids == null ? "" : user1Ids;
+//        user1Ids = user1Ids + "," + userId;
+//        userRelation.setUser1Ids(user1Ids);
         String user1HighIds = userRelation.getUser1HighIds();
+        user1HighIds = user1HighIds == null ? "" : user1HighIds;
         user1HighIds = user1HighIds + "," + userId;
         userRelation.setUser1HighIds(user1HighIds);
+        // 统计数量 +1
         Integer user1HighTotal = userRelation.getUser1HighTotal();
         user1HighTotal = user1HighTotal + 1;
         userRelation.setUser1HighTotal(user1HighTotal);
@@ -271,5 +270,18 @@ public class UserRelationService extends BasicService {
     }
 
 
-
+    public void removeHighter(String userId){
+        List<UserRelation> userRelations = userRelationRepository.findByUser1HighIdsLike("%" + userId + "%");
+        for(UserRelation userRelation : userRelations){
+            String user1HighIds = userRelation.getUser1HighIds();
+            String replace = "";
+            if(user1HighIds.indexOf("," + userId) >= 0){
+                replace = user1HighIds.replace("," + userId, "");
+            }else{
+                replace = user1HighIds.replace(userId, "");
+            }
+            userRelation.setUser1HighIds(replace);
+        }
+        userRelationRepository.saveAll(userRelations);
+    }
 }

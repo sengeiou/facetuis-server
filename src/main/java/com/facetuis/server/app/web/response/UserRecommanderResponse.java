@@ -9,7 +9,9 @@ public class UserRecommanderResponse {
     private String recommandCode;
 
     public String getRecommandCode() {
-        recommandCode = recommandCode.replaceAll(",","");
+        if(recommandCode != null) {
+            recommandCode = recommandCode.replaceAll(",", "");
+        }
         return recommandCode;
     }
 

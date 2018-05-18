@@ -27,11 +27,14 @@ public interface UserRepository extends JpaRepository<User,String> {
 
     List<User> findByInviteCode(String inviteCode);
 
+    List<User> findByInviteCodeIn(List<String> inviteCode);
+
     User findByUnionId(String unionid);
 
     List<User> findByLevelUserId(String levelUserId);
 
 
     User findByTokenOrDeskAppToken(String token,String deskToken);
+
 
 }

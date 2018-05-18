@@ -44,7 +44,7 @@ public class HeadlineService extends BasicService {
         headline1.setId("1");
         headline1.setTitle("今日爆款");
         headline1.setType("IMG");
-        headline1.setSubTitle("电风扇落地扇台式扇学生宿舍摇头机械电扇遥控静音");
+        headline1.setSubTitle("【多款可选】3/5对粘贴式马桶垫家用保暖防水马桶坐垫加厚坐便垫");
         headline1.setCreateTime(new Date());
 
         List<HeadlineVO> list = new ArrayList<>();
@@ -66,8 +66,23 @@ public class HeadlineService extends BasicService {
         headline.setSubTitle("SubTitle");
         headline.setCreateTime(new Date());
 
+        HeadlineVO headline1 = new HeadlineVO();
+        HeadlineVO.HeadlineContent hc1 = headline1.new HeadlineContent();
+        hc1.setImg("http://" + serverIp + "/head/head_big.png");
+        hc1.setTxt("描述");
+        hc1.setProductId("584952311");
+        List< HeadlineVO.HeadlineContent> hcs1 = new ArrayList<>();
+        hcs1.add(hc1);
+        headline1.setContent(hcs1 );
+        headline1.setId("1");
+        headline1.setTitle("今日爆款");
+        headline1.setType("IMG");
+        headline1.setSubTitle("【多款可选】3/5对粘贴式马桶垫家用保暖防水马桶坐垫加厚坐便垫");
+        headline1.setCreateTime(new Date());
+
         List<HeadlineVO> list = new ArrayList<>();
         list.add(headline);
+        list.add(headline1);
         return new PageImpl<HeadlineVO>(list);
     }
 
