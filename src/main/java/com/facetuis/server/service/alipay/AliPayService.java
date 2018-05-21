@@ -4,9 +4,9 @@ import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.domain.AlipayTradeAppPayModel;
-import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
+import com.facetuis.server.PayUtils;
 import com.facetuis.server.app.web.request.AlipayNotifyRequest;
 import com.facetuis.server.model.pay.PayStatus;
 import com.facetuis.server.model.pay.PayType;
@@ -15,7 +15,6 @@ import com.facetuis.server.service.basic.BaseResult;
 import com.facetuis.server.service.basic.BasicService;
 import com.facetuis.server.service.payment.PaymentService;
 import com.facetuis.server.utils.CommisionUtils;
-import com.facetuis.server.utils.PayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -23,7 +22,6 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import static com.alipay.api.AlipayConstants.CHARSET;
 import static com.alipay.api.AlipayConstants.CHARSET_UTF8;
 
 @Service

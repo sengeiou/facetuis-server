@@ -1,5 +1,6 @@
 package com.facetuis.server.service.wechat;
 
+import com.facetuis.server.PayUtils;
 import com.facetuis.server.model.pay.PayStatus;
 import com.facetuis.server.model.pay.PayType;
 import com.facetuis.server.model.pay.Payment;
@@ -7,28 +8,23 @@ import com.facetuis.server.service.basic.BaseResult;
 import com.facetuis.server.service.basic.BasicService;
 import com.facetuis.server.service.payment.PaymentService;
 import com.facetuis.server.utils.PayCommonUtil;
-import com.facetuis.server.utils.PayUtils;
 import com.facetuis.server.utils.RandomUtils;
 import com.facetuis.server.utils.XmlUtils;
 import org.apache.http.Consts;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
 import org.apache.http.util.EntityUtils;
 import org.jdom.JDOMException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.logging.Logger;
 
 import static org.apache.http.client.fluent.Request.*;
