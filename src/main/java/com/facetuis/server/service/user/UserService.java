@@ -365,7 +365,8 @@ public class UserService extends BasicService {
             return;
         }
         user.setLevel(UserLevel.LEVEL1);
-        user.setLevelTxt(getLevelTxt(UserLevel.LEVEL2));
+        user.setLevelTxt(getLevelTxt(UserLevel.LEVEL1));
+        user.setExpireTime(null);
         save(user);
         // 更改用户关系
         userRelationService.removeHighter(user.getUuid());

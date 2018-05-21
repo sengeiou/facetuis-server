@@ -27,6 +27,15 @@ public class Order extends BaseEntity{
     private String orderGroupSuccessTime;
     private String orderModifyAt;
     private String pId;
+    private Boolean enableCash = false;
+
+    public Boolean getEnableCash() {
+        return enableCash;
+    }
+
+    public void setEnableCash(Boolean enableCash) {
+        this.enableCash = enableCash;
+    }
 
     public String getOrderSn() {
         return orderSn;

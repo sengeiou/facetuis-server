@@ -77,7 +77,7 @@ public class WechatService extends BasicService {
         }
         if(!StringUtils.isEmpty(response)){
             AccessTokenResponse accessTokenResponse = JSONObject.parseObject(response, AccessTokenResponse.class);
-            logger.info("GET ACCESS_TOKEN" + response);
+            logger.info("GET ACCESS_TOKEN :: " + response);
             accessTokenResponse = refreshToken(accessTokenResponse.getRefresh_token(),appid);
             result.setResult(accessTokenResponse);
         }else{

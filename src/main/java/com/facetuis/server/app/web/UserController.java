@@ -25,6 +25,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.bind.BindResult;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import sun.rmi.runtime.Log;
@@ -32,11 +33,12 @@ import sun.rmi.runtime.Log;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.logging.Logger;
 
-@RestController
 @RequestMapping("/1.0/user")
+@Controller
 public class UserController extends FacetuisController{
 
     private static final Logger logger  = Logger.getLogger(UserController.class.getName());
@@ -75,9 +77,16 @@ public class UserController extends FacetuisController{
         redir = URLEncoder.encode(redir,"UTF-8");
         if(userAgent.indexOf("micromessenger")>-1){//微信客户端
             String location = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb48f855755bdeaff&redirect_uri=" + redir + "&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
-            response.sendRedirect(location);
+            //response.sendRedirect(location);
+            //return  "redirect:" + location;
+            response.setStatus(302);
+            response.setHeader("location", location);
         }else{
-            response.sendRedirect(redir);
+            //response.sendRedirect(redir);
+            response.setStatus(302);
+            redir = URLDecoder.decode(redir,"UTF-8");
+            response.setHeader("location", redir);
+            //return  "redirect:" + redir;
         }
     }
 
@@ -89,6 +98,7 @@ public class UserController extends FacetuisController{
      * @return
      */
     @RequestMapping(value = "/register",method = RequestMethod.POST)
+    @ResponseBody
     public BaseResponse register(@RequestBody RegisterRequest registerRequest,BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             return erroorResult(bindingResult);
@@ -101,7 +111,7 @@ public class UserController extends FacetuisController{
         if(registerRequest.getInviteCode().equals(sysInviteCode)){
             inviteUserId = SysFinalValue.SYS_USER_ID;
         }else{
-            User tempUser = userRepository.findByRecommandCodeLike( "%" + registerRequest.getInviteCode() + ",%");
+            User tempUser = userRepository.findByRecommandCodeLike( "%," + registerRequest.getInviteCode() + "%");
             if(tempUser == null){
                  return new BaseResponse(600,"邀请码无效");
             }
@@ -133,6 +143,7 @@ public class UserController extends FacetuisController{
 
     @RequestMapping(value = "/setting",method = RequestMethod.POST)
     @NeedLogin(needLogin = true)
+    @ResponseBody
     public BaseResponse setting(@RequestBody UserSettingsRequest userSettingsRequest){
         User user = getUser();
         user.setSettingRQInGoodsImage(userSettingsRequest.getSettingRQInGoodsImage());
@@ -167,6 +178,7 @@ public class UserController extends FacetuisController{
      */
     @RequestMapping(value = "/recommender",method = RequestMethod.GET)
     @NeedLogin(needLogin = true)
+    @ResponseBody
     public BaseResponse getCommander() {
         User user = getUser();
         UserRecommanderResponse response = new UserRecommanderResponse();
@@ -184,6 +196,7 @@ public class UserController extends FacetuisController{
      */
     @RequestMapping(value = "/upgraded",method = RequestMethod.POST)
     @NeedLogin(needLogin = true)
+    @ResponseBody
     public BaseResponse upgraded(@RequestBody UpgradedRequest request, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             return setErrorResult(bindingResult,400,"请求参数错误");

@@ -213,33 +213,31 @@ public class OrderService extends BasicService {
         String user3Ids = userRelation.getUser3Ids();
         String user2Ids = userRelation.getUser2Ids();
         String user1Ids = userRelation.getUser1Ids();
-        String pid = "";
+        List<String> userPids = new ArrayList<>();
         String searchUserId = "";
         if(!StringUtils.isEmpty(mobile)){
             User user = userRepository.findByMobileNumber(mobile);
-            pid = user.getPid();
+            userPids.add(user.getPid());
             searchUserId = user.getUuid();
         }else if(!StringUtils.isEmpty(nickName)){
             List<User> byNickNameLike = userRepository.findByNickName("%" + nickName + "%");
-            if(byNickNameLike.size() >= 1){
-                pid = byNickNameLike.get(0).getPid();
+            for(User user : byNickNameLike) {
+                userPids.add(user.getPid());
             }
         }
-        if(StringUtils.isEmpty(pid)){
+        if(userPids.size() == 0){
             return new PageImpl<OrderVO>(Collections.EMPTY_LIST) ;
         }
         if( (user1Ids != null && user1Ids.contains(searchUserId)) || (user2Ids != null && user2Ids.contains(searchUserId)) ||  (user3Ids != null && user3Ids.contains(searchUserId)) ){
             String startTime = TimeUtils.date2String(TimeUtils.getDateBefore(new Date(), 60)) + " 00:00:00";
             String endTime = TimeUtils.date2String(new Date()) + " 23:59:59";
-            List<String> pids = new ArrayList<>();
-            pids.add(pid);
             long star =  TimeUtils.stringToDateTime(startTime).getTime()/1000;
             long end = TimeUtils.stringToDateTime(endTime).getTime()/1000;
             Page<Order> orders = null;
             if(status != -9) {
-                 orders = orderRepository.findOrderByStatus(pids, star, end, status, pageable);
+                 orders = orderRepository.findOrderByStatus(userPids, star, end, status, pageable);
             }else{
-                 orders = orderRepository.findOrder(pids, star, end, pageable);
+                 orders = orderRepository.findOrder(userPids, star, end, pageable);
             }
             return getOrderVo(orders.getContent());
         }

@@ -48,7 +48,7 @@ public class WithdrawCashRequestService extends BasicService {
         UserCommision userCommision = userCommisionRepository.findByUserId(withdrawCashRequest.getUserId());
         if(userCommision != null){
             if(userCommision.getCashStatus() == CashStatus.FREEZE){
-                return new BaseResult(600,"账户冻结中");
+                return new BaseResult(600,"正在有提现处理，请等待成功后操作");
             }
             if( userCommision.getOrderCash() <= 0){
                 return new BaseResult(600,"账户中还没有已结算订单");
@@ -89,7 +89,6 @@ public class WithdrawCashRequestService extends BasicService {
         // 邀请可提现
         Long invitingCash = uc ?  0 :  userCommision.getInvitingCash();
         vo.setAmount(orderCash + updateCash + invitingCash + "");
-
         // 查询待结算
         vo.setWaitAmount( uc ?  "0" : userCommision.getWaitSettlement() + "");
         // 查询已结算 = 已提现 + 可提现

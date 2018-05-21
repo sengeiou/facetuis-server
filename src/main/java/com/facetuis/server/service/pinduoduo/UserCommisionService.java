@@ -92,32 +92,31 @@ public class UserCommisionService {
                 // 计算订单可提现金额 = 用户分佣金额
                 // 可提现金额 + 订单佣金
                 if(userCommison != null) {
-                    Long userCommisionAmount = userCommison.getOrderCash() + orderCommision.getUserCommision();// 购买用户的佣金
-                    userCommison.setOrderCash(userCommisionAmount);
+                    Long userCommisionAmount = userCommison.getWaitSettlement() + orderCommision.getUserCommision();// 购买用户的佣金
+                    userCommison.setFinishSettlement(userCommisionAmount);
                     userCommisionRepository.save(userCommison);
                     createReward(userCommison.getUserId(),userCommisionAmount,RewardType.ORDER_SETTLEMENT,RewardAction.PLUS);
                 }
                 if(user1Commison != null) {
-                    Long user1CommisionAmount = user1Commison.getOrderCash() + orderCommision.getUser1Commision();// 上级用户的佣金
-                    user1Commison.setOrderCash(user1CommisionAmount);
+                    Long user1CommisionAmount = user1Commison.getWaitSettlement() + orderCommision.getUser1Commision();// 上级用户的佣金
+                    user1Commison.setFinishSettlement(user1CommisionAmount);
                     userCommisionRepository.save(user1Commison);
                     createReward(user1Commison.getUserId(),user1CommisionAmount,RewardType.ORDER_SETTLEMENT,RewardAction.PLUS);
                 }
                 if(user2Commison != null) {
-                    Long user2CommisionAmount = user2Commison.getOrderCash() + orderCommision.getUser2Commision();// 上级的上级佣金
-                    user2Commison.setOrderCash(user2CommisionAmount);
+                    Long user2CommisionAmount = user2Commison.getWaitSettlement() + orderCommision.getUser2Commision();// 上级的上级佣金
+                    user2Commison.setFinishSettlement(user2CommisionAmount);
                     userCommisionRepository.save(user2Commison);
                     createReward(user2Commison.getUserId(),user2CommisionAmount,RewardType.ORDER_SETTLEMENT,RewardAction.PLUS);
                 }
                 if(user3Commison != null) {
-                    Long user3CommisionAmount = user3Commison.getOrderCash() + orderCommision.getUser3Commision();// 上级的上级佣金
-                    user3Commison.setOrderCash(user3CommisionAmount);
+                    Long user3CommisionAmount = user3Commison.getWaitSettlement() + orderCommision.getUser3Commision();// 上级的上级佣金
+                    user3Commison.setFinishSettlement(user3CommisionAmount);
                     userCommisionRepository.save(user3Commison);
                     createReward(user3Commison.getUserId(),user3CommisionAmount,RewardType.ORDER_SETTLEMENT,RewardAction.PLUS);
                 }
                 // 结算金额计算完成
                 orderCommision.setFinish(true);
-
             } else if (!orderCommision.getWaitFinish() && orderStatus != OrderStatus.SETTLEMENT && orderStatus != OrderStatus.VERIFY_FAIL) {
 
                 // 佣金待结算 = 支付状态为未结算的订单 + 上次未结算的佣金金额 + 要结算的佣金金额

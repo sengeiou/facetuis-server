@@ -281,7 +281,10 @@ public class TeamController extends FacetuisController {
         if(user != null){
             getTeamUser(users, responses,UserLevel.LEVEL2);
         }
-        return successResult(responses);
+        TeamPeopleResponse result = new TeamPeopleResponse();
+        result.setList(responses);
+        result.setTotal(responses.size());
+        return successResult(result);
     }
 
     private void getTeamUser(List<User> users, List<TeamUsersResponse> responses,UserLevel level) {
