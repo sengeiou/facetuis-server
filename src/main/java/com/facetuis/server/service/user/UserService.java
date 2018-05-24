@@ -21,9 +21,13 @@ import com.facetuis.server.utils.TimeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.sql.Time;
+import javax.persistence.criteria.*;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -373,9 +377,33 @@ public class UserService extends BasicService {
 
     }
 
-
     public void save(User user){
         userRepository.save(user);
     }
+
+    //按条件分页查询
+    public Page<User> findBy(User user, int pageNumber, int pageSize) {
+        Pageable pageable=new PageRequest(pageNumber, pageSize);  //分页信息
+        Specification<User> spec = new Specification<User>() {        //查询条件构造
+            @Override
+            public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                Path<String> mobile_number = root.get("mobileNumber");
+                Path<String> nick_name = root.get("nickName");
+                Path<String> level_txt = root.get("levelTxt");
+                Predicate p1 = cb.like(mobile_number, "%"+user.getMobileNumber()+"%");
+                Predicate p2 = cb.like(nick_name, "%"+user.getNickName()+"%");
+                Predicate p3 = cb.like(level_txt, "%"+user.getLevelTxt()+"%");
+                Predicate p = cb.and(p1,p2,p3);
+                return p;
+            }
+        };
+        return userRepository.findAll(spec, pageable);
+    }
+    //获取一个
+    public Optional<User> findById(String uuid) {
+        return userRepository.findById(uuid);
+    }
+
+
 
 }

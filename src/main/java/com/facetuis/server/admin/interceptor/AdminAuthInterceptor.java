@@ -1,7 +1,6 @@
-package com.facetuis.server.admin.web.interceptor;
+package com.facetuis.server.admin.interceptor;
 
 import com.alibaba.fastjson.JSONObject;
-import com.facetuis.server.app.web.basic.BaseResponse;
 import com.facetuis.server.model.admin.AdminUsers;
 import com.facetuis.server.service.admin.AdminUsersService;
 import com.facetuis.server.service.basic.BaseResult;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

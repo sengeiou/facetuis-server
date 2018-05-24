@@ -1,9 +1,6 @@
-package com.facetuis.server.admin.web.config;
+package com.facetuis.server.admin.config;
 
-import com.facetuis.server.admin.web.interceptor.AdminAuthInterceptor;
-import com.facetuis.server.app.interceptor.AuthInterceptor;
-import com.facetuis.server.app.interceptor.LoggerInterceptor;
-import com.facetuis.server.app.interceptor.SignInterceptor;
+import com.facetuis.server.admin.interceptor.AdminAuthInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

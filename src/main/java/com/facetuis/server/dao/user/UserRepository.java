@@ -1,12 +1,12 @@
 package com.facetuis.server.dao.user;
 
-import com.facetuis.server.model.mobile.SmsMessage;
 import com.facetuis.server.model.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.List;
 
-public interface UserRepository extends JpaRepository<User,String> {
+public interface UserRepository extends JpaRepository<User,String>,JpaSpecificationExecutor<User> {
 
     public User findByMobileNumber(String mobileNumber);
 

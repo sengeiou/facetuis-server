@@ -10,7 +10,6 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -213,7 +212,7 @@ public class RQCodeUtils {
         BufferedImage encode = encode("http://api.facetuis.com/facetuis/1.0/user/enroll/13666");
 
         try {
-            File outputfile = new File("c:/13666.jpg");
+            File outputfile = new File("d:/13666.jpg");
             ImageIO.write(encode, "jpg", outputfile);
         } catch (IOException e) {
             System.out.println(e.getMessage());

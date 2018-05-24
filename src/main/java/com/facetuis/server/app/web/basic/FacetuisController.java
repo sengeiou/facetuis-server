@@ -92,7 +92,7 @@ public class FacetuisController extends UserController {
         StringBuffer buffer = new StringBuffer();
         for(ObjectError error:errors) {
             if(buffer.length() > 0){
-                buffer.append(", ");
+                buffer.append(",");
             }
             buffer.append(error.getDefaultMessage());
         }

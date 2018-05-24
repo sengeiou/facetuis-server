@@ -9,12 +9,11 @@ import javax.persistence.Table;
 @Table(name = "t_admin_users")
 @Entity
 public class AdminUsers extends BaseEntity {
-
     private String userName;
     @JsonIgnore
     private String password;
-    private String accessToken;
 
+    private String accessToken;
     public String getUserName() {
         return userName;
     }
